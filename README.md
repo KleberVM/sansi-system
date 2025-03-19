@@ -1,5 +1,10 @@
 # 🎯 Sistema de Inscripción para las Olimpiadas Oh! SanSi
 
+<<<<<<< HEAD
+=======
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+
+>>>>>>> kleb
 ## 🚀 Descripción del Proyecto
 
 Este sistema permite gestionar el proceso de inscripción de estudiantes a las Olimpiadas Oh! SanSi. Incluye funcionalidades para que los administradores, tutores y estudiantes realicen sus tareas de manera eficiente y organizada.
@@ -21,6 +26,7 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 
 ## ✨ Características Principales
 
+<<<<<<< HEAD
 - ✅ **Gestión de Colegios:** Crear, editar, eliminar colegios y generar reportes detallados.  
 - ✅ **Gestión de Convocatorias:** Crear y controlar las convocatorias para cada edición de las olimpiadas.  
 - ✅ **Gestión de Áreas de Competencia, Niveles y Categorías:** Control sobre las diferentes áreas y sus categorías.  
@@ -28,6 +34,15 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 - ✅ **Inicio de Sesión y Recuperación de Contraseña:** Sistema seguro de autenticación.  
 - ✅ **Inscripción de Estudiantes:** Registro y validación de la inscripción a las áreas de competencia.  
 - ✅ **Reportes:** Exportación de reportes en PDF y Excel con filtros personalizables.
+=======
+- **Gestión de Colegios:** Crear, editar, eliminar colegios y generar reportes detallados.  
+- **Gestión de Convocatorias:** Crear y controlar las convocatorias para cada edición de las olimpiadas.  
+- **Gestión de Áreas de Competencia, Niveles y Categorías:** Control sobre las diferentes áreas y sus categorías.  
+- **Registro de Estudiantes y Tutores:** Permite que los tutores registren estudiantes bajo su responsabilidad.  
+- **Inicio de Sesión y Recuperación de Contraseña:** Sistema seguro de autenticación.  
+- **Inscripción de Estudiantes:** Registro y validación de la inscripción a las áreas de competencia.  
+- **Reportes:** Exportación de reportes en PDF y Excel con filtros personalizables.
+>>>>>>> kleb
 
 ---
 
@@ -62,7 +77,11 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 
 ---
 
+<<<<<<< HEAD
 ## 👥 Roles de Usuarios
+=======
+## 👥 Roles principales del sistema
+>>>>>>> kleb
 
 - **🛠️ Administrador:** Gestiona colegios, áreas, convocatorias y genera reportes.  
 - **👨‍🏫 Tutor:** Registra estudiantes y supervisa sus inscripciones.  
@@ -72,9 +91,15 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 
 ## 📌 Estado del Proyecto
 
+<<<<<<< HEAD
 - 🚀 **Gestión de Colegios:** En progreso 
 - 🛠️ **Gestión de Convocatorias:** En progreso  
 - 📍 **Inscripción de Estudiantes:** En progreso 
+=======
+- 🚀 **Gestión de Colegios:** En progreso  
+- 🛠️ **Gestión de Convocatorias:** En progreso  
+- 📍 **Inscripción de Estudiantes:** En progreso  
+>>>>>>> kleb
 - 📊 **Reportes:** En progreso *(falta validación final)*  
 
 ---
@@ -87,6 +112,7 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 
 ---
 
+<<<<<<< HEAD
 ## 🧠 Autores
 
 - 🎯 **Altamirano Vargas Orlando**  
@@ -102,4 +128,40 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
 
 ---
 
+=======
+## 📚 Aprendiendo Laravel
+
+Laravel tiene la documentación más extensa y completa entre los frameworks modernos. Puedes consultarla [aquí](https://laravel.com/docs).
+
+Si prefieres aprender viendo videos, [Laracasts](https://laracasts.com) ofrece más de 1500 tutoriales sobre Laravel, PHP moderno, pruebas unitarias y JavaScript.
+
+---
+
+## 💪 Contribuir
+
+¡Gracias por considerar contribuir al proyecto! Puedes seguir la guía de contribuciones en la [documentación de Laravel](https://laravel.com/docs/contributions).
+
+---
+
+## 🧠 Autores
+
+- **Altamirano Vargas Orlando**  
+- **Cespedes Valencia Leyton**  
+- **Cayola Cayo Yahir Leonardo**  
+- **Luizaga Merino Gustavo**  
+- **Paredes Lovera Guilder**  
+- **Velasco Muruchi Kleber**  
+
+---
+
+## 🔒 Vulnerabilidades de Seguridad
+
+Si descubres alguna vulnerabilidad de seguridad, por favor contacta a [taylor@laravel.com](mailto:taylor@laravel.com). Todas las vulnerabilidades serán tratadas de inmediato.
+
+---
+
+## 🏅 Licencia
+
+El framework Laravel es software de código abierto licenciado bajo la [licencia MIT](https://opensource.org/licenses/MIT).
+>>>>>>> kleb
 
