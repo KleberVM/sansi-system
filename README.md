@@ -1,64 +1,126 @@
+# 🎯 Sistema de Inscripción para las Olimpiadas Oh! SanSi
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 🚀 Descripción del Proyecto
 
-## About Laravel
+Este sistema permite gestionar el proceso de inscripción de estudiantes a las Olimpiadas Oh! SanSi. Incluye funcionalidades para que los administradores, tutores y estudiantes realicen sus tareas de manera eficiente y organizada.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🔧 Tecnologías Usadas
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **PHP 7.4.22**  
+- **Laravel 8**  
+- **MySQL 5.7**  
+- **Apache 2.4.28**  
+- **Visual Studio Code**  
+- **PowerDesigner** *(para el modelado de base de datos)*  
+- **StarUML** *(para diagramas UML)*  
+- **GIMP 2.10** *(para edición gráfica)*  
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## ✨ Características Principales
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Gestión de Colegios:** Crear, editar, eliminar colegios y generar reportes detallados.  
+- **Gestión de Convocatorias:** Crear y controlar las convocatorias para cada edición de las olimpiadas.  
+- **Gestión de Áreas de Competencia, Niveles y Categorías:** Control sobre las diferentes áreas y sus categorías.  
+- **Registro de Estudiantes y Tutores:** Permite que los tutores registren estudiantes bajo su responsabilidad.  
+- **Inicio de Sesión y Recuperación de Contraseña:** Sistema seguro de autenticación.  
+- **Inscripción de Estudiantes:** Registro y validación de la inscripción a las áreas de competencia.  
+- **Reportes:** Exportación de reportes en PDF y Excel con filtros personalizables.
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 🔥 Instalación y Configuración
 
-### Premium Partners
+1️⃣ **Clonar el repositorio:**
+```bash
+    git clone https://github.com/tu_usuario/ohsansi-inscripciones.git
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+2️⃣ **Instalar dependencias:**
+```bash
+    composer install
+    npm install
+```
 
-## Contributing
+3️⃣ **Configurar el archivo .env:**
+```bash
+    cp .env.example .env
+    php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4️⃣ **Configurar la base de datos:**
+```bash
+    php artisan migrate --seed
+```
 
-## Code of Conduct
+5️⃣ **Levantar el servidor local:**
+```bash
+    php artisan serve
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 👥 Roles principales del sistema
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- **🛠️ Administrador:** Gestiona colegios, áreas, convocatorias y genera reportes.  
+- **👨‍🏫 Tutor:** Registra estudiantes y supervisa sus inscripciones.  
+- **🎓 Estudiante:** Se inscribe en las áreas correspondientes según la convocatoria.  
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📌 Estado del Proyecto
+
+- 🚀 **Gestión de Colegios:** En progreso  
+- 🛠️ **Gestión de Convocatorias:** En progreso  
+- 📍 **Inscripción de Estudiantes:** En progreso  
+- 📊 **Reportes:** En progreso *(falta validación final)*  
+
+---
+
+## 🔮 Próximas Mejoras
+
+- 📩 Implementación de notificaciones por email.  
+- 🎨 Mejora en la UI/UX para el proceso de inscripción.  
+- 🔒 Autenticación de dos factores (2FA) para administradores.  
+
+---
+
+## 📚 Aprendiendo Laravel
+
+Laravel tiene la documentación más extensa y completa entre los frameworks modernos. Puedes consultarla [aquí](https://laravel.com/docs).
+
+Si prefieres aprender viendo videos, [Laracasts](https://laracasts.com) ofrece más de 1500 tutoriales sobre Laravel, PHP moderno, pruebas unitarias y JavaScript.
+
+---
+
+## 💪 Contribuir
+
+¡Gracias por considerar contribuir al proyecto! Puedes seguir la guía de contribuciones en la [documentación de Laravel](https://laravel.com/docs/contributions).
+
+---
+
+## 🧠 Autores
+
+- **Altamirano Vargas Orlando**  
+- **Cespedes Valencia Leyton**  
+- **Cayola Cayo Yahir Leonardo**  
+- **Luizaga Merino Gustavo**  
+- **Paredes Lovera Guilder**  
+- **Velasco Muruchi Kleber**  
+
+---
+
+## 🔒 Vulnerabilidades de Seguridad
+
+Si descubres alguna vulnerabilidad de seguridad, por favor contacta a [taylor@laravel.com](mailto:taylor@laravel.com). Todas las vulnerabilidades serán tratadas de inmediato.
+
+---
+
+## 🏅 Licencia
+
+El framework Laravel es software de código abierto licenciado bajo la [licencia MIT](https://opensource.org/licenses/MIT).
+
