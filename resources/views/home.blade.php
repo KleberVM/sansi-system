@@ -150,5 +150,7 @@
     @include('layout.footer')
     <script src = "{{ asset('JS/home.js') }}"></script>
     <script src = "{{ asset('JS/register-modal.js') }}"></script>
+    <!-- Add before closing body tag -->
+    <script src="{{ asset('JS/theme-toggle.js') }}"></script>
 </body>
 </html>
