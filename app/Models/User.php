@@ -21,7 +21,18 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'apellidoPaterno',
+        'apellidoMaterno',
+        'ci',
+        'fechaNacimiento',
+        'genero',
+
     ];
+
+
+    public function roles(){
+        return $this->belongsToMany(Rol::class, 'userRol', 'id', 'idRol');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -41,4 +52,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    
 }

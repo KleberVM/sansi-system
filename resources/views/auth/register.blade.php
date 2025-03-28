@@ -45,6 +45,45 @@
                                 name="password_confirmation" required />
             </div>
 
+            <!-- Apellido Paterno -->
+            <div class="mt-4">
+                <x-label for="apellidoPaterno" :value="__('Apellido Paterno')" />
+
+                <x-input id="apellidoPaterno" class="block mt-1 w-full" type="text" name="apellidoPaterno" :value="old('apellidoPaterno')" required />
+            </div>
+
+            <!-- Apellido Materno -->
+            <div class="mt-4">
+                <x-label for="apellidoMaterno" :value="__('Apellido Materno')" />
+
+                <x-input id="apellidoMaterno" class="block mt-1 w-full" type="text" name="apellidoMaterno" :value="old('apellidoMaterno')" required />
+            </div>
+
+            <!-- CI -->
+            <div class="mt-4">
+                <x-label for="ci" :value="__('CI')" />
+
+                <x-input id="ci" class="block mt-1 w-full" type="text" name="ci" :value="old('ci')" required />
+            </div>
+
+            <!-- Fecha de Nacimiento -->
+            <div class="mt-4">
+                <x-label for="fechaNacimiento" :value="__('Fecha de Nacimiento')" />
+
+                <x-input id="fechaNacimiento" class="block mt-1 w-full" type="date" name="fechaNacimiento" :value="old('fechaNacimiento')" required />
+            </div>
+
+            <!-- Género -->
+            <div class="mt-4">
+                <x-label for="genero" :value="__('Género')" />
+
+                <select id="genero" name="genero" class="block mt-1 w-full" required>
+                    <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
+                    <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
+                </select>
+            </div>
+
+
             <div class="flex items-center justify-end mt-4">
                 <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
                     {{ __('Already registered?') }}
