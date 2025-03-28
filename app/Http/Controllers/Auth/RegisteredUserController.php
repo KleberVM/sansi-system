@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Rol;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -53,7 +54,14 @@ class RegisteredUserController extends Controller
             'ci' => $request->ci,
             'fechaNacimiento' => $request->fechaNacimiento,
             'genero' => $request->genero,
+
         ]);
+
+        // Asignar rol al usuario rol de Est
+        $rol = Rol::find(3);
+        if ($rol) { 
+            $user->roles()->syncWithoutDetaching([$rol->idRol]);
+        }
 
         event(new Registered($user));
 
