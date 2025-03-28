@@ -14,3 +14,8 @@ yarn-error.log
 /.idea
 /.vscode
 .qodo
+
+/package-lock.json
+/postcss.config.js
+/tailwind.config.js
+/vite.config.js
