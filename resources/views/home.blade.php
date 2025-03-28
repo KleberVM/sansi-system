@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oh! Sansi</title>
     <link rel="stylesheet" href="{{ asset('CSS/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('CSS/layout/register-modal.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
     <link rel="stylesheet" href="/CSS/cursor.css">    <!-- Add Font Awesome for icons -->
@@ -12,6 +13,7 @@
 </head>
 <body>
     @include('layout.header')
+    @include('layout.register-modal')
     <main class="contenedor">
         
         <section class="hero">
@@ -147,5 +149,6 @@
     <!-- Footer Section -->
     @include('layout.footer')
     <script src = "{{ asset('JS/home.js') }}"></script>
+    <script src = "{{ asset('JS/register-modal.js') }}"></script>
 </body>
 </html>
