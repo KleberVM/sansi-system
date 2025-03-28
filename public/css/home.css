@@ -1,0 +1,736 @@
+:root {
+    /*colores principales*/
+    --pri: #002A4C;
+    --sec: #00477a;
+    --terc: #021521;
+    --for: #0081df;
+    --five: #6dd2ff;
+    --bg: #ffffff; /*background (Fondo) */
+    /*textos*/
+    --txt: #333;
+    --p-pri: white;/*parrafo*/
+    --p-sec: #000;
+    /*botones*/
+    --btn-pri: var(--terc);
+    --btn-pri-hover: var(--terc);
+    --btn-txt: var(--bg);
+    --btn-txt-hover: var(--bg);
+    --btn-sec: #20bbff;
+    --btn-icon: white;
+    --btn-sec-color: var(--btn-sec);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg);
+    line-height: 1.6;
+}
+
+/* Contenedor principal */
+.contenedor {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1440px) {
+    .contenedor {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 992px) {
+    .contenedor {
+        max-width: 98%;
+        padding: 0 15px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        padding: 30px;
+    }
+
+    .hero-text {
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .hero-image {
+        position: relative;
+        right: auto;
+        margin: 30px auto 0;
+        height: 400px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .contenedor {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .hero {
+        margin: 10px;
+        min-height: auto;
+    }
+
+    .hero-image {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-text h1 {
+        font-size: 32px;
+    }
+
+    .hero-image {
+        height: 250px;
+    }
+}
+
+/* Hero Section Styles */
+.hero {
+    position: relative;
+    background: radial-gradient(circle, rgba(32,187,255,1) 9%, rgba(0,129,223,1) 38%, rgba(0,87,149,1) 63%, rgba(0,42,76,1) 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    color: white;
+    margin-top: 20px;
+    min-height: 600px;
+    padding-top: 60px;
+}
+
+.hero-content {
+    display: flex;
+    padding: 60px;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text {
+    flex: 1;
+    max-width: 50%;
+    z-index: 2;
+}
+
+.hero-text h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero-text .quote {
+    color: var(--p-pri);
+    font-style: italic;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.hero-image {
+    position: absolute;
+    right: 60px;
+    bottom: 0;
+    z-index: 3;
+    height: 500px;
+    width: 400px;
+}
+
+.hero-image img {
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 1;
+}
+
+/* Wave Elements */
+.wave-top,
+.wave-bottom {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    line-height: 0;
+}
+
+.wave-top {
+    top: 0;
+}
+
+.wave-bottom {
+    bottom: 0;
+}
+
+.wave-top img,
+.wave-bottom img {
+    width: 100%;
+    height: auto;
+}
+
+/* Button Styles */
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    position: relative;
+    z-index: 4;
+    /*sition: absolute;*/
+    bottom: -25%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    justify-content: center;
+}
+
+.get-started {
+    background-color: var(--btn-pri);
+    color: var(--btn-txt);
+    padding: 15px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.get-started:hover {
+    background-color: var(--terc);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.watch-video {
+    background-color: var(--btn-sec);
+    color: var(--btn-txt);
+    padding: 15px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.watch-video:hover {
+    background-color: var(--for);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.video-icon {
+    width: 20px;
+    height: 20px;
+    background-color: var(--btn-icon);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--btn-sec-color);
+    font-size: 10px;
+}
+/* Partners Section Styles */
+.partners {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    opacity: 0.5;
+}
+/* About Olympiad Section Styles */
+.about-olympiad {
+    padding: 70px 20px;
+    background-color: var(--bg);
+    border-radius: 15px;
+    margin-top: 60px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.about-olympiad::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, var(--pri), var(--for), var(--five));
+}
+
+.about-olympiad h2 {
+    font-size: 38px;
+    margin-bottom: 30px;
+    color: var(--pri);
+    text-align: center;
+    position: relative;
+    font-weight: 700;
+}
+
+.about-olympiad h2::after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 4px;
+    background-color: var(--for);
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.about-olympiad p {
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: var(--txt);
+    text-align: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+}
+
+/* Carousel Styles */
+.carousel-container {
+    max-width: 1200px;
+    margin: 60px auto;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+}
+
+.competition-areas {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 30px;
+    padding: 20px 0;
+}
+
+.carousel-slide {
+    min-width: calc(33.333% - 20px);
+    flex: 0 0 auto;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.carousel-slide.active {
+    transform: scale(1);
+}
+
+.area-card {
+    background: linear-gradient(165deg, var(--pri), var(--sec));
+    border-radius: 20px;
+    padding: 40px 25px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.area-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1));
+    pointer-events: none;
+}
+
+.area-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.area-card i {
+    color: var(--five);
+    margin-bottom: 20px;
+    font-size: 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px;
+    transition: all 0.3s ease;
+}
+
+.area-card:hover i {
+    transform: rotateY(360deg);
+    background: var(--five);
+    color: var(--pri);
+}
+
+.area-card h3 {
+    color: white;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.area-card p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.carousel-indicators .indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(0, 42, 76, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.carousel-indicators .indicator.active {
+    background-color: var(--five);
+    transform: scale(1.2);
+    border-color: var(--pri);
+}
+
+/* Carousel Navigation Buttons */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    pointer-events: none;
+}
+
+.nav-button {
+    background: var(--pri);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button:hover {
+    background: var(--five);
+    transform: scale(1.1);
+}
+
+.details-btn {
+    display: flex;
+    background-color: var(--btn-sec);
+    color: var(--btn-txt);
+    padding: 16px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 30px auto 0;
+    text-align: center;
+    max-width: 220px;
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.details-btn:hover {
+    background-color: var(--for);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 129, 223, 0.3);
+}
+
+.details-btn i {
+    transition: transform 0.3s ease;
+}
+
+.details-btn:hover i {
+    transform: translateX(5px);
+}
+
+/* How to Participate Section Styles */
+.how-to-participate {
+    padding: 80px 20px;
+    text-align: center;
+    background-color: var(--bg);
+    border-radius: 15px;
+    margin-top: 60px;
+    position: relative;
+}
+
+.how-to-participate h2 {
+    font-size: 38px;
+    color: var(--pri);
+    margin-bottom: 50px;
+    position: relative;
+    font-weight: 700;
+}
+
+.how-to-participate h2::after {
+    content: '';
+    position: absolute;
+    width: 80px;
+    height: 4px;
+    background-color: var(--for);
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.participation-steps {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    list-style: none;
+    padding: 0;
+    margin: 40px 0;
+    position: relative;
+}
+
+.participation-steps::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    left: calc(25% + 20px);
+    right: calc(25% - 20px);
+    height: 2px;
+    background: linear-gradient(to right, var(--five), var(--for));
+    z-index: 1;
+}
+
+.participation-steps li {
+    flex: 1;
+    max-width: 200px;
+    position: relative;
+    z-index: 2;
+}
+
+.participation-steps li i {
+    background-color: var(--bg);
+    color: var(--for);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 129, 223, 0.15);
+    border: 2px solid var(--for);
+}
+
+.participation-steps li:hover i {
+    transform: translateY(-5px) scale(1.05);
+    background-color: var(--for);
+    color: white;
+    box-shadow: 0 8px 20px rgba(0, 129, 223, 0.3);
+}
+
+.participation-steps li p {
+    color: var(--txt);
+    font-size: 1.1rem;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.start-registration-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--btn-sec);
+    color: white;
+    padding: 16px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 40px;
+    transition: all 0.3s ease;
+}
+
+.start-registration-btn:hover {
+    background-color: var(--for);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 129, 223, 0.3);
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 992px) {
+    .carousel-slide {
+        min-width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .competition-areas {
+        gap: 15px;
+    }
+    
+    .competition-areas li {
+        width: calc(50% - 15px);
+        max-width: 160px;
+    }
+    
+    .about-olympiad h2 {
+        font-size: 32px;
+    }
+    
+    .about-olympiad p {
+        font-size: 16px;
+    }
+
+    .participation-steps {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .participation-steps::before {
+        display: none;
+    }
+
+    .participation-steps li {
+        width: 100%;
+        max-width: 250px;
+    }
+
+    .how-to-participate h2 {
+        font-size: 32px;
+    }
+
+    .carousel-slide {
+        min-width: calc(100% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .competition-areas li {
+        width: calc(100% - 30px);
+        max-width: 200px;
+    }
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 15px;
+    width: 400px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.registration-options {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.option-card {
+    text-decoration: none;
+    color: #333;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    width: 120px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #0a1f44;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    background: #e9ecef;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.option-icon {
+    font-size: 2.5rem;
+    color: #0a1f44;
+    margin-bottom: 1rem;
+}
+
+.option-card span {
+    display: block;
+    font-weight: bold;
+    color: #0a1f44;
+}
