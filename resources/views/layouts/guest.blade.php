@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{{ asset('CSS/layout/registro.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/home.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('CSS/layout/reset.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/olvide_contrasenia.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
