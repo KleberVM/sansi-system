@@ -84,6 +84,16 @@ Cuando necesites modificar una tabla existente (como cambiar el tipo de datos de
 php artisan make:migration update_telefono_in_delegacion --table=delegacions
 ```
 
+Este comando hace dos cosas:
+
+migrate:fresh Elimina todas las tablas de la base de datos.Luego, ejecuta todas las migraciones nuevamente desde cero.
+
+--seed: Después de migrar la base de datos, ejecuta los seeders definidos en database/seeders/DatabaseSeeder.php. Sirve para poblar la base de datos con datos iniciales (como usuarios de prueba, roles, configuraciones, etc.).
+
+```bash
+php artisan migrate:fresh --seed 
+```
+
 Recuerda que, después de crear la migración, debes editar el archivo generado en `database/migrations` para realizar los cambios que deseas en la tabla.
 
 ---
