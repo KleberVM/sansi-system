@@ -17,7 +17,7 @@ class SolicitudTutor extends Migration{
             $table->string('ci');
             $table->date('fechaNacimiento');  
             $table->char('genero');
-            $table->int('telefono');
+            $table->integer('telefono');
             $table->string('comprobante');
         });
     }
