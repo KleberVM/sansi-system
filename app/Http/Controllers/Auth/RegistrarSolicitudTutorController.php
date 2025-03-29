@@ -17,7 +17,7 @@ class RegistrarSolicitudTutorController extends Controller
 {
     public function index()
     {
-        // Crear la vista del formulario para registrar la solicitud del tutor
+ 
         return view('auth.registrarSolicitudTutor');
     }
 
@@ -49,7 +49,11 @@ class RegistrarSolicitudTutorController extends Controller
             'telefono' => $request->telefono,
             'comprobante' => $request->comprobante,
         ]);
-    
+
+            $idArea = $request->idArea;
+            $idDelegacion = $request->idDelegacion;
+            $solicitudTutor->areas()->attach($idArea, ['idDelegacion' => $idDelegacion]);
+        
         return response()->json([
             'message' => 'Solicitud registrada exitosamente',
             'data' => $solicitudTutor
