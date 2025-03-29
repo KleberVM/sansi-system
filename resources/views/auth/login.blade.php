@@ -1,56 +1,75 @@
 <x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
-
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h2><i class="fas fa-user"></i> Iniciar Sesión</h2>
             </div>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @endif
 
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="current-password" />
-            </div>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-            <!-- Remember Me -->
-            <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" name="remember">
-                    <span class="ml-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
+            <form method="POST" action="{{ route('login') }}" class="login-form">
+                @csrf
 
-            <div class="flex items-center justify-end mt-4">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               value="{{ old('email') }}"
+                               placeholder="correo@ejemplo.com"
+                               required 
+                               autofocus />
+                    </div>
+                </div>
 
-                <x-button class="ml-3">
-                    {{ __('Log in') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" 
+                               id="password" 
+                               name="password"
+                               placeholder="Tu contraseña"
+                               required />
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="remember_me">
+                        <span>Recordarme</span>
+                    </label>
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="forgot-password">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    @endif
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="login-button">
+                        <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                    </button>
+                    <p class="register-link">¿No tienes una cuenta? <a href="{{ route('register') }}">Regístrate aquí</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
 </x-guest-layout>
