@@ -2,80 +2,102 @@
     <div class="registration-container">
         <div class="registration-card">
             <div class="registration-header">
-                <a href="/" class="logo">
-                    OH! <span>SANSI</span>
-                </a>
-                <h2>Registro de Participante</h2>
-                <p>Únete a las Olimpiadas Oh! SanSi 2025</p>
+                <h2><i class="fas fa-user-graduate"></i> Registro de Estudiante</h2>
             </div>
-
-            <!-- Validation Errors -->
-            <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
             <form method="POST" action="{{ route('register') }}" class="registration-form">
                 @csrf
 
                 <div class="form-grid">
-                    <!-- Nombre y Apellidos -->
                     <div class="form-group">
-                        <x-label for="name" :value="__('Nombres')" />
-                        <x-input id="name" type="text" name="name" :value="old('name')" required autofocus />
+                        <label for="name">Nombre Completo*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Juan Carlos" required />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="apellidoPaterno" :value="__('Apellido Paterno')" />
-                        <x-input id="apellidoPaterno" type="text" name="apellidoPaterno" :value="old('apellidoPaterno')" required />
+                        <label for="apellidoPaterno">Apellido Paterno*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="apellidoPaterno" type="text" name="apellidoPaterno" value="{{ old('apellidoPaterno') }}" placeholder="Pérez" required />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="apellidoMaterno" :value="__('Apellido Materno')" />
-                        <x-input id="apellidoMaterno" type="text" name="apellidoMaterno" :value="old('apellidoMaterno')" required />
-                    </div>
-
-                    <!-- Información Personal -->
-                    <div class="form-group">
-                        <x-label for="ci" :value="__('Carnet de Identidad')" />
-                        <x-input id="ci" type="text" name="ci" :value="old('ci')" required />
+                        <label for="apellidoMaterno">Apellido Materno*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="apellidoMaterno" type="text" name="apellidoMaterno" value="{{ old('apellidoMaterno') }}" placeholder="García" required />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="fechaNacimiento" :value="__('Fecha de Nacimiento')" />
-                        <x-input id="fechaNacimiento" type="date" name="fechaNacimiento" :value="old('fechaNacimiento')" required />
+                        <label for="ci">Carnet de Identidad*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-id-card"></i>
+                            <input id="ci" type="text" name="ci" value="{{ old('ci') }}" placeholder="1234567" required />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="genero" :value="__('Género')" />
-                        <select id="genero" name="genero" required>
-                            <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
-                            <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
-                        </select>
-                    </div>
-
-                    <!-- Información de Cuenta -->
-                    <div class="form-group">
-                        <x-label for="email" :value="__('Correo Electrónico')" />
-                        <x-input id="email" type="email" name="email" :value="old('email')" required />
+                        <label for="fechaNacimiento">Fecha de Nacimiento*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-calendar"></i>
+                            <input id="fechaNacimiento" type="date" name="fechaNacimiento" value="{{ old('fechaNacimiento') }}" placeholder="dd/mm/aaaa" required />
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="password" :value="__('Contraseña')" />
-                        <x-input id="password" type="password" name="password" required />
+                        <label for="genero">Género*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-venus-mars"></i>
+                            <select id="genero" name="genero" required>
+                                <option value="">Seleccionar</option>
+                                <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
+                                <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <x-label for="password_confirmation" :value="__('Confirmar Contraseña')" />
-                        <x-input id="password_confirmation" type="password" name="password_confirmation" required />
+                        <label for="email">Correo Electrónico*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="email@ejemplo.com" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="password" type="password" name="password" placeholder="********" required />
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password_confirmation">Confirmar Contraseña*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="password_confirmation" type="password" name="password_confirmation" placeholder="********" required />
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-footer">
-                    <a class="login-link" href="{{ route('login') }}">
-                        {{ __('¿Ya tienes una cuenta?') }}
-                    </a>
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">Acepto los términos y condiciones</label>
+                </div>
 
+                <div class="form-footer">
                     <button type="submit" class="register-button">
-                        <i class="fas fa-user-plus"></i> {{ __('Registrarse') }}
+                        Crear Cuenta
                     </button>
+                    <p class="login">¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia Sesión aquí</a></p>
                 </div>
             </form>
         </div>
