@@ -7,9 +7,6 @@
             <a href="#">Reglamento</a>
         </div>
         <div class="auth-buttons">
-<<<<<<< HEAD
-            <a href="/#" class="join-btn" id="login-button">Iniciar Sesión</a>
-=======
             @auth
                 <a href="{{ url('/dashboard') }}" class="get-started">
                     <i class="fas fa-user"></i> Dashboard
@@ -28,7 +25,6 @@
             <button id="theme-toggle" class="theme-toggle">
                 <i class="fas fa-moon"></i>
             </button>
->>>>>>> 416e3a3ebb30f93e73a03fea51ec3c04dd527618
         </div>
     </nav>
 </header>
