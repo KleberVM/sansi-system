@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggle = document.getElementById('theme-toggle');
     const icon = themeToggle.querySelector('i');
+    const wavePath = document.querySelector('.wave-path');
     
     // Check for saved theme preference
     const currentTheme = localStorage.getItem('theme');
@@ -8,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.classList.add('dark-theme');
         icon.classList.remove('fa-moon');
         icon.classList.add('fa-sun');
+        if (wavePath) wavePath.setAttribute('fill', '#272727');
+    } else {
+        if (wavePath) wavePath.setAttribute('fill', '#ffffff');
     }
 
     themeToggle.addEventListener('click', function() {
@@ -18,10 +22,12 @@ document.addEventListener('DOMContentLoaded', function() {
             icon.classList.remove('fa-moon');
             icon.classList.add('fa-sun');
             localStorage.setItem('theme', 'dark');
+            if (wavePath) wavePath.setAttribute('fill', '#272727');
         } else {
             icon.classList.remove('fa-sun');
             icon.classList.add('fa-moon');
             localStorage.setItem('theme', 'light');
+            if (wavePath) wavePath.setAttribute('fill', '#ffffff');
         }
     });
 });

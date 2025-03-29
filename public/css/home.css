@@ -6,6 +6,8 @@
     --for: #0081df;
     --five: #6dd2ff;
     --bg: #ffffff; /*background (Fondo) */
+    --bg1: #f8f8f8;
+    --bg2:#ffffff;
     /*textos*/
     --txt: #333;
     --p-pri: white;/*parrafo*/
@@ -18,16 +20,24 @@
     --btn-sec: #20bbff;
     --btn-icon: white;
     --btn-sec-color: var(--btn-sec);
+    
+    /*Boton register eventos*/
+    --btn-color-rojo: #D50000;  /* Rojo vibrante y fuerte */
+    --btn-hover-rojo: #A40000;  /* Rojo oscuro para resaltar el efecto */
+    --btn-active-rojo: #FF4C4C; /* Rojo más claro para efecto de clic */
+
 }
 
 /* Dark theme colors */
 body.dark-theme {
     --pri: #002A4C;
     --sec: #00477a;
-    --terc: #ffffff;
+    --terc: #021521;
     --for: #0081df;
     --five: #6dd2ff;
-    --bg: #1a1a1a;
+    --bg: #272727;
+    --bg1: #151b23;
+    --bg2: #202022;
     --txt: #ffffff;
     --p-pri: #e0e0e0;
     --p-sec: #ffffff;
@@ -153,7 +163,7 @@ body {
     font-style: italic;
     margin-bottom: 40px;
     line-height: 1.6;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 .hero-image {
@@ -260,6 +270,36 @@ body {
     color: var(--btn-sec-color);
     font-size: 10px;
 }
+
+/* Hero Buttons */
+.hero-buttons {
+    margin-top: 2rem;
+}
+
+.register-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--terc);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 129, 223, 0.3);
+}
+
+.register-hero-btn:hover {
+    background: rgb(29, 29, 49);
+    transform: translateY(-2px);
+}
+
+
+.register-hero-btn i {
+    font-size: 1.3rem;
+}
+
 /* Partners Section Styles */
 .partners {
     display: flex;
@@ -271,7 +311,7 @@ body {
 /* About Olympiad Section Styles */
 .about-olympiad {
     padding: 70px 20px;
-    background-color: var(--bg);
+    background-color: var(--bg2);
     border-radius: 15px;
     margin-top: 60px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -292,7 +332,7 @@ body {
 .about-olympiad h2 {
     font-size: 38px;
     margin-bottom: 30px;
-    color: var(--pri);
+    color: var(--for);
     text-align: center;
     position: relative;
     font-weight: 700;
@@ -303,7 +343,7 @@ body {
     position: absolute;
     width: 80px;
     height: 4px;
-    background-color: var(--for);
+    background-color: var(--btn-sec);
     bottom: -12px;
     left: 50%;
     transform: translateX(-50%);
@@ -354,6 +394,7 @@ body {
     padding: 40px 25px;
     text-align: center;
     color: white;
+    border: solid var(--btn-tec) 1px;
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     height: 100%;
@@ -504,7 +545,7 @@ body {
 .how-to-participate {
     padding: 80px 20px;
     text-align: center;
-    background-color: var(--bg);
+    background-color: var(--bg2);
     border-radius: 15px;
     margin-top: 60px;
     position: relative;
@@ -512,7 +553,7 @@ body {
 
 .how-to-participate h2 {
     font-size: 38px;
-    color: var(--pri);
+    color: var(--for);
     margin-bottom: 50px;
     position: relative;
     font-weight: 700;
@@ -523,7 +564,7 @@ body {
     position: absolute;
     width: 80px;
     height: 4px;
-    background-color: var(--for);
+    background-color: var(--btn-sec);
     bottom: -12px;
     left: 50%;
     transform: translateX(-50%);
@@ -559,7 +600,7 @@ body {
 }
 
 .participation-steps li i {
-    background-color: var(--bg);
+    background-color: var(--bg2);
     color: var(--for);
     width: 80px;
     height: 80px;

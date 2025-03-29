@@ -1,31 +1,36 @@
-/* Navigation Styles */
+/* Header Base Styles */
 header {
     padding: 20px 0;
     position: sticky;
     top: 0;
-    background-color: var(--bg);
+    background-color: var(--bg1);
     z-index: 100;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
 }
 
+/* Navigation Layout */
 nav {
-    padding-left: 10px;
-    padding-right: 10px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* Logo Styles */
 .logo {
     font-weight: bold;
     font-size: 24px;
-    color: var(--pri);
+    color: var(--sec);
 }
 
 .logo span {
-    color: var(--terc);
+    color: var(--btn-color-rojo);
 }
 
+/* Navigation Links */
 .nav-links {
     display: flex;
     gap: 30px;
@@ -36,6 +41,7 @@ nav {
     color: var(--txt);
     transition: color 0.3s ease;
     position: relative;
+    font-weight: 500;
 }
 
 .nav-links a:hover {
@@ -57,47 +63,150 @@ nav {
     width: 100%;
 }
 
-.join-btn {
-    background-color: var(--btn-pri);
-    color: var(--btn-txt);
-    padding: 10px 20px;
-    border-radius: 25px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+/* Auth Buttons Container */
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
-.join-btn:hover {
-    background-color: var(--for);
-    transform: translateY(-3px);
-}
-
-
-/* Add these styles to your existing header.css */
+/* Theme Toggle Button */
 .theme-toggle {
     background: none;
     border: none;
+    cursor: pointer;
+    padding: 8px;
     color: var(--txt);
     font-size: 1.2rem;
-    cursor: pointer;
-    padding: 0.5rem;
-    margin-left: 1rem;
-    transition: transform 0.3s ease;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
-    transform: scale(1.1);
+    background-color: rgba(0, 129, 223, 0.1);
+    transform: rotate(180deg);
 }
 
-/* Dark mode icon styles */
-.theme-toggle.dark-mode .fa-moon {
-    display: none;
+body.dark-theme .theme-toggle {
+    color: #ffffff;
 }
 
-.theme-toggle.dark-mode .fa-sun {
-    display: inline-block;
+/* Login Button */
+.login-link {
+    background-color: var(--sec);
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 129, 223, 0.2);
 }
 
-.theme-toggle .fa-sun {
-    display: none;
+.login-link:hover {
+    background-color: var(--pri);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 42, 76, 0.25);
+}
+
+/* Dashboard Button */
+.get-started {
+    background: linear-gradient(135deg, var(--for), var(--pri));
+    color: white;
+    padding: 10px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.get-started:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 129, 223, 0.3);
+    background: linear-gradient(135deg, var(--five), var(--for));
+}
+
+/* Logout Button */
+.join-btn {
+    background: var(--terc);
+    color: var(--txt);
+    padding: 10px 24px;
+    border-radius: 25px;
+    border: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.join-btn:hover {
+    background: var(--five);
+    color: var(--pri);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(109, 210, 255, 0.2);
+}
+
+/* Icons */
+.auth-buttons i {
+    font-size: 1.1rem;
+}
+
+/* Dark Theme Specific Styles */
+body.dark-theme header {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .login-link {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-theme .join-btn {
+    color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    nav {
+        padding: 0 15px;
+    }
+
+    .auth-buttons {
+        gap: 10px;
+    }
+
+    .login-link,
+    .get-started,
+    .join-btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    .nav-links {
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-links {
+        display: none;
+    }
+
+    .auth-buttons {
+        gap: 8px;
+    }
+
+    .login-link,
+    .get-started,
+    .join-btn {
+        padding: 6px 15px;
+        font-size: 0.85rem;
+    }
 }

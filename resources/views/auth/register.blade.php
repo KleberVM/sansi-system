@@ -1,98 +1,105 @@
 <x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-
-            <!-- Name -->
-            <div>
-                <x-label for="name" :value="__('Name')" />
-
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+    <div class="registration-container">
+        <div class="registration-card">
+            <div class="registration-header">
+                <h2><i class="fas fa-user-graduate"></i> Registro de Estudiante</h2>
             </div>
 
-            <!-- Email Address -->
-            <div class="mt-4">
-                <x-label for="email" :value="__('Email')" />
+            <form method="POST" action="{{ route('register') }}" class="registration-form">
+                @csrf
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
-            </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name">Nombre Completo*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="name" type="text" name="name" value="{{ old('name') }}" placeholder="Juan Carlos" required />
+                        </div>
+                    </div>
 
-            <!-- Password -->
-            <div class="mt-4">
-                <x-label for="password" :value="__('Password')" />
+                    <div class="form-group">
+                        <label for="apellidoPaterno">Apellido Paterno*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="apellidoPaterno" type="text" name="apellidoPaterno" value="{{ old('apellidoPaterno') }}" placeholder="Pérez" required />
+                        </div>
+                    </div>
 
-                <x-input id="password" class="block mt-1 w-full"
-                                type="password"
-                                name="password"
-                                required autocomplete="new-password" />
-            </div>
+                    <div class="form-group">
+                        <label for="apellidoMaterno">Apellido Materno*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input id="apellidoMaterno" type="text" name="apellidoMaterno" value="{{ old('apellidoMaterno') }}" placeholder="García" required />
+                        </div>
+                    </div>
 
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <div class="form-group">
+                        <label for="ci">Carnet de Identidad*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-id-card"></i>
+                            <input id="ci" type="text" name="ci" value="{{ old('ci') }}" placeholder="1234567" required />
+                        </div>
+                    </div>
 
-                <x-input id="password_confirmation" class="block mt-1 w-full"
-                                type="password"
-                                name="password_confirmation" required />
-            </div>
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de Nacimiento*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-calendar"></i>
+                            <input id="fechaNacimiento" type="date" name="fechaNacimiento" value="{{ old('fechaNacimiento') }}" placeholder="dd/mm/aaaa" required />
+                        </div>
+                    </div>
 
-            <!-- Apellido Paterno -->
-            <div class="mt-4">
-                <x-label for="apellidoPaterno" :value="__('Apellido Paterno')" />
+                    <div class="form-group">
+                        <label for="genero">Género*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-venus-mars"></i>
+                            <select id="genero" name="genero" required>
+                                <option value="">Seleccionar</option>
+                                <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
+                                <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
+                            </select>
+                        </div>
+                    </div>
 
-                <x-input id="apellidoPaterno" class="block mt-1 w-full" type="text" name="apellidoPaterno" :value="old('apellidoPaterno')" required />
-            </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" placeholder="email@ejemplo.com" required />
+                        </div>
+                    </div>
 
-            <!-- Apellido Materno -->
-            <div class="mt-4">
-                <x-label for="apellidoMaterno" :value="__('Apellido Materno')" />
+                    <div class="form-group">
+                        <label for="password">Contraseña*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="password" type="password" name="password" placeholder="********" required />
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
 
-                <x-input id="apellidoMaterno" class="block mt-1 w-full" type="text" name="apellidoMaterno" :value="old('apellidoMaterno')" required />
-            </div>
+                    <div class="form-group">
+                        <label for="password_confirmation">Confirmar Contraseña*</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input id="password_confirmation" type="password" name="password_confirmation" placeholder="********" required />
+                            <i class="fas fa-eye toggle-password"></i>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- CI -->
-            <div class="mt-4">
-                <x-label for="ci" :value="__('CI')" />
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">Acepto los términos y condiciones</label>
+                </div>
 
-                <x-input id="ci" class="block mt-1 w-full" type="text" name="ci" :value="old('ci')" required />
-            </div>
-
-            <!-- Fecha de Nacimiento -->
-            <div class="mt-4">
-                <x-label for="fechaNacimiento" :value="__('Fecha de Nacimiento')" />
-
-                <x-input id="fechaNacimiento" class="block mt-1 w-full" type="date" name="fechaNacimiento" :value="old('fechaNacimiento')" required />
-            </div>
-
-            <!-- Género -->
-            <div class="mt-4">
-                <x-label for="genero" :value="__('Género')" />
-
-                <select id="genero" name="genero" class="block mt-1 w-full" required>
-                    <option value="M" {{ old('genero') == 'M' ? 'selected' : '' }}>Masculino</option>
-                    <option value="F" {{ old('genero') == 'F' ? 'selected' : '' }}>Femenino</option>
-                </select>
-            </div>
-
-
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
+                <div class="form-footer">
+                    <button type="submit" class="register-button">
+                        Crear Cuenta
+                    </button>
+                    <p class="login">¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia Sesión aquí</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
 </x-guest-layout>
