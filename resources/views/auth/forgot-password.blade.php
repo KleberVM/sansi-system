@@ -1,36 +1,52 @@
 <x-guest-layout>
-    <x-auth-card>
-        <x-slot name="logo">
-            <a href="/">
-                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-            </a>
-        </x-slot>
+    <div class="forgot-password-container">
+        <div class="forgot-password-card">
+            <div class="forgot-password-header">
+                <h2><i class="fas fa-lock-open"></i> Recuperar Contraseña</h2>
+                <p>Te enviaremos un enlace para restablecer tu contraseña</p>
+            </div>
 
-        <div class="mb-4 text-sm text-gray-600">
-            {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+            @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('password.email') }}" class="forgot-password-form">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               value="{{ old('email') }}"
+                               placeholder="Ingresa tu correo electrónico"
+                               required 
+                               autofocus />
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="submit" class="reset-button">
+                        <i class="fas fa-paper-plane"></i> Enviar enlace
+                    </button>
+                    <a href="{{ route('login') }}" class="back-to-login">
+                        <i class="fas fa-arrow-left"></i> Volver al inicio de sesión
+                    </a>
+                </div>
+            </form>
         </div>
-
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <!-- Validation Errors -->
-        <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('password.email') }}">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-label for="email" :value="__('Email')" />
-
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <x-button>
-                    {{ __('Email Password Reset Link') }}
-                </x-button>
-            </div>
-        </form>
-    </x-auth-card>
+    </div>
 </x-guest-layout>

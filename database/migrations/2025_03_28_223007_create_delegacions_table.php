@@ -26,7 +26,7 @@ class CreateDelegacionsTable extends Migration
             $table->string('municipio', 20);
             $table->string('zona', 30);
             $table->string('direccion', 40);
-            $table->string('telefono', 8);
+            $table->integer('telefono');
             $table->string('responsable_nombre', 40);
             $table->string('responsable_email')->unique();
             $table->timestamps();
