@@ -24,4 +24,17 @@ class SolicitudTutor extends Model
 
     ];
 
+
+    public function areas()
+    {
+        return $this->belongsToMany(Area::class, 'solicitudAreaDelegacion', 'idSolicitudTutor', 'idArea')
+                    ->withPivot('idDelegacion'); // Incluye el campo idDelegacion de la tabla pivote
+    }
+    
+    public function delegaciones()
+    {
+        return $this->belongsToMany(Delegacion::class, 'solicitudAreaDelegacion', 'idSolicitudTutor', 'idDelegacion')
+                    ->withPivot('idArea'); // Incluye el campo idArea de la tabla pivote
+    }
+
 }
