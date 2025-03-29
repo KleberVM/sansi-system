@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="{{ asset('CSS/home.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('CSS/layout/register-modal.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="antialiased">
     @include('layout.header')
-
+    @include('layout.register-modal')
     <div class="relative">
         <main class="contenedor">
             <section class="hero">
@@ -151,6 +152,7 @@
 
     <script src="{{ asset('JS/home.js') }}"></script>
     <script src="{{ asset('JS/theme-toggle.js') }}"></script>
+    <script src="{{ asset('JS/register-modal.js') }}"></script>
 </body>
 
 </html>
