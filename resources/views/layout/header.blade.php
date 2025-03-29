@@ -7,7 +7,7 @@
             <a href="#">Reglamento</a>
         </div>
         <div class="auth-buttons">
-            <a href="#" class="join-btn" id="login-button">Iniciar Sesión</a>
+            <a href="/#" class="join-btn" id="login-button">Iniciar Sesión</a>
         </div>
     </nav>
 </header>
