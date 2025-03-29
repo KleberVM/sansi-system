@@ -71,3 +71,33 @@ nav {
     background-color: var(--for);
     transform: translateY(-3px);
 }
+
+
+/* Add these styles to your existing header.css */
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--txt);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+}
+
+/* Dark mode icon styles */
+.theme-toggle.dark-mode .fa-moon {
+    display: none;
+}
+
+.theme-toggle.dark-mode .fa-sun {
+    display: inline-block;
+}
+
+.theme-toggle .fa-sun {
+    display: none;
+}
