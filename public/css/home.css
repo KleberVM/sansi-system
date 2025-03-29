@@ -153,7 +153,7 @@ body {
     font-style: italic;
     margin-bottom: 40px;
     line-height: 1.6;
-    font-size: 14px;
+    font-size: 20px;
 }
 
 .hero-image {
@@ -260,6 +260,35 @@ body {
     color: var(--btn-sec-color);
     font-size: 10px;
 }
+
+/* Hero Buttons */
+.hero-buttons {
+    margin-top: 2rem;
+}
+
+.register-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--for);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 129, 223, 0.3);
+}
+
+.register-hero-btn:hover {
+    background: var(--sec);
+    transform: translateY(-2px);
+}
+
+.register-hero-btn i {
+    font-size: 1.3rem;
+}
+
 /* Partners Section Styles */
 .partners {
     display: flex;

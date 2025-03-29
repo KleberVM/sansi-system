@@ -58,20 +58,25 @@ nav {
 }
 
 .join-btn {
-    background-color: var(--btn-pri);
-    color: var(--btn-txt);
-    padding: 10px 20px;
+    background: var(--terc);
+    color: var(--txt);
+    padding: 8px 20px;
     border-radius: 25px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .join-btn:hover {
-    background-color: var(--for);
-    transform: translateY(-3px);
+    background: var(--five);
+    color: var(--pri);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(109, 210, 255, 0.2);
 }
-
 
 /* Add these styles to your existing header.css */
 .theme-toggle {
@@ -80,13 +85,14 @@ nav {
     color: var(--txt);
     font-size: 1.2rem;
     cursor: pointer;
-    padding: 0.5rem;
-    margin-left: 1rem;
-    transition: transform 0.3s ease;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
-    transform: scale(1.1);
+    background: rgba(0, 129, 223, 0.1);
+    transform: rotate(180deg);
 }
 
 /* Dark mode icon styles */
@@ -100,4 +106,92 @@ nav {
 
 .theme-toggle .fa-sun {
     display: none;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.auth-buttons form {
+    display: inline;
+}
+
+.auth-buttons button[type="submit"] {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    color: inherit;
+}
+
+.auth-buttons .join-btn {
+    margin-right: 10px;
+}
+
+/* Login button style */
+.login-link {
+    background-color: var(--sec);
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 129, 223, 0.2);
+}
+
+.login-link:hover {
+    background-color: var(--pri);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 42, 76, 0.25);
+}
+
+.login-link i {
+    font-size: 1.1rem;
+}
+
+/* Dashboard button style */
+.get-started {
+    background: linear-gradient(135deg, var(--for), var(--pri));
+    color: white;
+    padding: 8px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.get-started:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 129, 223, 0.3);
+    background: linear-gradient(135deg, var(--five), var(--for));
+}
+
+/* Icons within buttons */
+.auth-buttons i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .auth-buttons {
+        gap: 10px;
+    }
+
+    .login-link {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+
+    .get-started, .join-btn {
+        padding: 6px 15px;
+        font-size: 0.9rem;
+    }
 }
