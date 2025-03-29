@@ -8,13 +8,14 @@
     <link rel="stylesheet" href="{{ asset('CSS/home.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('CSS/layout/register-modal.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="antialiased">
     @include('layout.header')
-
+    @include('layout.register-modal')
     <div class="relative">
         <main class="contenedor">
             <section class="hero">
@@ -40,7 +41,9 @@
                 </div>
 
                 <div class="wave-bottom">
-                    <img src="{{ asset('img/inferior4.svg') }}">
+                    <svg class="wave-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+                        <path class="wave-path" fill="#ffffff" fill-opacity="1" d="M0,128L120,154.7C240,181,480,235,720,218.7C960,203,1200,117,1320,74.7L1440,32L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path>
+                    </svg>
                 </div>
             </section>
 
@@ -149,6 +152,7 @@
 
     <script src="{{ asset('JS/home.js') }}"></script>
     <script src="{{ asset('JS/theme-toggle.js') }}"></script>
+    <script src="{{ asset('JS/register-modal.js') }}"></script>
 </body>
 
 </html>
