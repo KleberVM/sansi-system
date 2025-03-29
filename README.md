@@ -62,6 +62,30 @@ Este sistema permite gestionar el proceso de inscripción de estudiantes a las O
     php artisan serve
 ```
 
+## Comandos útiles para el proyecto
+
+### 1. `composer require doctrine/dbal`
+Este comando instala el paquete **Doctrine DBAL**, el cual es necesario para realizar cambios en las columnas de las tablas existentes, como cambiar el tipo de datos de una columna (por ejemplo, de `string` a `integer`).
+
+**Ejemplo de uso**:
+Cuando quieras cambiar el tipo de una columna en una migración, como cambiar de `string` a `integer`, necesitas instalar este paquete primero, ya que Laravel requiere Doctrine DBAL para gestionar esos cambios.
+
+```bash
+composer require doctrine/dbal
+```
+
+### 2. `php artisan make:migration update_telefono_in_delegacion --table=delegacions`
+Este comando crea una nueva migración para modificar la tabla especificada (`delegacions` en este caso). El parámetro `--table=delegacions` indica que la migración se aplicará a la tabla existente `delegacions`.
+
+**Ejemplo de uso**:
+Cuando necesites modificar una tabla existente (como cambiar el tipo de datos de una columna), puedes crear una nueva migración utilizando este comando. Posteriormente, podrás editar la migración para agregar los cambios específicos a la columna que deseas modificar.
+
+```bash
+php artisan make:migration update_telefono_in_delegacion --table=delegacions
+```
+
+Recuerda que, después de crear la migración, debes editar el archivo generado en `database/migrations` para realizar los cambios que deseas en la tabla.
+
 ---
 
 ## 🧠 Desarolladores
