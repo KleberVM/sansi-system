@@ -2,7 +2,7 @@
     <nav>
         <div class="logo">OH! <span>SANSI</span></div>
         <div class="nav-links">
-            <a href="#">Inicio</a>
+            <a href="{{ url('/') }}">Inicio</a>
             <a href="#">Comvocatoria</a>
             <a href="#">Reglamento</a>
         </div>
