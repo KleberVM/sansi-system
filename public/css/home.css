@@ -20,6 +20,25 @@
     --btn-sec-color: var(--btn-sec);
 }
 
+/* Dark theme colors */
+body.dark-theme {
+    --pri: #002A4C;
+    --sec: #00477a;
+    --terc: #ffffff;
+    --for: #0081df;
+    --five: #6dd2ff;
+    --bg: #1a1a1a;
+    --txt: #ffffff;
+    --p-pri: #e0e0e0;
+    --p-sec: #ffffff;
+    --btn-pri: var(--terc);
+    --btn-txt: var(--bg);
+}
+
+/* Add smooth transition for theme changes */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 * {
     margin: 0;
     padding: 0;
@@ -734,3 +753,4 @@ body {
     font-weight: bold;
     color: #0a1f44;
 }
+
