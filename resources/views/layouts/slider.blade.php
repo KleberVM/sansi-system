@@ -19,28 +19,27 @@
                 <span>Dashboard</span>
             </a>
         </li>
-        <li>
-            <a href="#">
+
+        <li class="{{ request()->routeIs('delegacion') ? 'active' : '' }}">
+            <a href="{{ route('delegacion') }}">
                 <i class="fas fa-school"></i>
                 <span>Gestión de Colegios</span>
-                <i class="fas fa-chevron-right submenu-arrow"></i>
             </a>
         </li>
-        <li>
-            <a href="#">
+        <li class="{{ request()->routeIs('convocatoria') ? 'active' : '' }}">
+            <a href="{{ route('convocatoria') }}">
                 <i class="fas fa-bullhorn"></i>
                 <span>Gestión de Convocatorias</span>
-                <i class="fas fa-chevron-right submenu-arrow"></i>
             </a>
         </li>
-        <li>
-            <a href="#">
+        <li class="{{ request()->routeIs('area') ? 'active' : '' }}">
+            <a href="{{ route('area') }}">
                 <i class="fas fa-book"></i>
                 <span>Gestión de Áreas</span>
             </a>
         </li>
-        <li>
-            <a href="#">
+        <li class="{{ request()->routeIs('registro') ? 'active' : '' }}">
+            <a href="{{ route('registro') }}">
                 <i class="fas fa-user-plus"></i>
                 <span>Registro</span>
             </a>
