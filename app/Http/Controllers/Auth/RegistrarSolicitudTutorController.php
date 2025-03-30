@@ -26,7 +26,7 @@ class RegistrarSolicitudTutorController extends Controller
         $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()], //Verifdicar que en el formulario haya un campo de confirm_passwordcon
             'apellidoPaterno' => ['required', 'string', 'max:255'],
             'apellidoMaterno' => ['required', 'string', 'max:255'],
             'ci' => ['required', 'string', 'max:255'],
@@ -34,7 +34,6 @@ class RegistrarSolicitudTutorController extends Controller
             'genero' => ['required', 'string', 'max:1'],
             'telefono' => ['required', 'int'],
             'comprobante' => ['required', 'string', 'max:255'],
-             // Validar que la delegación exista
         ]);
 
         $solicitudTutor = SolicitudTutor::create([
