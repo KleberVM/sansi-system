@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/register-modal.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>

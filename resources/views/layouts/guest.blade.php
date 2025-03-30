@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="{{ asset('CSS/layout/olvide_contrasenia.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/header.css') }}">
     <link rel="stylesheet" href="{{ asset('CSS/layout/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    
     <!-- Scripts -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script src="{{ asset('js/app.js') }}" defer></script>

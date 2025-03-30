@@ -1,0 +1,329 @@
+/* Dashboard Main Styles */
+:root {
+    --primary-color: #0c3b5c;
+    --secondary-color: #0078d7;
+    --light-bg: #f8f9fa;
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --sidebar-width: 224px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--primary-color);
+    color: white;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar-header {
+    padding: 20px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu {
+    padding: 0;
+    list-style: none;
+}
+
+.sidebar-menu li {
+    margin: 5px 0;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.sidebar-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 20px;
+}
+
+/* Top Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+}
+
+.app-title img {
+    width: 32px;
+    margin-right: 10px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-info .badge {
+    background-color: #ff5252;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+}
+
+.user-name {
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.user-role {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-left: 15px;
+}
+
+/* Stats Cards */
+.stats-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 220px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid transparent;
+}
+
+.stat-card:nth-child(1) {
+    border-left-color: #4285f4;
+}
+
+.stat-card:nth-child(2) {
+    border-left-color: #34a853;
+}
+
+.stat-card:nth-child(3) {
+    border-left-color: #fbbc05;
+}
+
+.stat-card:nth-child(4) {
+    border-left-color: #ea4335;
+}
+
+.stat-info h3 {
+    font-size: 24px;
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.stat-info p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: white;
+    font-size: 24px;
+}
+
+.stat-icon.blue {
+    background-color: rgba(66, 133, 244, 0.1);
+    color: #4285f4;
+}
+
+.stat-icon.green {
+    background-color: rgba(52, 168, 83, 0.1);
+    color: #34a853;
+}
+
+.stat-icon.yellow {
+    background-color: rgba(251, 188, 5, 0.1);
+    color: #fbbc05;
+}
+
+.stat-icon.red {
+    background-color: rgba(234, 67, 53, 0.1);
+    color: #ea4335;
+}
+
+/* Chart Sections */
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.chart-card {
+    flex: 1;
+    min-width: 300px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--card-shadow);
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.chart-actions {
+    color: #6c757d;
+    cursor: pointer;
+}
+
+.chart-content {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Chart Legend */
+.chart-legend {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+.legend-color.blue {
+    background-color: #4285f4;
+}
+
+.legend-color.green {
+    background-color: #34a853;
+}
+
+.legend-color.purple {
+    background-color: #9c27b0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 60px;
+        overflow: visible;
+    }
+    
+    .sidebar-menu span {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 60px;
+    }
+    
+    .stat-card {
+        min-width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .stat-card {
+        min-width: 100%;
+    }
+    
+    .chart-card {
+        min-width: 100%;
+    }
+    
+    .top-nav {
+        padding: 10px 15px;
+    }
+    
+    .user-role {
+        display: none;
+    }
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}

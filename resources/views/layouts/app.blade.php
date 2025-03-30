@@ -9,26 +9,44 @@
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap">
-
+        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
         <!-- Scripts -->
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/layout/slider.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/layout/navigation.css') }}">
         <script src="{{ asset('js/app.js') }}" defer></script>
+        <script src="{{ asset('js/sidebar.js') }}" defer></script>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
-            @include('layouts.navigation')
+        <div class="app-wrapper">
+            <!-- Sidebar Toggle Button -->
+            <button id="sidebarToggle" class="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            @include('layouts.slider')
+            
+            <div class="content-area">
+                <div class="min-h-screen bg-gray-100">
+                    @include('layouts.navigation')
 
-            <!-- Page Heading -->
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                    <!-- Page Heading -->
+                    <header class="bg-white shadow">
+                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                            {{ $header }}
+                        </div>
+                    </header>
+
+                    <!-- Page Content -->
+                    <main>
+                        {{ $slot }}
+                    </main>
                 </div>
-            </header>
-
-            <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+            </div>
         </div>
     </body>
 </html>

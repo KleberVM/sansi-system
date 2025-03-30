@@ -1,0 +1,208 @@
+/* Enhanced Sidebar Styles */
+:root {
+    --sidebar-width: 260px;
+    --sidebar-collapsed-width: 70px;
+    --sidebar-bg: #0c3b5c;
+    --sidebar-hover: rgba(255, 255, 255, 0.1);
+    --sidebar-active: rgba(255, 255, 255, 0.2);
+    --sidebar-text: #ffffff;
+    --sidebar-muted: rgba(255, 255, 255, 0.6);
+    --transition-speed: 0.3s;
+}
+
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: width var(--transition-speed);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Logo and Header */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 70px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.logo-text {
+    color: white;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.sidebar-collapse-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sidebar-collapse-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Divider */
+.sidebar-divider {
+    padding: 1rem 1.5rem 0.5rem;
+    font-size: 0.75rem;
+    color: var(--sidebar-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Menu Items */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar-menu li {
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-menu li.active a {
+    background-color: var(--sidebar-active);
+    border-left: 3px solid white;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+    position: relative;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-menu a:hover {
+    background-color: var(--sidebar-hover);
+}
+
+.sidebar-menu i:first-child {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    margin-right: 12px;
+}
+
+.sidebar-menu span {
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.submenu-arrow {
+    font-size: 0.8rem;
+    margin-left: auto;
+    transition: transform 0.3s;
+}
+
+/* Collapsed State */
+.sidebar-collapsed .sidebar {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .logo-text,
+.sidebar-collapsed .sidebar-menu span,
+.sidebar-collapsed .sidebar-divider span,
+.sidebar-collapsed .submenu-arrow {
+    display: none;
+}
+
+.sidebar-collapsed .sidebar-menu a {
+    justify-content: center;
+    padding: 15px 0;
+}
+
+.sidebar-collapsed .sidebar-menu i:first-child {
+    margin-right: 0;
+    font-size: 1.3rem;
+}
+
+.sidebar-collapsed .logo-container {
+    justify-content: center;
+}
+
+/* Content Area Adjustments */
+.content-area {
+    margin-left: var(--sidebar-width);
+    transition: margin-left var(--transition-speed);
+    width: calc(100% - var(--sidebar-width));
+}
+
+.sidebar-collapsed .content-area {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .content-area {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar-collapsed .sidebar {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+    }
+    
+    .sidebar-collapsed .logo-text,
+    .sidebar-collapsed .sidebar-menu span,
+    .sidebar-collapsed .sidebar-divider span,
+    .sidebar-collapsed .submenu-arrow {
+        display: block;
+    }
+    
+    .sidebar-collapsed .sidebar-menu a {
+        justify-content: flex-start;
+        padding: 12px 20px;
+    }
+    
+    .sidebar-collapsed .sidebar-menu i:first-child {
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+    
+    .sidebar-collapsed .content-area {
+        margin-left: 0;
+        width: 100%;
+    }
+}
