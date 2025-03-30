@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Area;
+use App\Models\Delegacion;
 
 class SolicitudTutor extends Model
 {
     use HasFactory;
     protected $table = 'solicitudTutor';
     protected $primaryKey = 'idSolicitudTutor';
+    public $timestamps = false;
     protected $fillable = [
-        'name',
+        'nombre',
         'email',
         'password',
         'apellidoPaterno',
@@ -19,8 +22,9 @@ class SolicitudTutor extends Model
         'ci',
         'fechaNacimiento',
         'genero',
-        'comprobante',
         'telefono',
+        'comprobante',
+
 
     ];
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegistrarSolicitudTutorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,5 +23,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth','verified'])->name('dashboard');
 
 
+
+Route::post('/solicitud', [RegistrarSolicitudTutorController::class, 'store']);
+
 require __DIR__.'/auth.php';
+
 
