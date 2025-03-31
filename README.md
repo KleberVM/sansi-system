@@ -98,6 +98,19 @@ Recuerda que, después de crear la migración, debes editar el archivo generado 
 
 ---
 
+## Extenciones que deben estar habilitadas en php.ini 
+
+- **extension=zip**
+- **extension=fileinfo**
+- **extension=openssl**
+- **extension=pdo_mysql (importante)**
+- **extension=mysqli (importante)**
+- **extension=pdo_sqlite**
+- **extension=sqlite3**
+- **extension_dir = "ext" (importante)**
+- **extension_dir = mbstring (importante)**
+
+---
 ## 🧠 Desarolladores
 
 - **Altamirano Vargas Orlando**  
