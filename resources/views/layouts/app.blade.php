@@ -19,6 +19,7 @@
         <link rel="stylesheet" href="{{ asset('css/layout/slider.css') }}">
         <link rel="stylesheet" href="{{ asset('css/layout/navigation.css') }}">
         <link rel="stylesheet" href="{{ asset('css/delegacion.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/area.css') }}">
         <script src="{{ asset('js/app.js') }}" defer></script>
         <script src="{{ asset('js/sidebar.js') }}" defer></script>
     </head>
@@ -36,10 +37,8 @@
                     @include('layouts.navigation')
 
                     <!-- Page Heading -->
-                    <header class="bg-white shadow">
-                        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                            {{ $header }}
-                        </div>
+                    <header class="area-header" >
+                        {{ $header }}
                     </header>
 
                     <!-- Page Content -->
