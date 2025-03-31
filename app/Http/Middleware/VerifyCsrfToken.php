@@ -13,5 +13,8 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         '/solicitud', 
+        '/area/crear',       // Ruta para crear un área
+        '/area/*',
+        '/categoria/*',
     ];
 }

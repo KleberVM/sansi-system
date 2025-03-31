@@ -15,12 +15,12 @@ class ActualizarDatosAreaController extends Controller
         try {
             $request->validate([
                 'nombre' => ['nullable', 'string', 'max:255'],
-                'description' => ['nullable', 'string', 'max:1000'],
+                'descripcion' => ['nullable', 'string', 'max:1000'],
             ]);
 
             $area = Area::findOrFail($id);
 
-            $data = array_filter($request->only(['nombre', 'description']), function ($value) {
+            $data = array_filter($request->only(['nombre', 'descripcion']), function ($value) {
                 return !is_null($value);
             });
 

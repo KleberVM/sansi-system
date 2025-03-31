@@ -12,12 +12,12 @@ class CrerAreaController extends Controller
     {
         $request->validate([
             'nombre' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'descripcion' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $area = Area::create([
             'nombre' => $request->nombre,
-            'description' => $request->description,
+            'descripcion' => $request->descripcion,
         ]);
 
         return response()->json([

@@ -28,6 +28,9 @@ Route::post('/solicitud', [RegistrarSolicitudTutorController::class, 'store']);
 
 require __DIR__.'/auth.php';
 
+require __DIR__.'/area.php';
+
+require __DIR__.'/categoria.php';
 
 Route::get('/delegacion', function () {
     return view('delegacion');
