@@ -8,12 +8,12 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <div>
-                    <button class="action-btn">
+                    <a href="{{ route('gestionAreas') }}" class="action-btn">
                         <i class="fas fa-th-large"></i> Gestionar Áreas
-                    </button>
-                    <button class="action-btn">
+                    </a>
+                    <a href="{{ route('gestionCategorias') }}" class="action-btn">
                         <i class="fas fa-tags"></i> Gestionar Categorías
-                    </button>
+                    </a>
                 </div>
 
                 <div class="export-buttons">

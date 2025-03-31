@@ -1,0 +1,238 @@
+/* Area Categories Management Styles */
+:root {
+    --primary-color: #1a365d;
+    --secondary-color: #2c5282;
+    --text-color: #333;
+    --border-color: #e2e8f0;
+    --hover-color: #f7fafc;
+    --button-text: #fff;
+  }
+  
+  /* Header Section */
+  .area-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .area-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .area-header h1 i {
+    margin-right: 0.75rem;
+    font-size: 1.75rem;
+  }
+  
+  /* Content Container */
+  .area-container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  /* Action Bar */
+  .action-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .btn-new-area {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-new-area:hover {
+    background-color: var(--secondary-color);
+  }
+  
+  .export-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+  
+  .btn-export {
+    background-color: white;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .btn-export:hover {
+    background-color: var(--hover-color);
+  }
+  
+  /* Search and Filter */
+  .search-filter {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .search-box {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .search-box input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .search-box i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #718096;
+  }
+  
+  .filter-dropdown {
+    display: flex;
+    align-items: center;
+  }
+  
+  .filter-dropdown select {
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    background-color: white;
+    font-size: 0.875rem;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23718096'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+  }
+  
+  /* Table Styles */
+  .areas-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .areas-table th {
+    background-color: #f8fafc;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+  }
+  
+  .areas-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+  }
+  
+  .areas-table tr:hover {
+    background-color: var(--hover-color);
+  }
+  
+  .areas-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  /* Grade Pills */
+  .grades-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .grade-pill {
+    background-color: #e2e8f0;
+    color: #4a5568;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  
+  /* Action Buttons */
+  .action-cell {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .btn-action {
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .btn-edit {
+    background-color: #3b82f6;
+  }
+  
+  .btn-edit:hover {
+    background-color: #2563eb;
+  }
+  
+  .btn-delete {
+    background-color: #ef4444;
+  }
+  
+  .btn-delete:hover {
+    background-color: #dc2626;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .action-bar, .search-filter {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .export-buttons {
+      margin-top: 0.5rem;
+    }
+    
+    .search-box {
+      max-width: 100%;
+    }
+    
+    .areas-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }

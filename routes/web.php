@@ -38,6 +38,12 @@ Route::get('/convocatoria', function () {
 Route::get('/area', function () {
     return view('area');
 })->name('area');
+Route::get('/gestionAreas', function () {
+    return view('gestionAreas');
+})->name('gestionAreas');
+Route::get('/gestionCategorias', function () {
+    return view('gestionCategorias');
+})->name('gestionCategorias');
 Route::get('/registro', function () {
     return view('registro');
 })->name('registro');

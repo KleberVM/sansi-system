@@ -19,7 +19,10 @@
         <link rel="stylesheet" href="{{ asset('css/layout/slider.css') }}">
         <link rel="stylesheet" href="{{ asset('css/layout/navigation.css') }}">
         <link rel="stylesheet" href="{{ asset('css/delegacion.css') }}">
+        
         <link rel="stylesheet" href="{{ asset('css/area.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/areaCategoria.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/areaGestion.css') }}">
         <script src="{{ asset('js/app.js') }}" defer></script>
         <script src="{{ asset('js/sidebar.js') }}" defer></script>
     </head>
