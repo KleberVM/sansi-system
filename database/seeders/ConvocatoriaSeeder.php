@@ -116,7 +116,7 @@ class ConvocatoriaSeeder extends Seeder
                     $idCategoria = DB::table('categoria')->where('nombre', $nombreCategoria)->value('idCategoria');
                     if (!$idCategoria) continue;
 
-                    DB::table('convocatoriaAreaCategoria')->insert([
+                    DB::table('convocatoriaareacategoria')->insert([
                         'idConvocatoria' => $idConvocatoria,
                         'idArea' => $idArea,
                         'idCategoria' => $idCategoria,
