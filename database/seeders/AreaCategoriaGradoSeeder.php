@@ -61,7 +61,7 @@ class AreaCategoriaGradoSeeder extends Seeder
             foreach ($grados as $grado) {
                 $gradoId = DB::table('grado')->where('grado', $grado)->value('idGrado');
                 if ($gradoId) {
-                    DB::table('gradoCategoria')->updateOrInsert([
+                    DB::table('gradocategoria')->updateOrInsert([
                         'idGrado' => $gradoId,
                         'idCategoria' => $categoriaId
                     ]);

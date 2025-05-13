@@ -13,7 +13,7 @@ class GradoCategoria extends Migration
      */
     public function up()
     {
-        Schema::create('gradoCategoria', function (Blueprint $table) {
+        Schema::create('gradocategoria', function (Blueprint $table) {
 
             $table->unsignedBigInteger('idGrado');
             $table->unsignedBigInteger('idCategoria');
@@ -28,7 +28,7 @@ class GradoCategoria extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('gradoCategoria');
+        Schema::dropIfExists('gradocategoria');
 
     }
 }
