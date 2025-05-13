@@ -8,7 +8,7 @@ class ConvocatoriaAreaCategoria extends Migration
 {
     public function up()
     {
-        Schema::create('convocatoriaAreaCategoria', function (Blueprint $table) {
+        Schema::create('convocatoriaareacategoria', function (Blueprint $table) {
 
             $table->unsignedBigInteger('idConvocatoria');
             $table->unsignedBigInteger('idArea');
@@ -29,6 +29,6 @@ class ConvocatoriaAreaCategoria extends Migration
     
     public function down()
     {
-        Schema::dropIfExists('convocatoriaAreaCategoria');
+        Schema::dropIfExists('convocatoriaareacategoria');
     }
 }
