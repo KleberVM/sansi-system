@@ -208,8 +208,8 @@ class InscripcionController extends Controller
             // mostramos las area en la convocatoria activa
             $convocatoria = \App\Models\Convocatoria::where('estado', 'Publicada')->first();
             if ($convocatoria) {
-                $areas = Area::join('convocatoriaAreaCategoria', 'area.idArea', '=', 'convocatoriaAreaCategoria.idArea')
-                            ->where('convocatoriaAreaCategoria.idConvocatoria', $convocatoria->idConvocatoria)
+                $areas = Area::join('convocatoriaareacategoria', 'area.idArea', '=', 'convocatoriaareacategoria.idArea')
+                            ->where('convocatoriaareacategoria.idConvocatoria', $convocatoria->idConvocatoria)
                             ->select('area.*')
                             ->distinct()
                             ->get();
