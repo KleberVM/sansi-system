@@ -82,8 +82,8 @@ Route::middleware('auth')->group(function () {
         ->name('register.lista');
 
     // Ruta para procesar el archivo Excel
-    Route::post('/register-lista', [App\Http\Controllers\Auth\ResgistrarListaEstController::class, 'store'])
-        ->name('register.lista.store');
+    // Route::post('/register-lista', [App\Http\Controllers\Auth\ResgistrarListaEstController::class, 'store'])
+    //     ->name('register.lista.store');
 
     Route::get('/verDatosCovocatoria', [VerificacionConvocatoriaController::class, 'mostrarAreasCategoriasGrados']);
     
