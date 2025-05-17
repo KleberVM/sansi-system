@@ -44,7 +44,7 @@
             </form>
         </div>
         <a href="{{ route('delegado') }}" class="add-button py-1 px-2">
-            <i class="fas fa-chalkboard-teacher"></i> Volver a Tutores
+            <i class="fas fa-chalkboard-teacher"></i> Volver a Delegados
         </a>
     </div>
 
