@@ -53,12 +53,12 @@
                 </div>
 
                 <div class="filter-dropdown">
-                    <label for="estado">Estado:</label>
-                    <select id="estado" name="estado" onchange="document.getElementById('searchForm').submit();">
+                    <label for="estado">Estado:</label>                    <select id="estado" name="estado" onchange="document.getElementById('searchForm').submit();">
                         <option value="">Todos</option>
                         <option value="Publicada" {{ request('estado') == 'Publicada' ? 'selected' : '' }}>Publicada</option>
                         <option value="Borrador" {{ request('estado') == 'Borrador' ? 'selected' : '' }}>Borrador</option>
                         <option value="Cancelada" {{ request('estado') == 'Cancelada' ? 'selected' : '' }}>Cancelada</option>
+                        <option value="Finalizado" {{ request('estado') == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
                     </select>
                 </div>
             </div>
@@ -97,20 +97,7 @@
                             <a href="{{ route('convocatorias.editar', $convocatoria->idConvocatoria) }}" class="btn-action btn-edit" title="Editar">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            @endif
-
-                            @if($convocatoria->estado == 'Borrador')
-                            @if(\Carbon\Carbon::parse($convocatoria->fechaFin)->gt(\Carbon\Carbon::now()))
-                            <!-- Botón de Publicar para convocatorias en borrador con fecha fin válida -->
-                            <a href="#" class="btn-action btn-approve" title="Publicar"
-                                onclick="event.preventDefault(); if(confirm('¿Está seguro de publicar esta convocatoria?')) document.getElementById('publish-form-{{ $convocatoria->idConvocatoria }}').submit();">
-                                <i class="fas fa-check"></i>
-                            </a>
-                            <form id="publish-form-{{ $convocatoria->idConvocatoria }}" action="{{ route('convocatorias.publicar', $convocatoria->idConvocatoria) }}" method="POST" style="display: none;">
-                                @csrf
-                                @method('PUT')
-                            </form>
-                            @endif
+                            @endif                            @if($convocatoria->estado == 'Borrador')
 
                             <!-- Botón de Eliminar para convocatorias en borrador -->
                             <a href="#" class="btn-action btn-delete" title="Eliminar"

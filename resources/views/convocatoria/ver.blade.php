@@ -6,11 +6,6 @@
     <link rel="stylesheet" href="css/convocatoria/ver.css">
     <link rel="stylesheet" href="css/custom.css">
     <div class="p-6">
-        <!-- Back Button -->
-        <a href="{{ route('convocatoria') }}" class="btn-back">
-            <i class="fas fa-arrow-left"></i> Volver a Convocatorias
-        </a>
-        
         <div class="convocatoria-detail-container">
             <div class="detail-header">
                 <h1><i class="fas fa-clipboard-list"></i> {{ $convocatoria->nombre }}</h1>
@@ -25,24 +20,12 @@
                 <a href="{{ route('convocatorias.exportarPdf', $convocatoria->idConvocatoria) }}" class="btn-action btn-pdf">
                     <i class="fas fa-file-pdf"></i> Descargar PDF
                 </a>
-                
-                @if($convocatoria->estado != 'Cancelada')
+                  @if($convocatoria->estado != 'Cancelada' && $convocatoria->estado != 'Finalizado')
                     <a href="{{ route('convocatorias.editar', $convocatoria->idConvocatoria) }}" class="btn-action">
                         <i class="fas fa-edit"></i> Editar
                     </a>
                 @endif
-                
-                @if($convocatoria->estado == 'Borrador')
-                    @if(\Carbon\Carbon::parse($convocatoria->fechaFin)->gt(\Carbon\Carbon::now()))
-                    <a href="#" class="btn-action btn-publish" onclick="event.preventDefault(); if(confirm('¿Está seguro de publicar esta convocatoria?')) document.getElementById('publish-form').submit();">
-                        <i class="fas fa-check-circle"></i> Publicar
-                    </a>
-                    <form id="publish-form" action="{{ route('convocatorias.publicar', $convocatoria->idConvocatoria) }}" method="POST" style="display: none;">
-                        @csrf
-                        @method('PUT')
-                    </form>
-                    @endif
-                    
+                  @if($convocatoria->estado == 'Borrador')
                     <!-- Botón de Eliminar para convocatorias en borrador -->
                     <a href="#" class="btn-action btn-delete" onclick="event.preventDefault(); if(confirm('¿Está seguro de eliminar esta convocatoria?')) document.getElementById('delete-form-borrador').submit();">
                         <i class="fas fa-trash"></i> Eliminar

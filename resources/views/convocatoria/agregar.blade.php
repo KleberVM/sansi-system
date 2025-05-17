@@ -46,7 +46,7 @@
                         
                         <div class="form-group">
                             <label for="fechaFin">Fecha de Fin</label>
-                            <input type="date" id="fechaFin" name="fechaFin" class="form-control" required value="{{ old('fechaFin') }}">
+                            <input type="date" id="fechaFin" name="fechaFin" class="form-control" required value="{{ old('fechaFin') }}" >
                             @error('fechaFin')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
@@ -114,9 +114,17 @@
             </form>
         </div>
     </div>
-    
-    <script>
+      <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar los estilos para los precios seleccionados al cargar la página
+            setTimeout(function() {
+                document.querySelectorAll('.precio-checkbox:checked').forEach(function(checkbox) {
+                    const precioItem = checkbox.closest('.precio-item');
+                    if (precioItem) {
+                        precioItem.classList.add('precio-activo');
+                    }
+                });
+            }, 500);
             var areasData = JSON.parse(`{!! json_encode($areas) !!}`);
             var categoriasData = JSON.parse(`{!! json_encode($categorias) !!}`);
             var gradosPorCategoriaData = JSON.parse(`{!! json_encode($gradosPorCategoria) !!}`);
@@ -126,12 +134,119 @@
             var categoriasPorArea = {};
             
             // Debug form submission
-            console.log('Form initialized');
-            
-            // Validación de fechas
+            console.log('Form initialized');              // Validación de fechas
             document.getElementById('fechaInicio').addEventListener('change', function() {
                 const fechaInicio = new Date(this.value);
-                const fechaFin = new Date(document.getElementById('fechaFin').value);
+                const fechaFin = document.getElementById('fechaFin').value ? new Date(document.getElementById('fechaFin').value) : null;
+                const hoy = new Date();
+                
+                // Eliminar la parte horaria para comparar solo fechas
+                hoy.setHours(0, 0, 0, 0);              // Verificar si la fecha inicio es anterior a la fecha actual
+                // Convertimos ambas fechas a YYYY-MM-DD para comparar solo fechas
+                const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+                const hoyStr = hoy.toISOString().split('T')[0];
+                
+                if (fechaInicioStr < hoyStr) {
+                    this.value = '';
+                    
+                    // Mostrar mensaje de error
+                    let errorMsg = document.createElement('span');
+                    errorMsg.classList.add('text-danger', 'fecha-inicio-error');
+                    errorMsg.textContent = 'La fecha de inicio no puede ser anterior a la fecha actual';
+                    
+                    // Eliminar mensaje de error existente si hay alguno
+                    const existingError = this.parentNode.querySelector('.fecha-inicio-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                    
+                    this.parentNode.appendChild(errorMsg);
+                    return;
+                }else {
+                    // Eliminar mensaje de error si existe y la fecha es válida
+                    const existingError = this.parentNode.querySelector('.fecha-inicio-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                }
+                  // Verificar la relación con fecha fin si existe
+                if (fechaInicio && fechaFin) {
+                    const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+                    const fechaFinStr = fechaFin.toISOString().split('T')[0];
+                    
+                    if (fechaFinStr < fechaInicioStr) {
+                        document.getElementById('fechaFin').value = '';
+                        
+                        // Mostrar mensaje de error
+                        let errorMsg = document.createElement('span');
+                        errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                        errorMsg.textContent = 'La fecha de finalización debe ser mayor o igual a la fecha de inicio';
+                      // Eliminar mensaje de error existente si hay alguno
+                    const existingError = document.getElementById('fechaFin').parentNode.querySelector('.fecha-fin-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                    
+                    document.getElementById('fechaFin').parentNode.appendChild(errorMsg);
+                    }
+                }
+            });
+              // También validar cuando se cambia la fecha fin
+            document.getElementById('fechaFin').addEventListener('change', function() {
+                const fechaInicio = document.getElementById('fechaInicio').value ? new Date(document.getElementById('fechaInicio').value) : null;
+                const fechaFin = new Date(this.value);
+                const hoy = new Date();
+                
+                // Eliminar la parte horaria para comparar solo fechas
+                hoy.setHours(0, 0, 0, 0);                // Verificar si la fecha fin es anterior a la fecha actual
+                // Convertimos ambas fechas a YYYY-MM-DD para comparar solo fechas
+                const fechaFinStr = fechaFin.toISOString().split('T')[0];
+                const hoyStr = hoy.toISOString().split('T')[0];
+                
+                if (fechaFinStr < hoyStr) {
+                    this.value = '';
+                    
+                    // Mostrar mensaje de error
+                    let errorMsg = document.createElement('span');
+                    errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                    errorMsg.textContent = 'La fecha de finalización no puede ser anterior a la fecha actual';
+                    
+                    // Eliminar mensaje de error existente si hay alguno
+                    const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                    
+                    this.parentNode.appendChild(errorMsg);
+                    return;
+                }
+                  // Verificar si la fecha fin es anterior a la fecha inicio (si hay fecha inicio)
+                if (fechaInicio) {
+                    const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+                    const fechaFinStr = fechaFin.toISOString().split('T')[0];
+                    
+                    if (fechaFinStr < fechaInicioStr) {
+                        this.value = '';
+                        
+                        // Mostrar mensaje de error
+                        let errorMsg = document.createElement('span');
+                        errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                        errorMsg.textContent = 'La fecha de finalización debe ser mayor o igual a la fecha de inicio';
+                      // Eliminar mensaje de error existente si hay alguno
+                    const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                    
+                    this.parentNode.appendChild(errorMsg);
+                    }
+                }else {
+                    // Eliminar mensaje de error si existe y la fecha es válida
+                    const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                    if (existingError) {
+                        existingError.remove();
+                    }
+                }
                 
                 // Establecer fecha mínima para fecha fin
                 document.getElementById('fechaFin').min = this.value;
@@ -155,21 +270,36 @@
                     this.value = this.value.substring(0, 100);
                 }
             });
-            
-            // Manejar los checkboxes de precios
+              // Manejar los checkboxes de precios
             document.addEventListener('click', function(e) {
                 if (e.target && e.target.classList.contains('precio-checkbox')) {
+                    // Verificar si este es el último checkbox seleccionado en su grupo
+                    const container = e.target.closest('.precios-container');
+                    const checkedBoxes = container.querySelectorAll('.precio-checkbox:checked');
+                    
+                    // Si es el último checkbox seleccionado y está intentando desmarcarlo, prevenir la acción
+                    if (checkedBoxes.length === 1 && checkedBoxes[0] === e.target && !e.target.checked) {
+                        e.preventDefault();
+                        alert('Debe haber al menos un tipo de precio seleccionado.');
+                        return false;
+                    }
+                    
                     const targetId = e.target.getAttribute('data-target');
                     const inputField = document.getElementById(targetId);
-                    if (inputField) {
-                        inputField.disabled = !e.target.checked;
+                    if (inputField) {                        inputField.disabled = !e.target.checked;
+                        const precioItem = e.target.closest('.precio-item');
+                        
                         if (e.target.checked) {
                             inputField.focus();
                             if (inputField.value === '') {
                                 inputField.value = '0.00';
                             }
+                            // Añadir clase para destacar visualmente
+                            precioItem.classList.add('precio-activo');
                         } else {
                             inputField.value = '';
+                            // Quitar clase visual
+                            precioItem.classList.remove('precio-activo');
                         }
                     }
                 }
@@ -384,10 +514,10 @@
                     <div class="precios-container">
                         <div class="precio-item">
                             <label>
-                                <input type="checkbox" class="precio-checkbox" data-target="individual-${areaId}-${categoriaId}" checked>
+                                <input type="checkbox" class="precio-checkbox" data-target="individual-${areaId}-${categoriaId}">
                                 Precio Individual:
                             </label>
-                            <input type="number" id="individual-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioIndividual]" class="form-control precio-input" min="0" step="0.01" value="0.00" placeholder="0.00" required>
+                            <input type="number" id="individual-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioIndividual]" class="form-control precio-input" min="0" step="0.01" value="0.00" placeholder="0.00">
                         </div>
                         <div class="precio-item">
                             <label>
@@ -409,8 +539,26 @@
                         <!-- Los grados se mostrarán aquí -->
                     </div>
                 `;
+                  categoriasContainer.appendChild(categoriaContainer);
                 
-                categoriasContainer.appendChild(categoriaContainer);
+                // Seleccionar al menos un tipo de precio por defecto
+                // (cualquiera de los tres precios, en este caso elegimos el individual como ejemplo)
+                const precioCheckbox = categoriaContainer.querySelector('.precio-checkbox');
+                if (precioCheckbox) {
+                    precioCheckbox.checked = true;
+                    const inputId = precioCheckbox.getAttribute('data-target');
+                    const inputField = document.getElementById(inputId);
+                    if (inputField) {
+                        inputField.disabled = false;
+                        inputField.value = "0.00";
+                    }
+                    
+                    // Aplicar clase visual para el item seleccionado
+                    const precioItem = precioCheckbox.closest('.precio-item');
+                    if (precioItem) {
+                        precioItem.classList.add('precio-activo');
+                    }
+                }
                 
                 // Agregar evento para eliminar categoría
                 categoriaContainer.querySelector('.btn-remove').addEventListener('click', function() {

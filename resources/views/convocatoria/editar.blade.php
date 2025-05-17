@@ -2,10 +2,18 @@
     <link rel="stylesheet" href="{{ asset('css/convocatoria/editar.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/convocatoria/editar.css">
+    
     <div class="p-6">
         @if($convocatoria->estado == 'Cancelada')
         <div class="alert alert-warning">
             <i class="fas fa-exclamation-triangle"></i> Esta convocatoria ha sido cancelada y no puede ser editada.
+            <a href="{{ route('convocatorias.ver', $convocatoria->idConvocatoria) }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Volver a Detalles
+            </a>
+        </div>
+        @elseif($convocatoria->estado == 'Finalizado')
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i> Esta convocatoria ha finalizado y no puede ser editada.
             <a href="{{ route('convocatorias.ver', $convocatoria->idConvocatoria) }}" class="btn-back">
                 <i class="fas fa-arrow-left"></i> Volver a Detalles
             </a>
@@ -135,8 +143,7 @@
                                             </button>
                                         </div>
                                     </div>
-                                    
-                                    <div class="precio-container">
+                                      <div class="precio-container">
                                         @php
                                             $precios = DB::table('convocatoriaAreaCategoria')
                                                 ->where('idConvocatoria', $convocatoria->idConvocatoria)
@@ -144,31 +151,39 @@
                                                 ->where('idCategoria', $categoria->idCategoria)
                                                 ->first(['precioIndividual', 'precioDuo', 'precioEquipo']);
                                         @endphp
-                                        <div class="precio-item">
-                                            <label for="precioIndividual-{{ $index }}-{{ $catIndex }}">Precio Individual (Bs.):</label>
-                                            <input type="number" id="precioIndividual-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioIndividual]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioIndividual ?? '0.00' }}" placeholder="0.00">
+                                        <div class="precio-item {{ isset($precios->precioIndividual) ? 'precio-activo' : '' }}">
+                                            <label>
+                                                <input type="checkbox" class="precio-checkbox" data-target="precioIndividual-{{ $index }}-{{ $catIndex }}" {{ isset($precios->precioIndividual) ? 'checked' : '' }}>
+                                                Precio Individual (Bs.):
+                                            </label>
+                                            <input type="number" id="precioIndividual-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioIndividual]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioIndividual ?? '' }}" placeholder="0.00" {{ isset($precios->precioIndividual) ? '' : 'disabled' }}>
                                         </div>
-                                        <div class="precio-item">
-                                            <label for="precioDuo-{{ $index }}-{{ $catIndex }}">Precio Dúo (Bs.):</label>
-                                            <input type="number" id="precioDuo-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioDuo]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioDuo ?? '0.00' }}" placeholder="0.00">
+                                        <div class="precio-item {{ isset($precios->precioDuo) ? 'precio-activo' : '' }}">
+                                            <label>
+                                                <input type="checkbox" class="precio-checkbox" data-target="precioDuo-{{ $index }}-{{ $catIndex }}" {{ isset($precios->precioDuo) ? 'checked' : '' }}>
+                                                Precio Dúo (Bs.):
+                                            </label>
+                                            <input type="number" id="precioDuo-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioDuo]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioDuo ?? '' }}" placeholder="0.00" {{ isset($precios->precioDuo) ? '' : 'disabled' }}>
                                         </div>
-                                        <div class="precio-item">
-                                            <label for="precioEquipo-{{ $index }}-{{ $catIndex }}">Precio Equipo (Bs.):</label>
-                                            <input type="number" id="precioEquipo-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioEquipo]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioEquipo ?? '0.00' }}" placeholder="0.00">
+                                        <div class="precio-item {{ isset($precios->precioEquipo) ? 'precio-activo' : '' }}">
+                                            <label>
+                                                <input type="checkbox" class="precio-checkbox" data-target="precioEquipo-{{ $index }}-{{ $catIndex }}" {{ isset($precios->precioEquipo) ? 'checked' : '' }}>
+                                                Precio Equipo (Bs.):
+                                            </label>
+                                            <input type="number" id="precioEquipo-{{ $index }}-{{ $catIndex }}" name="areas[{{ $index }}][categorias][{{ $catIndex }}][precioEquipo]" class="form-control precio-input" min="0" step="0.01" value="{{ $precios->precioEquipo ?? '' }}" placeholder="0.00" {{ isset($precios->precioEquipo) ? '' : 'disabled' }}>
                                         </div>
-                                    </div>
-
-                                    <div class="grade-options">
-                                        @foreach($gradosPorCategoria[$categoria->idCategoria] as $grado)
-                                        <div class="grade-option">
-                                            <input type="checkbox"
-                                                name="areas[{{ $index }}][categorias][{{ $catIndex }}][grados][]"
-                                                value="{{ $grado['idGrado'] }}"
-                                                id="grado-{{ $index }}-{{ $catIndex }}-{{ $grado['idGrado'] }}"
-                                                {{ in_array($grado['idGrado'], $categoria->grados->pluck('idGrado')->toArray()) ? 'checked' : '' }}>
-                                            <label for="grado-{{ $index }}-{{ $catIndex }}-{{ $grado['idGrado'] }}">{{ $grado['grado'] }}</label>
+                                    </div><div class="grade-options">
+                                        <h3 class="grades-title">Grados asignados:</h3>
+                                        <div class="grades-display">
+                                            @foreach($categoria->grados as $grado)
+                                            <div class="grade-badge">
+                                                {{ $grado->nombre }}
+                                                <input type="hidden" 
+                                                    name="areas[{{ $index }}][categorias][{{ $catIndex }}][grados][]"
+                                                    value="{{ $grado->idGrado }}">
+                                            </div>
+                                            @endforeach
                                         </div>
-                                        @endforeach
                                     </div>
                                 </div>
                                 @endforeach
@@ -248,28 +263,131 @@
                         categoriasPorArea[index].add(categoria.idCategoria);
                     });
                 }
-            });
-
-            // Validación de fechas
+            });            // Validación de fechas
             const fechaInicioInput = document.getElementById('fechaInicio');
             if (fechaInicioInput && !fechaInicioInput.readOnly) {
                 fechaInicioInput.addEventListener('change', function() {
                     const fechaInicio = new Date(this.value);
-                    const fechaFin = new Date(document.getElementById('fechaFin').value);
-
+                    const fechaFin = document.getElementById('fechaFin').value ? new Date(document.getElementById('fechaFin').value) : null;
+                    const hoy = new Date();
+                    
+                    // Eliminar la parte horaria para comparar solo fechas
+                    hoy.setHours(0, 0, 0, 0);                    // Verificar si la fecha inicio es anterior a la fecha actual
+                    // Convertimos ambas fechas a YYYY-MM-DD para comparar solo fechas
+                    const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+                    const hoyStr = hoy.toISOString().split('T')[0];
+                    
+                    if (fechaInicioStr < hoyStr) {
+                        this.value = '';
+                        
+                        // Mostrar mensaje de error
+                        let errorMsg = document.createElement('span');
+                        errorMsg.classList.add('text-danger', 'fecha-inicio-error');
+                        errorMsg.textContent = 'La fecha de inicio no puede ser anterior a la fecha actual';
+                        
+                        // Eliminar mensaje de error existente si hay alguno
+                        const existingError = this.parentNode.querySelector('.fecha-inicio-error');
+                        if (existingError) {
+                            existingError.remove();
+                        }
+                        
+                        this.parentNode.appendChild(errorMsg);
+                        return;
+                    }else {
+                        // Eliminar mensaje de error si existe y la fecha es válida
+                        const existingError = this.parentNode.querySelector('.fecha-inicio-error');
+                        if (existingError) {
+                            existingError.remove();
+                        }
+                    }
+                    
                     // Establecer fecha mínima para fecha fin
                     document.getElementById('fechaFin').min = this.value;
-
-                    // Si la fecha fin es anterior a la fecha inicio, resetearla
-                    if (fechaFin < fechaInicio) {
+                    
+                    // Verificar la relación con fecha fin si existe
+                    if (fechaInicio && fechaFin && fechaFin < fechaInicio) {
                         document.getElementById('fechaFin').value = '';
+                        
+                        // Mostrar mensaje de error
+                        let errorMsg = document.createElement('span');
+                        errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                        errorMsg.textContent = 'La fecha de finalización debe ser mayor o igual a la fecha de inicio';
+                        
+                        // Eliminar mensaje de error existente si hay alguno
+                        const existingError = document.getElementById('fechaFin').parentNode.querySelector('.fecha-fin-error');
+                        if (existingError) {
+                            existingError.remove();
+                        }
+                        
+                        document.getElementById('fechaFin').parentNode.appendChild(errorMsg);
                     }
-                });
-
-                // Establecer fecha mínima como hoy para la fecha de inicio
+                });                // Establecer fecha mínima como hoy para la fecha de inicio
                 const today = new Date();
                 const formattedDate = today.toISOString().split('T')[0];
                 fechaInicioInput.min = formattedDate;
+                
+                // Validación para fecha de fin
+                const fechaFinInput = document.getElementById('fechaFin');
+                if (fechaFinInput && !fechaFinInput.readOnly) {
+                    fechaFinInput.min = formattedDate; // También establecer fecha mínima para fecha fin
+                    
+                    fechaFinInput.addEventListener('change', function() {
+                        const fechaInicio = document.getElementById('fechaInicio').value ? new Date(document.getElementById('fechaInicio').value) : null;
+                        const fechaFin = new Date(this.value);
+                        const hoy = new Date();
+                        
+                        // Eliminar la parte horaria para comparar solo fechas
+                        hoy.setHours(0, 0, 0, 0);                        // Verificar si la fecha fin es anterior a la fecha actual
+                        // Convertimos ambas fechas a YYYY-MM-DD para comparar solo fechas
+                        const fechaFinStr = fechaFin.toISOString().split('T')[0];
+                        const hoyStr = hoy.toISOString().split('T')[0];
+                        
+                        if (fechaFinStr < hoyStr) {
+                            this.value = '';
+                            
+                            // Mostrar mensaje de error
+                            let errorMsg = document.createElement('span');
+                            errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                            errorMsg.textContent = 'La fecha de finalización no puede ser anterior a la fecha actual';
+                            
+                            // Eliminar mensaje de error existente si hay alguno
+                            const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                            if (existingError) {
+                                existingError.remove();
+                            }
+                            
+                            this.parentNode.appendChild(errorMsg);
+                            return;
+                        }else {
+                            // Eliminar mensaje de error si existe y la fecha es válida
+                            const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                            if (existingError) {
+                                existingError.remove();
+                            }
+                        }
+                                  // Verificar si la fecha fin es anterior a la fecha inicio (si hay fecha inicio)
+                        if (fechaInicio) {
+                            const fechaInicioStr = fechaInicio.toISOString().split('T')[0];
+                            const fechaFinStr = fechaFin.toISOString().split('T')[0];
+                            
+                            if (fechaFinStr < fechaInicioStr) {
+                                this.value = '';
+                                
+                                // Mostrar mensaje de error
+                                let errorMsg = document.createElement('span');
+                                errorMsg.classList.add('text-danger', 'fecha-fin-error');
+                                errorMsg.textContent = 'La fecha de finalización debe ser mayor o igual a la fecha de inicio';
+                              // Eliminar mensaje de error existente si hay alguno
+                            const existingError = this.parentNode.querySelector('.fecha-fin-error');
+                            if (existingError) {
+                                existingError.remove();
+                            }
+                            
+                            this.parentNode.appendChild(errorMsg);
+                            }
+                        }
+                    });
+                }
             }
 
             // Validación para método de pago
@@ -307,37 +425,68 @@
                 <i class="fas fa-times"></i>
                 </button>
                 </div>
-                </div>
-                
-                <div class="precio-container">
-                    <div class="precio-item">
-                        <label for="precioIndividual-${areaId}-${categoriaId}">Precio Individual (Bs.):</label>
+                </div>                <div class="precio-container">
+                    <div class="precio-item precio-activo">
+                        <label>
+                            <input type="checkbox" class="precio-checkbox" data-target="precioIndividual-${areaId}-${categoriaId}" checked>
+                            Precio Individual (Bs.):
+                        </label>
                         <input type="number" id="precioIndividual-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioIndividual]" class="form-control precio-input" min="0" step="0.01" value="0.00" placeholder="0.00">
                     </div>
                     <div class="precio-item">
-                        <label for="precioDuo-${areaId}-${categoriaId}">Precio Dúo (Bs.):</label>
-                        <input type="number" id="precioDuo-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioDuo]" class="form-control precio-input" min="0" step="0.01" value="0.00" placeholder="0.00">
+                        <label>
+                            <input type="checkbox" class="precio-checkbox" data-target="precioDuo-${areaId}-${categoriaId}">
+                            Precio Dúo (Bs.):
+                        </label>
+                        <input type="number" id="precioDuo-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioDuo]" class="form-control precio-input" min="0" step="0.01" value="" placeholder="0.00" disabled>
                     </div>
                     <div class="precio-item">
-                        <label for="precioEquipo-${areaId}-${categoriaId}">Precio Equipo (Bs.):</label>
-                        <input type="number" id="precioEquipo-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioEquipo]" class="form-control precio-input" min="0" step="0.01" value="0.00" placeholder="0.00">
+                        <label>
+                            <input type="checkbox" class="precio-checkbox" data-target="precioEquipo-${areaId}-${categoriaId}">
+                            Precio Equipo (Bs.):
+                        </label>
+                        <input type="number" id="precioEquipo-${areaId}-${categoriaId}" name="areas[${areaId}][categorias][${categoriaId}][precioEquipo]" class="form-control precio-input" min="0" step="0.01" value="" placeholder="0.00" disabled>
                     </div>
                 </div>
 
                 <div class="grade-options">
                 <!-- Los grados se agregarán dinámicamente -->
                 </div>
-                `;
-
-                categoriasContainer.appendChild(categoriaContainer);
+                `;                categoriasContainer.appendChild(categoriaContainer);
 
                 // Agregar evento para eliminar categoría
                 categoriaContainer.querySelector('.btn-remove').addEventListener('click', function() {
-                const categoriaSelect = categoriaContainer.querySelector('.categoria-select');
-                if (categoriaSelect.value) {
-                categoriasPorArea[areaId].delete(categoriaSelect.value);
-                }
-                categoriasContainer.removeChild(categoriaContainer);
+                    const categoriaSelect = categoriaContainer.querySelector('.categoria-select');
+                    if (categoriaSelect.value) {
+                        categoriasPorArea[areaId].delete(categoriaSelect.value);
+                    }
+                    categoriasContainer.removeChild(categoriaContainer);
+                });
+                
+                // Agregar eventos para los checkboxes de precios
+                categoriaContainer.querySelectorAll('.precio-checkbox').forEach(function(checkbox) {
+                    checkbox.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target');
+                        const inputField = document.getElementById(targetId);
+                        if (inputField) {
+                            inputField.disabled = !this.checked;
+                            const precioItem = this.closest('.precio-item');
+                            
+                            if (this.checked) {
+                                inputField.focus();
+                                if (inputField.value === '') {
+                                    inputField.value = '0.00';
+                                }
+                                precioItem.classList.add('precio-activo');
+                                // Asegurarse de que el campo se envíe normalmente
+                                inputField.name = inputField.name.replace('.disabled', '');
+                            } else {
+                                // Al desmarcar, vaciar el valor para que se envíe como null a la BD
+                                inputField.value = '';
+                                precioItem.classList.remove('precio-activo');
+                            }
+                        }
+                    });
                 });
 
                 // Controlar selección de categoría
@@ -357,23 +506,33 @@
 
                 if (selectedCategoriaId) {
                 categoriasPorArea[areaId].add(selectedCategoriaId);
-                this.dataset.previousValue = selectedCategoriaId;
-
-                // Cargar grados
+                this.dataset.previousValue = selectedCategoriaId;                // Cargar grados
                 const gradeOptions = categoriaContainer.querySelector('.grade-options');
                 gradeOptions.innerHTML = '';
 
                 if (gradosPorCategoriaData[selectedCategoriaId]) {
-                gradosPorCategoriaData[selectedCategoriaId].forEach(function(grado) {
-                const gradeOption = document.createElement('div');
-                gradeOption.className = 'grade-option';
-                gradeOption.innerHTML = `
-                <input type="checkbox" name="areas[${areaId}][categorias][${categoriaId}][grados][]" 
-                value="${grado.idGrado}" id="grado-${areaId}-${categoriaId}-${grado.idGrado}">
-                <label for="grado-${areaId}-${categoriaId}-${grado.idGrado}">${grado.nombre}</label>
-                `;
-                gradeOptions.appendChild(gradeOption);
-                });
+                    // Agregar título
+                    const gradesTitle = document.createElement('h3');
+                    gradesTitle.className = 'grades-title';
+                    gradesTitle.textContent = 'Grados asignados:';
+                    gradeOptions.appendChild(gradesTitle);
+                    
+                    // Crear contenedor de grados
+                    const gradesDisplay = document.createElement('div');
+                    gradesDisplay.className = 'grades-display';
+                    
+                    gradosPorCategoriaData[selectedCategoriaId].forEach(function(grado) {
+                        const gradeBadge = document.createElement('div');
+                        gradeBadge.className = 'grade-badge';
+                        gradeBadge.innerHTML = `
+                        ${grado.grado || grado.nombre}
+                        <input type="hidden" name="areas[${areaId}][categorias][${categoriaId}][grados][]" 
+                        value="${grado.idGrado}">
+                        `;
+                        gradesDisplay.appendChild(gradeBadge);
+                    });
+                    
+                    gradeOptions.appendChild(gradesDisplay);
                 }
                 } else {
                 categoriaContainer.querySelector('.grade-options').innerHTML = '';
@@ -486,6 +645,75 @@
             });
             } // Cierre del if para estado Borrador
 
+            // Inicializar eventos para checkboxes de precios
+            document.querySelectorAll('.precio-checkbox').forEach(function(checkbox) {
+                // Cuando la página carga, asegurarnos de que los inputs estén correctamente habilitados/deshabilitados
+                const targetId = checkbox.getAttribute('data-target');
+                const inputField = document.getElementById(targetId);
+                if (inputField) {
+                    inputField.disabled = !checkbox.checked;
+                    const precioItem = checkbox.closest('.precio-item');
+                    if (checkbox.checked) {
+                        precioItem.classList.add('precio-activo');
+                    } else {
+                        precioItem.classList.remove('precio-activo');
+                    }
+                }
+                
+                // Agregar evento de click
+                checkbox.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const inputField = document.getElementById(targetId);
+                    if (inputField) {
+                        inputField.disabled = !this.checked;
+                        const precioItem = this.closest('.precio-item');
+                        
+                        if (this.checked) {
+                            inputField.focus();
+                            if (inputField.value === '') {
+                                inputField.value = '0.00';
+                            }
+                            precioItem.classList.add('precio-activo');
+                            // Asegurarse de que el campo se envíe normalmente
+                            inputField.name = inputField.name.replace('.disabled', '');
+                        } else {
+                            // Al desmarcar, vaciar el valor para que se envíe como null a la BD
+                            inputField.value = '';
+                            precioItem.classList.remove('precio-activo');
+                        }
+                    }
+                });
+            });
+
+            // Manejar el envío de formulario para procesar correctamente los precios nulos
+            document.getElementById('convocatoriaForm').addEventListener('submit', function(e) {
+                // No interferir con otras validaciones
+                if (!this.checkValidity()) {
+                    return;
+                }
+                
+                // Procesar todos los checkboxes de precios
+                document.querySelectorAll('.precio-checkbox').forEach(function(checkbox) {
+                    const targetId = checkbox.getAttribute('data-target');
+                    const inputField = document.getElementById(targetId);
+                    if (inputField) {
+                        if (!checkbox.checked) {
+                            // Si el checkbox no está marcado, el precio debe ser nulo en la BD
+                            // Crear un input oculto con el mismo nombre pero sin valor
+                            const hiddenField = document.createElement('input');
+                            hiddenField.type = 'hidden';
+                            hiddenField.name = inputField.name;
+                            hiddenField.value = '';
+                            inputField.parentNode.appendChild(hiddenField);
+                            
+                            // Cambiar el nombre del input original para que no se envíe 
+                            // (evita conflictos de nombres duplicados)
+                            inputField.name = inputField.name + '.disabled';
+                        }
+                    }
+                });
+            }, true); // true para ejecutarse antes que otras validaciones
+
             // Validar el formulario antes de enviar
             document.getElementById('convocatoriaForm').addEventListener('submit', function(e) {
                 let isValid = true;
@@ -514,14 +742,15 @@
                             if (categorias.length === 0) {
                                 isValid = false;
                                 alert(`El área "${areaSelect.options[areaSelect.selectedIndex].text}" debe tener al menos una categoría.`);
-                            } else {
-                                categorias.forEach(function(categoria) {
+                            } else {                                categorias.forEach(function(categoria) {
                                     const categoriaSelect = categoria.querySelector('.categoria-select');
-                                    const gradosSeleccionados = categoria.querySelectorAll('input[type="checkbox"]:checked').length;
-
-                                    if (gradosSeleccionados === 0) {
+                                    const tieneGrados = categoria.querySelectorAll('.grade-badge').length;
+                                    
+                                    // Ya no validamos los grados seleccionados porque no son seleccionables,
+                                    // pero podemos verificar que haya al menos un grado disponible
+                                    if (tieneGrados === 0) {
                                         isValid = false;
-                                        alert(`La categoría "${categoriaSelect.options[categoriaSelect.selectedIndex].text}" debe tener al menos un grado seleccionado.`);
+                                        alert(`La categoría "${categoriaSelect.options[categoriaSelect.selectedIndex].text}" no tiene grados asignados.`);
                                     }
                                 });
                             }
