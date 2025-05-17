@@ -1,8 +1,8 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('css/delegacion/delegacion.css') }}">
     <link rel="stylesheet" href="{{ asset('css/delegacion/crearDelegacion.css') }}">
-    <link rel="stylesheet" href="css/delegacion/delegacion.css">
-    <link rel="stylesheet" href="css/delegacion/crearDelegacion.css">
+    <link rel="stylesheet" href="/css/delegacion/delegacion.css">
+    <link rel="stylesheet" href="/css/delegacion/crearDelegacion.css">
     
     <div class="crear-delegacion-header">
             <h1><i class="fas fa-school"></i> Agregar Nuevo Colegio</h1>

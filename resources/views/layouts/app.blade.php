@@ -44,13 +44,24 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="{{ asset('css/custom/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom/navegation.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom/rigbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom/sidebar.css') }}">
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/themeToggle.js') }}"></script>
 
+        <!-- Styles -->
+    <link rel="stylesheet" href="/css/custom.css">
+    <link rel="stylesheet" href="/css/custom/footer.css">
+    <link rel="stylesheet" href="/css/custom/navegation.css">
+    <link rel="stylesheet" href="/css/custom/rigbar.css">
+    <link rel="stylesheet" href="/css/custom/sidebar.css">
+    <!-- Scripts -->
     <script src="/js/app.js" defer></script>
     <script src="/js/themeToggle.js"></script>
+
     @stack('styles')
 
 </head>

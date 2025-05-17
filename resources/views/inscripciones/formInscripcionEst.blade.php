@@ -251,6 +251,11 @@
 </div>
 
 <!-- Add at the bottom of the file -->
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/inscripcion/formStyles.css') }}">
+<link rel="stylesheet" href="css/inscripcion/formStyles.css">
+@endpush
+
 @push('scripts')
 <script>
     // Function to display errors

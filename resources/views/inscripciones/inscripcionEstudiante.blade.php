@@ -1,6 +1,7 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('css/inscripcion/inscripcionEstudiante.css') }}">
     <link rel="stylesheet" href="/css/inscripcion/inscripcionEstudiante.css">
+    
     <!-- Modal for No Active Convocatoria -->
     @if(!$convocatoriaActiva)
     <div id="noConvocatoriaModal" class="modal-overlay" style="display: flex;">
@@ -95,6 +96,26 @@
                         </div>
                         <div class="seccion-body">
                             <div class="input-grupo">
+                                <label for="NombreContacto">Nombre completo del tutor</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="NombreContacto" name="NombreContacto" required
+                                        placeholder="Ej: Elian Vazques Ramirez">
+                                </div>
+                                @error('NombreContacto')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="input-grupo">
+                                <label for="EmailContacto">Correo Electronico del tutor</label>
+                                <div class="input-with-icon">
+                                    <input type="email" id="EmailContacto" name="EmailContacto" required
+                                        placeholder="Ej: Elian2018@gmail.com">
+                                </div>
+                                @error('EmailContacto')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="input-grupo">
                                 <label for="numeroContacto">Número de Contacto</label>
                                 <div class="input-with-icon">
                                     <input type="tel" id="numeroContacto" name="numeroContacto" required
@@ -146,13 +167,20 @@
                                         <div class="areas-container">
                                             <div class="area-block">
                                                 <div class="info-row">
-                                                    <div class="info-group">
-                                                        <label>Área</label>
-                                                        <select class="area-select" name="tutor_areas_1_1" required>
+                                                    <div class="info-group">                                                        <label>Área</label>                                                        <select class="area-select" name="tutor_areas_1_1" required>
                                                             <option value="">Seleccione un área</option>
-                                                            @foreach($areas as $area)
-                                                                <option value="{{ $area->idArea }}">{{ $area->nombre }}</option>
-                                                            @endforeach
+                                                            @if(isset($areas) && is_iterable($areas))
+                                                                @foreach($areas as $area)
+                                                                    @php
+                                                                        // Maneja diferentes estructuras de datos (objeto, array, stdClass)
+                                                                        $idArea = is_object($area) ? ($area->idArea ?? null) : ($area['idArea'] ?? null);
+                                                                        $nombre = is_object($area) ? ($area->nombre ?? '') : ($area['nombre'] ?? '');
+                                                                    @endphp
+                                                                    @if($idArea && $nombre)
+                                                                        <option value="{{ $idArea }}">{{ $nombre }}</option>
+                                                                    @endif
+                                                                @endforeach
+                                                            @endif
                                                         </select>
                                                         <input type="hidden" class="tutor-area-hidden" value="">
                                                     </div>
@@ -200,13 +228,18 @@
 
             <!-- Botón de Envío -->
             <div class="subir-formulario">
-                <button type="submit" class="btn-subir">
-                    <i class="fas fa-check"></i> Completar Inscripción
+                <button type="button" id="confirmar-inscripcion" class="btn-subir">
+                    <i class="fas fa-check"></i> Confirmar inscripción
                 </button>
             </div>
-        </form>
-    </div>
+        </form>    </div>
     <script src="{{ asset('js/inscripcionEstudiante.js') }}"></script>
+    <script src="{{ asset('js/inscripcionFormHelper.js') }}"></script>
+    <script src="{{ asset('js/inscripcion/validacion-area-categoria.js') }}"></script>
+    
+    <script src="/js/inscripcionEstudiante.js"></script>
+    <script src="/js/inscripcionFormHelper.js"></script>
+    <script src="/js/inscripcion/validacion-area-categoria.js"></script>
     @endif
 </x-app-layout>
 

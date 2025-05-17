@@ -146,5 +146,9 @@
     <script src="{{ asset('js/themeToggle.js') }}"></script>
     <script src="{{ asset('js/mobileMenu.js') }}"></script>
     <script src="{{ asset('js/contentFooter.js') }}"></script>
+
+    <script src="/js/themeToggle.js"></script>
+    <script src="/js/mobileMenu.js"></script>
+    <script src="/js/contentFooter.js"></script>
 </body>
 </html>

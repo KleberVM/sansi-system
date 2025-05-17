@@ -1,6 +1,7 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="/css/dashboard.css">
+    
     <div class="dashboard-container">
         <!-- Tarjetas de Resumen -->
         <div class="stats-cards">
@@ -281,4 +282,5 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="{{ asset('js/dashboard.js') }}"></script>
+    <script src="/js/dashboard.js"></script>
 </x-app-layout>

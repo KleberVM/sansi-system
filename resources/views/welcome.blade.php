@@ -52,7 +52,7 @@
     <div class="relative">
         <main class="contenedor">
             <section class="hero">
-                 <!-- <div class="wave-top">
+                <!-- <div class="wave-top">
                     <img src="{{ asset('img/superior.svg') }}">
                 </div> -->
                 
@@ -187,6 +187,13 @@
     </div>
 
     @include('layouts/contentFooter')
+
+    <script src="{{ asset('js/home.js') }}"></script>
+    <script src="{{ asset('js/themeToggle.js') }}"></script>
+    <script src="{{ asset('js/registerModal.js') }}"></script>
+    <script src="{{ asset('js/mobileMenu.js') }}"></script>
+    <script src="{{ asset('js/areasCarousel.js') }}"></script>
+    <script src="{{ asset('js/contentFooter.js') }}"></script>
 
     <script src="/js/home.js"></script>
     <script src="/js/themeToggle.js"></script>

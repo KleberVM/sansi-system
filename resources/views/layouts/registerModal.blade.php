@@ -9,7 +9,7 @@
             </a>
             <a href="{{ route('register.tutor') }}" class="register-option">
                 <i class="fas fa-chalkboard-teacher"></i>
-                <span>Tutor</span>
+                <span>Delegado</span>
             </a>
         </div>
     </div>

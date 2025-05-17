@@ -302,6 +302,31 @@
                         <p class="lead">Por favor, sube tu comprobante de pago para completar el proceso de inscripción </p>
                         <div>Una vez se verifique el Nro.Comprobante sea correcto, seras aceptado oficialmente como estudiante inscrito en las Olimpiadas Oh Sansi!!</div>
                     </div>
+
+                    <!-- Sección de confirmación de Nro Comprobante -->
+                    <div class="numero-confirmacion mb-2" style="display: none;">
+                        <div class="alert alert-info p-2 m-0">
+                            <h6 class="confirmacion-texto mt-2" style="font-size: 0.9rem;"></h6>
+                            <!-- Contenedor flexible general -->
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="botones-confirmacion d-flex gap-2">
+                                    <button type="button" class="btn btn-success btn-sm btn-confirmar-si">Sí</button>
+                                    <button type="button" class="btn btn-danger btn-sm btn-confirmar-no">No</button>
+                                </div>
+                                <div class="correccion-manual" style="display: none;">
+                                    <input type="text" 
+                                        class="form-control form-control-sm" 
+                                        placeholder="Nro comprobante (7 dígitos)"
+                                        maxlength="7"
+                                        id="inputCorreccionManual">
+                                    <div class="invalid-feedback">Debe ingresar exactamente 7 dígitos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
                     
                     <form id="comprobantePagoForm" enctype="multipart/form-data">
                     @csrf <!-- Faltaba el token CSRF -->

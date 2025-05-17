@@ -84,13 +84,13 @@
                         </td>
                         <td>
                             <div class="action-buttons">
-                                <button type="button" class="btn-action btn-view" onclick="verGrupo('{{ $grupo->id }}')" title="Visualizar">
+                                <button type="button" class="btn-action btn-view" onclick="verGrupo({{ $grupo->id }})" title="Visualizar">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button type="button" class="btn-action btn-edit" onclick="editarGrupo('{{ $grupo->id }}')" title="Editar">
+                                <button type="button" class="btn-action btn-edit" onclick="editarGrupo({{ $grupo->id }})" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button type="button" class="btn-action btn-delete" onclick="confirmarEliminar('{{ $grupo->id }}')" title="Eliminar">
+                                <button type="button" class="btn-action btn-delete" onclick="confirmarEliminar({{ $grupo->id }})" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
