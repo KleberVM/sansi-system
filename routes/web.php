@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GrupoController;
 use App\Http\Controllers\EstudianteController;
-
+use App\Http\Controllers\Auth\ResgistrarListaEstController;
+use App\Http\Controllers\VerificarComprobanteController;
 
 
 /*
@@ -43,6 +44,16 @@ Route::get('/dashboard', function () {
     //return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+    //Ruta para verificar el comprobante manualmente por el Administrador
+    Route::get('/VerificacionManual/ComprobanteDePago', [VerificarComprobanteController::class, 'index'])
+        ->name('verificacionManual.comprobanteDePago');
+
+    // Rutas para verificación de comprobantes
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/aprobar-comprobante/{idBoleta}', [VerificarComprobanteController::class, 'aprobarComprobante'])->name('aprobar.comprobante');
+        Route::post('/rechazar-comprobante/{idBoleta}', [VerificarComprobanteController::class, 'rechazarComprobante'])->name('rechazar.comprobante');
+    });
+
 Route::get('/servicios', [\App\Http\Controllers\ServiceController::class, 'index'])->middleware(['auth'])->name('servicios');
 Route::get('/servicios/obtener-funciones-rol/{idRol}', [\App\Http\Controllers\ServiceController::class, 'obtenerFuncionesRol'])->middleware(['auth'])->name('servicios.obtenerFuncionesRol');
 Route::get('/servicios/obtener-permisos-disponibles/{idRol}', [\App\Http\Controllers\ServiceController::class, 'obtenerPermisosDisponibles'])->middleware(['auth'])->name('servicios.obtenerPermisosDisponibles');
@@ -64,12 +75,12 @@ Route::get('/descargar-plantilla-excel', [\App\Http\Controllers\Auth\ResgistrarL
 Route::get('/boleta/preview', [
     App\Http\Controllers\BoletaPago\BoletaDePago::class,
     'generarOrdenPago'
-])->name('boleta.preview');
+])->middleware(['auth'])->name('boleta.preview');
 
 Route::get('/boleta', [
     App\Http\Controllers\BoletaPago\BoletaDePago::class,
     'generarOrdenPago'
-])->name('boleta');;
+])->middleware(['auth'])->name('boleta');
 
 
 
@@ -87,6 +98,7 @@ require __DIR__ . '/grados.php';
 require __DIR__ . '/estudiantes.php';
 require __DIR__ . '/perfil.php';
 require __DIR__ . '/notificaciones.php';
+require __DIR__ . '/backup.php';
 
 // Rutas para grupos
 Route::prefix('inscripcion/grupos')->middleware(['auth'])->group(function () {
@@ -109,3 +121,12 @@ Route::prefix('estudiantes')->middleware(['auth'])->group(function () {
     Route::post('/completar/{id}', [EstudianteController::class, 'storeCompletarInscripcion'])->name('estudiantes.completarInscripcion.store');
     Route::put('/update/{id}', [EstudianteController::class, 'update'])->name('estudiantes.update');
 });
+
+// Rutas para inscripción por Excel
+Route::post('/validar-configuracion-inscripcion', [ResgistrarListaEstController::class, 'validarDatosInscripcion'])
+    ->name('validar.configuracion.inscripcion')
+    ->middleware(['auth', 'verified']);
+
+Route::post('/registrar-lista-estudiantes', [ResgistrarListaEstController::class, 'store'])
+    ->name('register.lista.store')
+    ->middleware(['auth', 'verified']);

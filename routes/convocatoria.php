@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/convocatoria/export/excel', [ConvocatoriaController::class, 'exportExcel'])->name('convocatorias.exportExcel');
     
     // Export specific convocatoria to PDF
-    //Route::get('/convocatoria/{id}/pdf', [ConvocatoriaController::class, 'exportarPdf'])->name('convocatorias.exportarPdf');
+    Route::get('/convocatoria/{id}/pdf', [ConvocatoriaController::class, 'exportarPdf'])->name('convocatorias.exportarPdf');
     
     // Edit Convocatoria routes
     Route::get('/convocatoria/{id}/editar', [ConvocatoriaController::class, 'edit'])->name('convocatorias.editar');

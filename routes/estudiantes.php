@@ -37,11 +37,14 @@ Route::middleware('auth')->group(function () {
     // Eliminar estudiante
     Route::get('/estudiantes/eliminar/{id}', [EstudianteController::class, 'destroy'])
         ->name('estudiantes.eliminar');
-    
-    // Completar inscripción de estudiante pendiente
+      // Completar inscripción de estudiante pendiente
     Route::get('/estudiantes/completar/{id}', [EstudianteController::class, 'completarInscripcion'])
         ->name('estudiantes.completar');
     
+    // Obtener grupos por delegación y modalidad
+    Route::get('/estudiantes/grupos/{idDelegacion}/{modalidad}', [EstudianteController::class, 'obtenerGrupos'])
+        ->name('estudiantes.grupos');
+        
     // Exportar a PDF
     Route::get('/estudiantes/exportar/pdf', [EstudianteController::class, 'exportPdf'])
         ->name('estudiantes.exportPdf');

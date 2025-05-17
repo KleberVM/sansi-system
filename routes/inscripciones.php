@@ -19,10 +19,12 @@ Route::middleware('auth')->group(function () {
     // Main inscripciones view
     Route::get('/inscripciones', function () {
         return view('inscripciones.inscripciones');
-    })->name('inscripciones');
-
-    // Student registration routes
-    Route::get('/inscripcion/estudiante', [InscripcionController::class, 'index'])
+    })->name('inscripciones');    // Student registration routes
+    Route::get('/inscripcion/convocatorias', [InscripcionController::class, 'listarConvocatorias'])
+        ->name('inscripcion.convocatorias');
+    Route::get('/inscripcion/estudiante/{id}', [InscripcionController::class, 'index'])
+        ->name('inscripcion.estudiante.formulario');
+    Route::get('/inscripcion/estudiante', [InscripcionController::class, 'listarConvocatorias'])
         ->name('inscripcion.estudiante');
     
     // Add this route inside the middleware('auth') group
@@ -36,7 +38,13 @@ Route::middleware('auth')->group(function () {
         ->name('inscripcion.estudiante.manual.store-new');
 
     Route::post('/inscripcion/estudiante/store', [InscripcionEstController::class, 'store'])
-        ->name('inscripcion.store');
+        ->name('inscripcion.store');    // Ruta para validar e inscribir estudiante verificando existencia y límites de áreas
+    Route::post('/inscripcion/estudiante/validar-inscribir', [\App\Http\Controllers\Auth\ResgistrarListaEstController::class, 'validarEInscribirEstudiante'])
+        ->name('inscripcion.estudiante.validar-inscribir');
+        
+    // Ruta para verificar si un estudiante existe por CI o email
+    Route::post('/api/verificar-estudiante', [\App\Http\Controllers\Api\VerificarEstudianteController::class, 'verificarEstudiante'])
+        ->name('api.verificar.estudiante');
 
     //Ruta para mostrar los datos de inscripcion del estudiante y EDITAR SU INFORMACION DE AREAS,CATEGORIAS, INCLUSO CAMBIAR TUTORES
     Route::get('/inscripcion/estudiante/informacion', [BoletaDePagoDeEstudiante::class, 'index'])
@@ -56,6 +64,7 @@ Route::middleware('auth')->group(function () {
     // Ruta para procesar el comprobante de pago subido por el estudiante, crear y guardar la ruta de la imagen en la base de datos
     Route::post('/inscripcion/estudiante/comprobante/procesar-boleta', [BoletaController::class, 'procesarBoleta'])
         ->name('inscripcionEstudiante.subirComprobante.pago');
+        
     // Ruta para verificar que el modal de subir comprobante no aparezca almenos que se haya generado una orden de pago primero, ESTO AUN NO SE IMPLEMENTO, NO SIRVE, 
     Route::get('/verificar-inscripcion', [BoletaController::class, 'verificarInscripcion'])
         ->name('inscripcion.verificar');
@@ -84,6 +93,8 @@ Route::middleware('auth')->group(function () {
 
 
 
+
+
     Route::get('/obtener-grados/{idCategoria}', [ObtenerGradosdeUnaCategoria::class, 'obtenerGradosPorArea2']);
     
     // Ruta para obtener grupos según modalidad
@@ -103,26 +114,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/inscripcion/estudiante/manual', [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'index'])
         ->name('inscripcion.estudiante.manual');
     
-    // Add this new route for getting active convocatoria
-    Route::get('/inscripcion/estudiante/convocatoria-activa', 
-        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerConvocatoriaActiva'])
-        ->name('inscripcion.estudiante.convocatoria-activa');
+    // New routes for dynamic data loading
+    Route::get('/inscripcion/estudiante/tutor-data', 
+        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerConvocatoriasYDelegacionTutor'])
+        ->name('inscripcion.estudiante.tutor-data');
+
+    Route::post('/inscripcion/estudiante/areas-por-convocatoria-tutor', 
+        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerAreasPorConvocatoriaTutor'])
+        ->name('inscripcion.estudiante.areas-por-convocatoria-tutor');
+
+    Route::post('/inscripcion/estudiante/categorias-por-area-convocatoria', 
+        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerCategoriasPorAreaConvocatoria'])
+        ->name('inscripcion.estudiante.categorias-por-area-convocatoria');
+
+    Route::post('/inscripcion/estudiante/verificar-modalidad',
+        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'verificarModalidadDisponible'])
+        ->name('inscripcion.estudiante.verificar-modalidad');
 
     Route::get('/inscripcion/estudiante/buscar', [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'buscarEstudiante'])
         ->name('inscripcion.estudiante.buscar');
 
-    // Routes for categories and groups in manual registration
-    Route::post('/inscripcion/estudiante/categorias/{idArea}', 
-        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerCategorias'])
-        ->name('inscripcion.estudiante.categorias');
-    
-    Route::get('/inscripcion/estudiante/grupos/{modalidad}', 
-        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerGrupos'])
-        ->name('inscripcion.estudiante.grupos');
-    Route::post('/inscripcion/estudiante/grados', [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerGrados'])
-        ->name('inscripcion.estudiante.grados');
-    // Add this new route for getting tutor's college
-    Route::get('/inscripcion/estudiante/colegio', 
-        [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'obtenerColegio'])
-        ->name('inscripcion.estudiante.colegio');
+    Route::post('/inscripcion/estudiante/manual/store', [App\Http\Controllers\Inscripcion\InscripcionManualController::class, 'store'])
+        ->name('inscripcion.estudiante.manual.store');
 });
