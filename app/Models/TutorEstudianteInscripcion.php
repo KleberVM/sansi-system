@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TutorEstudianteInscripcion extends Model
 {
     use HasFactory;
-    protected $table = 'tutorEstudianteInscripcion'; // Nombre real de la tabla
+    protected $table = 'tutorestudianteinscripcion'; // Nombre real de la tabla en minúsculas
     protected $primaryKey = null; // No tiene una única clave primaria
     public $incrementing = false; // No es autoincremental
 

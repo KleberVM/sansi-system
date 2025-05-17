@@ -13,7 +13,7 @@ class TutorEstudianteInscripcion extends Migration
      */
     public function up()
     {
-        Schema::create('tutorEstudianteInscripcion', function (Blueprint $table) {
+        Schema::create('tutorestudianteinscripcion', function (Blueprint $table) {
             $table->unsignedBigInteger('idEstudiante');
             $table->unsignedBigInteger('idTutor');
             $table->unsignedBigInteger('idInscripcion');
@@ -24,7 +24,6 @@ class TutorEstudianteInscripcion extends Migration
 
             $table->primary(['idEstudiante', 'idTutor', 'idInscripcion'], 'tutor_estu_insc_pk');
             $table->timestamps();    
-
         });
     }
 
@@ -35,6 +34,6 @@ class TutorEstudianteInscripcion extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tutorEstudianteInscripcion');
+        Schema::dropIfExists('tutorestudianteinscripcion');
     }
 }
