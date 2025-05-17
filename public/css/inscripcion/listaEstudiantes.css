@@ -226,13 +226,6 @@
     background-color: rgba(44, 82, 130, 0.1);
 }
 
-.export-button.excel {
-    color: #00A389;
-}
-
-.export-button.excel:hover {
-    background-color: rgba(0, 163, 137, 0.1);
-}
 
 /* Filter Container */
 .filter-container {
@@ -388,10 +381,6 @@
     position: relative;
 }
 
-.pagination .z-0 {
-    z-index: 0;
-}
-
 .pagination .inline-flex {
     display: inline-flex;
 }
@@ -494,7 +483,183 @@
     color: var(--danger-color);
     border: 1px solid rgba(250, 82, 82, 0.3);
 }
+/* Estilos específicos para el modal de subir comprobante */
+#SubirComprobantePago .modal-header {
+    background-color: var(--primary-color);
+    color: white;
+}
 
+#SubirComprobantePago #icon-dollar {
+    color: var(--primary-color);
+}
+
+/* File Drop Area Styles */
+#SubirComprobantePago .file-drop-area {
+    position: relative;
+    border: 2px dashed var(--border-color);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+#SubirComprobantePago .file-drop-area:hover, 
+#SubirComprobantePago .file-drop-area.is-active {
+    background-color: var(--hover-color);
+    border-color: var(--secondary-color);
+}
+
+#SubirComprobantePago .file-drop-area input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Estilos para los botones del modal de subir archivo */
+#SubirComprobantePago .modal-footer .btn-cancel {
+    padding: 0.625rem 1.25rem;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    color: var(--text-color);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+#SubirComprobantePago .modal-footer .btn-cancel:hover {
+    background-color: var(--hover-color);
+}
+
+#SubirComprobantePago .modal-footer .btn-cancel:active {
+    background-color: var(--border-color);
+    transform: translateY(1px);
+}
+
+#SubirComprobantePago .modal-footer .btn-save {
+    padding: 0.625rem 1.25rem;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+#SubirComprobantePago .modal-footer .btn-save:hover {
+    background-color: var(--secondary-color);
+}
+
+#SubirComprobantePago .modal-footer .btn-save:active {
+    background-color: var(--secondary-color);
+    transform: translateY(1px);
+}
+
+/* Estilos para botón deshabilitado */
+#SubirComprobantePago .btn-save:disabled,
+#SubirComprobantePago .btn-save[disabled] {
+    opacity: 0.65;
+    cursor: not-allowed;
+    background-color: #cccccc !important;
+    color: #666666 !important;
+    border-color: #b3b3b3 !important;
+    box-shadow: none !important;
+    position: relative;
+}
+
+/* Añadir una línea diagonal para indicar claramente que está deshabilitado */
+#SubirComprobantePago .btn-save:disabled::before,
+#SubirComprobantePago .btn-save[disabled]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.1) 10px,
+        rgba(0, 0, 0, 0.05) 10px,
+        rgba(0, 0, 0, 0.05) 20px
+    );
+    border-radius: inherit;
+}
+
+/* Estilos para el ícono dentro del botón deshabilitado */
+#SubirComprobantePago .btn-save:disabled i,
+#SubirComprobantePago .btn-save[disabled] i {
+    opacity: 0.6;
+}
+
+/* Efecto hover eliminado para botones deshabilitados */
+#SubirComprobantePago .btn-save:disabled:hover,
+#SubirComprobantePago .btn-save[disabled]:hover {
+    transform: none;
+    transition: none;
+}
+
+/* File Preview Styles */
+#SubirComprobantePago .file-preview {
+    background-color: var(--hover-color);
+    transition: all 0.3s ease;
+}
+
+#SubirComprobantePago .image-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#SubirComprobantePago .image-preview img {
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+#SubirComprobantePago .pdf-preview {
+    color: var(--danger-color);
+    padding: 1rem;
+}
+
+#SubirComprobantePago .btn-remove-file {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#SubirComprobantePago .btn-remove-file:hover {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+}
+
+#SubirComprobantePago .file-name {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #SubirComprobantePago .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    #SubirComprobantePago .file-drop-area {
+        padding: 2rem 1rem !important;
+    }
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .actions-container {
@@ -590,12 +755,12 @@ select:-webkit-autofill:focus {
 }
 
 .export-button.upload {
-    background-color: var(--pending-color);
+    background-color: var(--primary-color);
     color: white;
 }
 
 .export-button.upload:hover {
-    background-color: #2c6282;
+    background-color: var(--secondary-color);
     transform: translateY(-1px);
 }
 
@@ -664,7 +829,6 @@ select:-webkit-autofill:focus {
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;

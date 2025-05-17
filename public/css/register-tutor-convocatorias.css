@@ -1,0 +1,340 @@
+/* Estilos para la selección de convocatorias */
+.convocatorias-container {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.convocatoria-option {
+    display: flex;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid var(--input-border);
+    background-color: var(--surface-primary);
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.convocatoria-option:hover {
+    background-color: rgba(0, 42, 76, 0.05);
+    border-color: var(--blue-600);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.convocatoria-option.selected {
+    background-color: rgba(0, 42, 76, 0.08);
+    border-color: var(--blue-800);
+    box-shadow: 0 3px 6px rgba(0, 42, 76, 0.1), inset 0 0 0 1px rgba(0, 42, 76, 0.05);
+}
+
+.convocatoria-option input[type="checkbox"] {
+    margin-right: 1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    cursor: pointer;
+    accent-color: var(--blue-700);
+    border-radius: 4px;
+}
+
+.convocatoria-option label {
+    cursor: pointer;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--input-text);
+    flex: 1;
+    margin-bottom: 0;
+    transition: color 0.2s ease;
+}
+
+.convocatoria-option.selected label {
+    color: var(--blue-800);
+}
+
+.badge.publicada {
+    background-color: var(--green-600);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    margin-left: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 158, 96, 0.2);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge.publicada::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+/* Estilos para la sección de áreas por convocatoria */
+.areas-for-convocatoria {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    background-color: var(--form-bg);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.areas-for-convocatoria:hover {
+    border-color: var(--blue-500);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.areas-for-convocatoria h4 {
+    font-size: 1.15rem;
+    color: var(--blue-800);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--blue-200);
+    position: relative;
+    font-weight: 600;
+}
+
+.areas-for-convocatoria h4::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background-color: var(--blue-600);
+}
+
+.help-text {
+    font-size: 0.95rem;
+    color: var(--input-text);
+    margin-bottom: 1.25rem;
+    font-style: italic;
+    background-color: rgba(0, 42, 76, 0.05);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--blue-500);
+}
+
+/* Animación de transición para mostrar/ocultar áreas */
+.areas-for-convocatoria {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+.areas-for-convocatoria.show {
+    max-height: 2000px; /* Valor suficientemente grande */
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+    display: block;
+}
+
+/* Estilos para mejorar la visualización de áreas */
+.area-option {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0.9rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--input-border);
+    transition: all 0.2s ease;
+}
+
+.area-option:hover {
+    background-color: rgba(0, 42, 76, 0.03);
+    border-color: var(--blue-400);
+    transform: translateX(3px);
+}
+
+.area-option.selected {
+    background-color: rgba(0, 42, 76, 0.06);
+    border-color: var(--blue-600);
+}
+
+.area-option input[type="checkbox"] {
+    margin-right: 0.75rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--blue-600);
+}
+
+/* Estilo para el contador de selección */
+.selected-count {
+    font-size: 0.85rem;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--blue-700);
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 42, 76, 0.2);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Mejoras para los campos de búsqueda */
+.areas-search {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.areas-search input {
+    width: 100%;
+    padding: 0.75rem 2.5rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--input-text);
+    background: var(--surface-primary);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.areas-search input:focus {
+    outline: none;
+    border-color: var(--blue-600);
+    box-shadow: 0 0 0 3px rgba(0, 42, 76, 0.1);
+}
+
+.areas-search i {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--input-icon);
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+.areas-search input:focus + i {
+    color: var(--blue-600);
+}
+
+/* Estilos para el contenedor de áreas */
+.areas-container {
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    background: var(--surface-primary);
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 0.75rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue-400) transparent;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.areas-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.areas-container::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+.areas-container::-webkit-scrollbar-thumb {
+    background-color: var(--blue-400);
+    border-radius: 10px;
+}
+
+/* Estilos para las acciones de selección */
+.areas-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--input-border);
+}
+
+.select-all-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.select-all-option input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--blue-700);
+}
+
+.select-all-option label {
+    font-size: 0.9rem;
+    color: var(--input-text);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Estilos para los mensajes de "no hay contenido" */
+.no-convocatorias, .no-areas {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--input-text);
+    font-style: italic;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 6px;
+    border: 1px dashed var(--input-border);
+}
+
+/* Modo oscuro para los nuevos elementos */
+.modo-oscuro .areas-container {
+    background: var(--surface-secondaryy);
+    border-color: var(--input-border);
+}
+
+.modo-oscuro .area-option {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.modo-oscuro .area-option:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.modo-oscuro .areas-search input {
+    background: var(--surface-secondaryy);
+}
+
+.modo-oscuro .help-text {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-left-color: var(--blue-400);
+}
+
+.modo-oscuro .selected-count {
+    background-color: var(--blue-800);
+}

@@ -472,67 +472,82 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
     z-index: 9999;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    color: white;
-    text-align: center;
+    transition: opacity 0.3s;
+    opacity: 1;
 }
 
-.loading-overlay .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 20px;
+.loading-overlay[style*='display: flex'] {
+    opacity: 1;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.loading-overlay[style*='display: none'] {
+    opacity: 0;
 }
 
-.loading-overlay h3 {
-    margin-bottom: 10px;
-    color: white;
+.loading-text {
+    color: #fff;
+    font-size: 1.2rem;
+    margin-top: 1rem;
 }
 
-.loading-overlay p {
-    margin: 5px 0;
-    color: #ddd;
-}
-
-.success-message {
+#successMessage {
     display: none;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.2);
-    text-align: center;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
     z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.7s;
 }
 
-.success-message i {
-    font-size: 48px;
+#successMessage[style*='display: flex'] {
+    opacity: 1;
+}
+
+#successMessage[style*='display: none'] {
+    opacity: 0;
+}
+
+#successMessage .success-content {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+}
+
+#successMessage .success-title {
     color: #28a745;
-    margin-bottom: 15px;
+    font-size: 2rem;
+    margin-bottom: 1rem;
 }
 
-.success-message h4 {
+#successMessage .success-text {
+    color: #333;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+#successMessage .success-icon {
     color: #28a745;
-    margin-bottom: 10px;
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
+/* Error Modal */
 .error-modal .modal-header {
     background-color: #dc3545;
     color: white;

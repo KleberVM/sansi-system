@@ -1,0 +1,45 @@
+/* Estilos para la información de convocatoria y delegación en el modal */
+.preview-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.5rem 0;
+    border-top: 1px solid #dee2e6;
+    margin-top: 0.5rem;
+}
+
+.preview-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.preview-info-item i {
+    font-size: 1.1rem;
+}
+
+/* Estilos específicos para cada tipo de información */
+.preview-info-item:nth-child(1) i {
+    color: #0d6efd; /* Color azul para el ícono de convocatoria */
+}
+
+.preview-info-item:nth-child(2) i {
+    color: #198754; /* Color verde para el ícono de colegio */
+}
+
+/* Estilos para cuando la información está cargando */
+.preview-info-item span.loading {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Estilos para cuando hay un error o la información no está disponible */
+.preview-info-item span.error {
+    color: #dc3545;
+    font-style: italic;
+}
+
+#convocatoria-nombre, #delegacion-nombre {
+    font-weight: 500;
+}

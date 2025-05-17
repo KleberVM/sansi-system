@@ -1,20 +1,20 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.alert').forEach(alert => {
-        // Agregar botón de cierre
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'alert-close';
-        closeBtn.innerHTML = '×';
-        closeBtn.onclick = () => alert.remove();
-        alert.appendChild(closeBtn);
+// TUVE QUE COMENTAR ESTA PARTE DE ALERTA DE CONFIRMACION DE INSCRIPCION REALIZADA CORRECTAMENTE YA QUE CAUSA CONFLICTOS CON LA SIGUEITEN DOCUMENT EVENTLISTENNER
+// document.addEventListener('DOMContentLoaded', () => {
+//     document.querySelectorAll('.alert').forEach(alert => {
+//         // Agregar botón de cierre
+//         const closeBtn = document.createElement('button');
+//         closeBtn.className = 'alert-close';
+//         closeBtn.innerHTML = '×';
+//         closeBtn.onclick = () => alert.remove();
+//         alert.appendChild(closeBtn);
 
-        // Cierre automático después de 5s
-        setTimeout(() => {
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 300);
-        }, 5000);
-    });
-});
-
+//         // Cierre automático después de 5s
+//         setTimeout(() => {
+//             alert.style.opacity = '0';
+//             setTimeout(() => alert.remove(), 300);
+//         }, 5000);
+//     });
+// });
 
 //JS del modal de editar y todo lo relacionado al OCR, todo lo relacionado a subir imagenes
 document.addEventListener('DOMContentLoaded', function() {
@@ -28,9 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const removeBtn = document.querySelector('.btn-remove-file');
     const feedbackArea = document.querySelector('.file-feedback');
     
-    // Variable global para el número de comprobante
+    // Variables globales
     let codigoComprobante = null;
     let estadoOCR = 0; // 0 = no procesado, 1 = éxito, 2 = error
+    let confirmacionAceptada = false;
+    let correccionManual = null;
+
+    // Elementos de confirmación
+    const confirmacionSection = document.querySelector('.numero-confirmacion');
+    const textoConfirmacion = document.querySelector('.confirmacion-texto');
+    const inputManual = document.getElementById('inputCorreccionManual');
 
     // Función para mostrar errores
     function mostrarError(mensaje) {
@@ -44,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackArea.textContent = "Procesando imagen...";
         feedbackArea.style.display = 'block';
         
-        // Desactivar botón mientras se procesa
         const btnSubir = document.getElementById('btnSubirComprobante');
         btnSubir.disabled = true;
         
@@ -67,12 +73,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log("Número detectado:", codigoComprobante);
                 feedbackArea.style.display = 'none';
                 
-                // Activar botón solo si se encontró el número de comprobante
-                btnSubir.disabled = false;
+                // Mostrar confirmación
+                textoConfirmacion.innerHTML = `El número detectado es <strong>${codigoComprobante}</strong>, ¿es correcto?`;
+                confirmacionSection.style.display = 'block';
+                
+                // Resetear estados de confirmación
+                confirmacionAceptada = false;
+                correccionManual = null;
+                inputManual.value = '';
+                document.querySelector('.correccion-manual').style.display = 'none';
+                
             } else {
                 estadoOCR = 2;
-                btnSubir.disabled = true; // Mantener desactivado si no se encontró número
-                throw new Error("En la imagen no se detectó ningún Nro. Comprobante. Vuelve a subir una imagen con más calidad, donde se distinga claramente la boleta de pago completa.");
+                throw new Error("En la imagen no se detectó ningún Nro. Comprobante. Vuelve a subir una imagen con más calidad.");
             }
             
             await worker.terminate();
@@ -81,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
             estadoOCR = 2;
             mostrarError(error.message);
             codigoComprobante = null;
-            btnSubir.disabled = true; // Mantener desactivado en caso de error
+            confirmacionSection.style.display = 'none';
         }
     }
 
@@ -90,11 +103,15 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackArea.style.display = 'none';
         estadoOCR = 0;
         codigoComprobante = null;
+        confirmacionAceptada = false;
+        correccionManual = null;
+        confirmacionSection.style.display = 'none';
+        inputManual.value = '';
         
         if (files.length > 0) {
             const file = files[0];
             const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxSize = 5 * 1024 * 1024;
 
             if (!validTypes.includes(file.type)) {
                 mostrarError('Formato de archivo no válido. Use PDF, JPG o PNG.');
@@ -108,64 +125,84 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Mostrar nombre del archivo
             fileName.textContent = file.name;
-            
-            // Ocultar el área de drop y mostrar la previsualización
             dropArea.style.display = 'none';
             filePreview.style.display = 'block';
             
-            // Mostrar previsualización según tipo de archivo
             if (file.type === 'application/pdf') {
                 pdfPreview.style.display = 'block';
                 imagePreview.style.display = 'none';
                 mostrarError("Los archivos PDF no son soportados para OCR. Suba una imagen JPG o PNG.");
             } else if (file.type.startsWith('image/')) {
-                // Crear vista previa para imágenes
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imgElement.src = e.target.result;
                     imagePreview.style.display = 'block';
                     pdfPreview.style.display = 'none';
-                    
-                    // Procesar OCR
                     processImageWithOCR(e.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         }
     }
-    
-    // Evento para cambio en input file
+
+    // Eventos de confirmación
+    document.querySelector('.btn-confirmar-si').addEventListener('click', function() {
+        confirmacionAceptada = true;
+        document.querySelector('.correccion-manual').style.display = 'none';
+        document.getElementById('btnSubirComprobante').disabled = false;
+    });
+
+    document.querySelector('.btn-confirmar-no').addEventListener('click', function() {
+        confirmacionAceptada = false;
+        document.querySelector('.correccion-manual').style.display = 'block';
+        document.getElementById('btnSubirComprobante').disabled = true;
+    });
+
+    // Validación input manual
+    inputManual.addEventListener('input', function(e) {
+        const valor = e.target.value.replace(/\D/g, '');
+        e.target.value = valor;
+        
+        if (valor.length === 7) {
+            e.target.classList.remove('is-invalid');
+            correccionManual = valor;
+            document.getElementById('btnSubirComprobante').disabled = false;
+        } else {
+            e.target.classList.add('is-invalid');
+            correccionManual = null;
+            document.getElementById('btnSubirComprobante').disabled = true;
+        }
+    });
+
+    // Resto de eventos (file input, drag and drop, remove, etc.)
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
     });
-    
-    // Eventos de arrastrar y soltar
+
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, function(e) {
             e.preventDefault();
             e.stopPropagation();
         }, false);
     });
-    
+
     ['dragenter', 'dragover'].forEach(eventName => {
         dropArea.addEventListener(eventName, function() {
             this.classList.add('is-active');
         }, false);
     });
-    
+
     ['dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, function() {
             this.classList.remove('is-active');
         }, false);
     });
-    
+
     dropArea.addEventListener('drop', function(e) {
         handleFiles(e.dataTransfer.files);
     }, false);
-    
-    // Eliminar archivo
+
     removeBtn.addEventListener('click', function() {
         fileInput.value = '';
         filePreview.style.display = 'none';
@@ -175,70 +212,56 @@ document.addEventListener('DOMContentLoaded', function() {
         feedbackArea.style.display = 'none';
         codigoComprobante = null;
         estadoOCR = 0;
+        confirmacionSection.style.display = 'none';
+        inputManual.value = '';
+        document.getElementById('btnSubirComprobante').disabled = true;
     });
-    
-    // Validar formulario
+
+    // Envío del formulario
     document.getElementById('comprobantePagoForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        
-        // Desactivar botón inmediatamente al hacer submit
         const btnSubir = document.getElementById('btnSubirComprobante');
         btnSubir.disabled = true;
         
         if (!fileInput.files.length) {
             mostrarError('Por favor, selecciona un archivo.');
-            btnSubir.disabled = false; // Reactivar si no hay archivo
             return;
         }
         
-        // Validación OCR para imágenes
-        if (fileInput.files[0].type.startsWith('image/')) {
-            if (estadoOCR === 0) {
-                mostrarError('Espere mientras procesamos la imagen...');
-                btnSubir.disabled = true; // Mantener desactivado
-                return;
-            }
-            
-            if (estadoOCR === 2) {
-                mostrarError('En la imagen no se detectó ningún Nro. Comprobante. Suba una imagen con mejor calidad donde se vea claramente toda la boleta.');
-                btnSubir.disabled = true; // Mantener desactivado
-                return;
-            }
-        }
+        // Obtener tanto OCRNumber como UserNumber
+        const ocrNumber = codigoComprobante;
+        let userNumber;
         
-        // Crear FormData y agregar los datos
+        // Si hay corrección manual, ese es el userNumber, sino es igual al OCR
+        if (correccionManual && correccionManual.length === 7) {
+            userNumber = correccionManual;
+        } else {
+            userNumber = ocrNumber;
+        }
+
         const formData = new FormData(this);
-        if (codigoComprobante) {
-            formData.append('codigo_comprobante', codigoComprobante);
-        }
+        formData.append('ocr_number', ocrNumber);
+        formData.append('user_number', userNumber);
         formData.append('estado_ocr', estadoOCR);
-        
-        // Enviar al servidor (usando Fetch API)
-try {
+
+        try {
             const response = await fetch('/inscripcion/estudiante/comprobante/procesar-boleta', {
                 method: 'POST',
                 body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                let errorMsg = 'Error desconocido';
-                
+                let errorMsg = data.message || 'Error desconocido';
                 if (response.status === 422 && data.errors) {
                     errorMsg = Object.values(data.errors).join('\n');
-                } 
-                else if (data.message) {
-                    errorMsg = data.message;
                 }
-                
                 throw new Error(errorMsg);
             }
             
-            // Éxito - no necesitamos reactivar el botón porque vamos a redireccionar
+            // Manejar éxito
             const alertDiv = document.createElement('div');
             alertDiv.className = 'alert alert-success';
             alertDiv.textContent = data.message;
@@ -263,13 +286,11 @@ try {
             }, 5000);
         } catch (error) {
             console.error('Error:', error);
-            mostrarError('Error de conexión con el servidor');
-            // Reactivar botón en caso de error
+            mostrarError(error.message);
             btnSubir.disabled = false;
         }
     });
 });
-
 
 //JS que servira para cargar dinamicamente los sleectores de categorias y areas
 document.addEventListener('DOMContentLoaded', function() 

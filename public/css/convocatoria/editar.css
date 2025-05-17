@@ -141,6 +141,32 @@ textarea.form-control {
     display: block;
 }
 
+/* Estilos para inputs numéricos */
+.form-control[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Estándar */
+}
+
+.form-control[type="number"]::-webkit-outer-spin-button,
+.form-control[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Asegurar que los estilos de precio-input tienen precedencia */
+.precio-input {
+    -moz-appearance: textfield !important; /* Firefox */
+    appearance: textfield !important; /* Estándar */
+}
+
+.precio-input::-webkit-outer-spin-button,
+.precio-input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    margin: 0 !important;
+}
+
 /* Date Inputs */
 .date-inputs {
     display: flex;
@@ -223,17 +249,30 @@ textarea.form-control {
 
 /* Grade Options */
 .grade-options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
     margin-top: 0.75rem;
     padding-left: 1rem;
 }
 
-.grade-option {
+.grades-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.grades-display {
     display: flex;
-    align-items: center;
+    flex-wrap: wrap;
     gap: 0.5rem;
+}
+
+.grade-badge {
+    display: inline-block;
+    background-color: var(--info-color);
+    color: white;
+    padding: 0.3rem 0.7rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
 }
 
 /* Buttons */

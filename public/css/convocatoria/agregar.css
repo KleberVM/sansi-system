@@ -7,205 +7,615 @@
     --border-color: #e2e8f0;
     --hover-color: #f7fafc;
     --button-text: #fff;
-    --light-bg: #f8f9fa;
-    
-    /* Estados */
     --success-color: #0ca678;
     --warning-color: #f59f00;
     --danger-color: #fa5252;
-    
-    /* Inputs */
-    --input-bg: #ffffff;
-    --input-text: #333333;
-    --input-placeholder: #6B7280;
-    --input-focus-bg: #ffffff;
-    --input-focus-border: #3182ce;
-    --input-focus-text: #1a202c;
+    --info-color: #4299e1;
+
+    /* Fondos */
+    --bg-form: #ffffff;
+    --bg-section: #f8fafc;
+    --bg-input: #ffffff;
+    --bg-container: #ffffff;
+    --bg-header: var(--primary-color);
+    --bg-actions: #f8fafc;
+
+    /* Alertas */
+    --alert-info-bg: #e3f2fd;
+    --alert-info-text: #0c63e4;
+    --alert-info-border: #90caf9;
+    --alert-warning-bg: #fff3bf;
+    --alert-warning-text: #8a5d00;
+    --alert-warning-border: #ffe066;
 }
 
 /* Variables modo oscuro */
 :root.modo-oscuro {
-    --input-bg: #1f2735;
-    --input-text: #E2E8F0;
-    --input-placeholder: #9CA3AF;
-    --input-focus-bg: #1A202C;
-    --input-focus-border: #4299E1;
-    --input-focus-text: #F7FAFC;
-    --border-color: #4A5568;
-    --text-color: #E2E8F0;
+    /* Colores base */
+    --primary-color: #3182ce;
+    --secondary-color: #4299e1;
+    --text-color: #e2e8f0;
+    --border-color: #2d3748;
+    --hover-color: #2d3748;
+    --button-text: #ffffff;
+
+    /* Fondos */
+    --bg-form: #1a202c;
+    --bg-section: #2d3748;
+    --bg-input: #2D3748;
+    --bg-container: #1e293b;
+    --bg-header: #2d3748;
+    --bg-actions: #1e293b;
+
+    /* Alertas */
+    --alert-info-bg: #2c5282;
+    --alert-info-text: #e2e8f0;
+    --alert-info-border: #4299e1;
+    --alert-warning-bg: #744210;
+    --alert-warning-text: #fbd38d;
+    --alert-warning-border: #d69e2e;
 }
 
-/* ======= CONTENEDOR PRINCIPAL ======= */
+/* Actualizar componentes existentes */
 .convocatoria-form-container {
-    max-width: 100%;
-    margin: 0 auto;
+    background-color: var(--bg-form);
+    color: var(--text-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    overflow: hidden;
 }
 
-/* ======= CABECERAS Y SECCIONES ======= */
 .form-header {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem; /* Reducido de 1.5rem */
+    font-weight: 600;
     display: flex;
     align-items: center;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    font-weight: 600;
 }
 
 .form-header i {
     margin-right: 0.75rem;
-    font-size: 1.25rem;
 }
 
 .form-section {
-    margin-bottom: 2rem;
+    background-color: var(--bg-form);
+    padding: 1.5rem 2rem;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 1rem;
 }
 
 .section-title {
-    color: var(--primary-color);
-    font-size: 1.25rem;
+    font-size: 1.125rem; /* Reducido de 1.25rem */
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
 }
 
-/* ======= FORMULARIOS ======= */
+/* Form Groups */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--text-color);
     font-weight: 500;
-    font-size: 0.875rem;
+    color: var(--text-color);
+    font-size: 0.813rem; /* Reducido de 0.875rem */
 }
 
-/* Inputs base */
 .form-control {
+    background-color: var(--bg-input);
+    color: var(--text-color);
     width: 100%;
-    padding: 0.625rem;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
-    border-radius: 0.25rem;
-    font-size: 0.875rem;
-    background-color: var(--input-bg);
-    color: var(--input-text);
-    transition: all 0.2s ease;
+    border-radius: 0.375rem;
+    font-size: 0.875rem; /* Reducido de 1rem */
+    transition: border-color 0.2s;
 }
 
 .form-control:focus {
     outline: none;
-    border-color: var(--input-focus-border);
-    background-color: var(--input-focus-bg);
-    color: var(--input-focus-text);
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2);
 }
 
-.form-control::placeholder {
-    color: var(--input-placeholder);
-    opacity: 0.8;
+.form-control.is-invalid {
+    border-color: var(--danger-color);
 }
 
-/* Textarea */
 textarea.form-control {
     min-height: 100px;
     resize: vertical;
 }
 
-/* ======= LAYOUTS ESPECÍFICOS ======= */
-.date-inputs,
-.cost-inputs {
+.text-danger {
+    color: var(--danger-color);
+    font-size: 0.75rem; /* Reducido de 0.875rem */
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Date Inputs */
+.date-inputs {
     display: flex;
     gap: 1.5rem;
 }
 
-.date-inputs .form-group,
-.cost-inputs .form-group {
+.date-inputs .form-group {
+    flex: 1;
+    position: relative;
+}
+
+/* Estilos para los inputs de tipo fecha */
+input[type="date"] {
+    position: relative;
+    padding-right: 30px; /* Espacio para el ícono */
+    color: var(--primary-color); /* Asegurar que el texto sea visible */
+}
+
+/* Ocultar las flechas de incremento/decremento en inputs de tipo number */
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Estándar */
+}
+
+/* Para navegadores WebKit (Chrome, Safari, Edge, Opera) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Hacer visibles los controles de calendario */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #2563eb; /* Azul más brillante */
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+    border-radius: 4px;
+    filter: invert(1); /* Hace el icono blanco */
+}
+
+/* Estilo hover para el icono del calendario */
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background-color: var(--secondary-color);
+}
+
+/* Areas and Categories */
+.area-container {
+    background-color: var(--bg-section);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.area-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.area-title {
     flex: 1;
 }
 
-/* ======= CONTENEDORES ======= */
-.area-container,
+.area-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.categorias-container {
+    margin-left: 1.5rem;
+}
+
 .category-container {
-    background-color: var(--input-bg);
+    background-color: var(--bg-container);
     border: 1px solid var(--border-color);
     border-radius: 0.375rem;
     padding: 1rem;
     margin-bottom: 1rem;
 }
 
-.modo-oscuro .precios-container{
-  background-color: var(--input-bg);
-  color: var(--text-color);
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
 }
-.modo-oscuro .precio-input:disabled {
-  background-color: var(--input-bg);
-  color: var(--input-text);
+
+.category-title {
+    flex: 1;
 }
-/* ======= BOTONES ======= */
-.btn-save,
-.btn-cancel {
-    padding: 0.625rem 1.25rem;
+
+/* Precio Container */
+.precio-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+    padding-left: 1rem;
+}
+
+.precio-container label {
+    flex: 0 0 auto;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 0.813rem; /* Reducido de 0.875rem */
+    color: var(--text-color);
+}
+
+.precio-input {
+    flex: 1;
+    max-width: 150px;
+}
+
+/* Grade Options */
+.grade-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding-left: 1rem;
+}
+
+.grade-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Buttons */
+.btn-add {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.813rem; /* Reducido de 0.875rem */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+    background-color: var(--primary-color);
+}
+
+.btn-remove {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
     border-radius: 0.25rem;
+    margin-left: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-remove:hover {
+    background-color: #e03131;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+/* Form Actions */
+.form-actions {
+    background-color: var(--bg-actions);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    position: relative; /* Asegurar posicionamiento correcto */
+    z-index: 10; /* Elevar el z-index para prevenir solapamiento */
+}
+
+.btn-cancel {
+    background-color: var(--border-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-save {
-    background-color: var(--primary-color);
-    color: var(--estatico-text);
-    border: none;
-}
-
-.btn-save:hover {
-    background-color: var(--secondary-color);
-}
-
-.btn-cancel {
-    background-color: var(--input-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
+    transition: background-color 0.2s;
+    text-decoration: none;
+    position: relative;
+    z-index: 15;
 }
 
 .btn-cancel:hover {
     background-color: var(--hover-color);
 }
 
-.btn-add {
-    color: var(--secondary-color);
-    background: none;
+.btn-save {
+    background-color: var(--primary-color);
+    color: white;
     border: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
     cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+    z-index: 15; /* Elevar para asegurar que esté visible */
 }
 
-.btn-remove {
-    color: var(--danger-color);
-    background: none;
-    border: none;
-    cursor: pointer;
+.btn-save:hover {
+    background-color: var(--secondary-color);
 }
 
-/* ======= ELEMENTOS DE LISTA ======= */
-.requisito-item {
-    background-color: var(--input-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    padding: 0.75rem 1rem;
-    border-radius: 0.25rem;
-    margin-bottom: 0.75rem;
+/* Asegurar que el botón de guardar esté visible */
+button[type="submit"], 
+input[type="submit"] {
+    position: relative;
+    z-index: 20;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button[type="submit"]:hover, 
+input[type="submit"]:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-nueva-version {
+    background-color: var(--info-color);
+    color: var(--button-text);
+    border: none;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.813rem; /* Reducido de 0.875rem */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+    text-decoration: none;
+    margin-left: 1rem;
+}
+
+.btn-nueva-version:hover {
+    opacity: 0.9;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.btn-back:hover {
+    text-decoration: underline;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem;
+    border-radius: 0.375rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.alert i {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+}
+
+.alert-warning {
+    background-color: var(--alert-warning-bg);
+    color: var(--alert-warning-text);
+    border: 1px solid var(--alert-warning-border);
+}
+
+.alert-info {
+    background-color: var(--alert-info-bg);
+    color: var(--alert-info-text);
+    border: 1px solid var(--alert-info-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* ======= UTILIDADES ======= */
+/* Transición suave entre temas */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Correcciones para evitar solapamiento de botones */
+form {
+    position: relative;
+}
+
+.form-actions .btn-save {
+    margin-bottom: 0;
+    margin-left: auto;
+}
+
+/* Asegurar que los botones de formulario en la parte inferior sean prominentes */
+.form-section:last-of-type,
 .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color);
+    position: relative;
+    z-index: 5;
+}
+
+/* ======= RESPONSIVE DESIGN ======= */
+
+/* Tablet (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  .convocatoria-form-container {
+      margin: 1rem;
+      border-radius: 0.375rem;
+  }
+
+  .form-header {
+      padding: 1rem;
+      font-size: 1.125rem; /* Reducido de 1.25rem */
+  }
+
+  .form-section {
+      padding: 1rem;
+  }
+
+  .date-inputs,
+  .cost-inputs {
+      flex-direction: column;
+      gap: 1rem;
+  }
+
+  .area-container {
+      padding: 1rem;
+  }
+
+  .categorias-container {
+      margin-left: 0;
+  }
+
+  .precio-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+  }
+
+  .precio-input {
+      max-width: 100%;
+  }
+
+  .form-actions {
+      padding: 1rem;
+      flex-direction: column-reverse;
+      gap: 0.75rem;
+  }
+
+  .btn-cancel,
+  .btn-save {
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+/* Móvil (max-width: 576px) */
+@media screen and (max-width: 576px) {
+  .alert-info {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+  }
+
+  .btn-nueva-version {
+      margin-left: 0;
+      width: 100%;
+      justify-content: center;
+  }
+
+  .grade-options {
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-left: 0;
+  }
+
+  .grade-option {
+      width: 100%;
+  }
+
+  .area-header {
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: flex-start;
+  }
+
+  .area-actions {
+      width: 100%;
+      justify-content: flex-end;
+  }
+
+  .category-header {
+      flex-direction: column;
+      gap: 0.75rem;
+  }
+
+  .btn-add {
+      width: 100%;
+      justify-content: center;
+  }
+}
+
+/* Móvil pequeño (max-width: 360px) */
+@media screen and (max-width: 360px) {
+  .form-header {
+      font-size: 1rem; /* Reducido de 1.125rem */
+  }
+
+  .section-title {
+      font-size: 1rem; /* Reducido de 1.125rem */
+  }
+
+  .form-group label {
+      font-size: 0.75rem; /* Reducido de 0.875rem */
+  }
+
+  .form-control {
+      font-size: 0.813rem; /* Reducido de 0.875rem */
+  }
+
+  .alert {
+      padding: 0.75rem;
+      font-size: 0.813rem; /* Reducido de 0.875rem */
+  }
+
+  .btn-cancel,
+  .btn-save,
+  .btn-nueva-version {
+      padding: 0.625rem 1rem;
+      font-size: 0.813rem; /* Reducido de 0.875rem */
+  }
+}
+
+/* Ajustes de altura para pantallas pequeñas */
+@media screen and (max-height: 700px) {
+  .convocatoria-form-container {
+      margin: 0.5rem;
+  }
+
+  .form-section {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+  }
+
+  textarea.form-control {
+      min-height: 80px;
+  }
 }

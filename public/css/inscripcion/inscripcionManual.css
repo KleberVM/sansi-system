@@ -336,6 +336,47 @@ select:-webkit-autofill:focus {
     color: var(--text-color);
 }
 
+/* Submit Button and Form Actions */
+.form-actions {
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.submit-button {
+    background-color: var(--primary-color);
+    color: var(--button-text);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 220px;
+    justify-content: center;
+}
+
+.submit-button:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.submit-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button i {
+    font-size: 1.1rem;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
     .selector-options {
@@ -367,6 +408,11 @@ select:-webkit-autofill:focus {
     .btn-remove-area,
     .btn-add-area {
         width: 100%;
+    }
+    
+    .submit-button {
+        width: 100%;
+        padding: 0.75rem 1rem;
     }
 
     .section-title {

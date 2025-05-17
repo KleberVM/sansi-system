@@ -1,0 +1,212 @@
+/* Estilos para la sección de carga de Excel */
+.excel-info-collapsible {
+    margin-bottom: 20px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+/* Estilos para el selector de convocatoria */
+.convocatoria-excel-selector {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    background-color: #f0f7ff;
+    border: 1px solid #cee0fa;
+}
+
+.selector-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--secondary-color, #2c5282);
+}
+
+.selector-label i {
+    margin-right: 6px;
+    color: var(--secondary-color, #2c5282);
+}
+
+#excel-convocatoria-dropdown {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid #cee0fa;
+    background-color: white;
+    font-size: 16px;
+    color: #333;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+#excel-convocatoria-dropdown:focus {
+    border-color: var(--secondary-color, #2c5282);
+    box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2);
+    outline: none;
+}
+
+.collapsible-header {
+    background-color: var(--bg-secondary, #f8fafc);
+    color: var(--secondary-color, #2c5282);
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+}
+
+.collapsible-header:hover {
+    background-color: #edf2f7;
+}
+
+.collapsible-header i.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.collapsible-header.active i.toggle-icon {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.collapsible-content.open {
+    max-height: 600px; /* Ajustar según el contenido */
+}
+
+.excel-info-box {
+    background-color: var(--bg-secondary, #f8fafc);
+    border-left: 4px solid var(--secondary-color, #2c5282);
+    border-radius: 0 0 4px 4px;
+    padding: 15px;
+}
+
+.excel-info-box ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.excel-info-box li {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.excel-info-box .note {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-muted, #6c757d);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+/* Estilos para el modal de convocatorias */
+.convocatorias-dropdown {
+    margin-bottom: 15px;
+}
+
+.convocatorias-dropdown select {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    background-color: var(--bg-secondary, #ffffff);
+    color: var(--text-color, #333333);
+    font-size: 14px;
+}
+
+.convocatoria-info-message {
+    background-color: rgba(44, 82, 130, 0.1);
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    color: var(--secondary-color, #2c5282);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.convocatoria-info-message i {
+    font-size: 1.1rem;
+}
+
+/* Modal de información de convocatorias */
+.modal-cuerpo .card-area {
+    background-color: var(--bg-card, #ffffff);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.modal-cuerpo .titulo-area {
+    background-color: var(--primary-color, #1a365d);
+    color: white;
+    padding: 10px 15px;
+    margin: 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-cuerpo .titulo-area::before {
+    content: '\f02d';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.modal-cuerpo .card-categoria {
+    padding: 15px;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.modal-cuerpo .card-categoria:last-child {
+    border-bottom: none;
+}
+
+.modal-cuerpo .titulo-categoria {
+    color: var(--secondary-color, #2c5282);
+    font-size: 1rem;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-cuerpo .titulo-categoria::before {
+    content: '\f02b';
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.modal-cuerpo .lista-grados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.modal-cuerpo .card-grado {
+    background-color: var(--bg-secondary, #f8fafc);
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 15px;
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    color: var(--text-color, #333);
+    transition: all 0.2s ease;
+}
+
+.modal-cuerpo .card-grado:hover {
+    background-color: var(--hover-color, #e2e8f0);
+    transform: translateY(-1px);
+}

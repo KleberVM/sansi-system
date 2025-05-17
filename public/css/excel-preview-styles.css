@@ -1,0 +1,329 @@
+/* Estilos para el modal de previsualización de Excel */
+
+/* Estilos para el buscador */
+#table-search:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+
+#clear-search {
+    border-color: #ced4da;
+    background-color: #f8f9fa;
+    transition: all 0.2s;
+}
+
+#clear-search:hover {
+    background-color: #e9ecef;
+}
+
+.input-group .input-group-text {
+    background-color: #f8f9fa;
+}
+
+/* Resaltar texto buscado */
+mark, .mark {
+    padding: 0.2em;
+    background-color: #ffeb3b;
+    color: #000;
+    font-weight: bold;
+    border-radius: 2px;
+    box-shadow: 0 0 1px rgba(0,0,0,0.2);
+}
+
+/* Estilo para las celdas editables */
+.editable {
+    min-height: 24px;
+    padding: 3px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    word-break: break-word;
+    position: relative;
+}
+
+/* Estilos específicos para tipos de celdas */
+.name-cell {
+    font-weight: 500;
+}
+
+.email-cell {
+    font-style: italic;
+    color: #0056b3;
+    word-break: break-all;
+}
+
+.number-cell {
+    font-family: monospace;
+}
+
+.short-cell {
+    text-transform: capitalize;
+}
+
+.editable:focus {
+    background-color: #f8f9fa;
+    outline: 2px solid #4e73df;
+    box-shadow: 0 0 4px rgba(78, 115, 223, 0.25);
+}
+
+/* Estilo para las filas con error */
+tr.error-row {
+    background-color: rgba(255, 0, 0, 0.05) !important;
+}
+
+tr.error-row td {
+    border-color: rgba(255, 0, 0, 0.15);
+}
+
+/* Estilo para la columna de acciones */
+#previewTable td:first-child,
+#previewTable th.action-column {
+    text-align: center;
+    white-space: nowrap;
+    width: 60px !important;
+    max-width: 60px !important;
+    min-width: 60px !important;
+}
+
+/* Contenedor principal para la tabla */
+.table-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Estilos para scroll horizontal */
+.horizontal-scroll {
+    overflow-x: auto;
+    max-width: 100%;
+    margin-bottom: 15px;
+}
+
+/* Clases para tipos específicos de columnas */
+.action-column {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+}
+
+.row-num-column {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+}
+
+.name-column {
+    width: 150px !important;
+    min-width: 120px !important;
+    max-width: 180px !important;
+}
+
+.email-column {
+    width: 180px !important;
+    min-width: 150px !important;
+    max-width: 220px !important;
+}
+
+.id-column, .number-column {
+    width: 120px !important;
+    min-width: 100px !important;
+    max-width: 140px !important;
+}
+
+.date-column {
+    width: 130px !important;
+    min-width: 120px !important;
+    max-width: 150px !important;
+}
+
+.short-column {
+    width: 100px !important;
+    min-width: 80px !important;
+    max-width: 120px !important;
+}
+
+.code-column {
+    width: 140px !important;
+    min-width: 120px !important;
+    max-width: 160px !important;
+}
+
+/* Estilos para los botones de acción */
+.delete-row-btn {
+    padding: 3px 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.delete-row-btn:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+/* Mejora del botón para agregar fila */
+#addRowBtn {
+    transition: all 0.2s;
+}
+
+#addRowBtn:hover {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+/* Estilos para la columna de estado */
+.validation-status {
+    font-weight: 500;
+}
+
+.text-success {
+    color: #1cc88a !important;
+}
+
+.text-danger {
+    color: #e74a3b !important;
+}
+
+.text-muted {
+    color: #858796 !important;
+}
+
+/* Contenedor principal */
+.table-container {
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+/* Mejora para la responsividad de la tabla */
+.table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-bottom: 15px;
+    position: static !important;
+    border: none !important;
+}
+
+/* Asegurar que ninguna columna quede fija al desplazar */
+.dataTables_wrapper {
+    overflow: visible !important;
+    width: 100% !important;
+    position: static !important;
+}
+
+/* Estilos para la tabla principal */
+#previewTable {
+    width: 100% !important;
+    table-layout: auto !important;
+    margin: 0 !important;
+    border-collapse: collapse !important;
+}
+
+/* Asegurarnos que las celdas no estén fijas */
+#previewTable thead th,
+#previewTable tbody td {
+    position: static !important;
+    left: auto !important;
+    right: auto !important;
+    white-space: normal;
+    width: auto !important;
+    min-width: 120px !important;
+    max-width: 200px !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-wrap: break-word;
+    vertical-align: middle;
+}
+
+/* Establecer anchos específicos para cada tipo de columna */
+/* Columnas de acción y número de fila */
+#previewTable th.action-column,
+#previewTable td:first-child {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+}
+
+#previewTable th:nth-child(2),
+#previewTable td:nth-child(2) {
+    width: 50px !important;
+    min-width: 50px !important;
+    max-width: 50px !important;
+}
+
+/* Columnas para nombres y apellidos */
+#previewTable th:nth-child(3),
+#previewTable td:nth-child(3),
+#previewTable th:nth-child(4),
+#previewTable td:nth-child(4),
+#previewTable th:nth-child(5),
+#previewTable td:nth-child(5),
+#previewTable th:nth-child(14),
+#previewTable td:nth-child(14) {
+    width: 150px !important;
+    min-width: 120px !important;
+    max-width: 180px !important;
+}
+
+/* Columnas para CI y números */
+#previewTable th:nth-child(6),
+#previewTable td:nth-child(6),
+#previewTable th:nth-child(13),
+#previewTable td:nth-child(13) {
+    width: 120px !important;
+    min-width: 100px !important;
+    max-width: 140px !important;
+}
+
+/* Columnas para emails */
+#previewTable th:nth-child(7),
+#previewTable td:nth-child(7),
+#previewTable th:nth-child(15),
+#previewTable td:nth-child(15) {
+    width: 180px !important;
+    min-width: 150px !important;
+    max-width: 220px !important;
+}
+
+/* Columnas para fecha, género, área, categoría, grado */
+#previewTable th:nth-child(8),
+#previewTable td:nth-child(8),
+#previewTable th:nth-child(9),
+#previewTable td:nth-child(9),
+#previewTable th:nth-child(10),
+#previewTable td:nth-child(10),
+#previewTable th:nth-child(11),
+#previewTable td:nth-child(11),
+#previewTable th:nth-child(12),
+#previewTable td:nth-child(12) {
+    width: 120px !important;
+    min-width: 100px !important;
+    max-width: 140px !important;
+}
+
+/* Eliminar TODOS los elementos que causan problemas con columnas fijas */
+.DTFC_LeftWrapper, .DTFC_RightWrapper, .DTFC_Cloned,
+.dataTables_scrollHead, .dataTables_scrollBody, .dataTables_scrollFoot,
+.DTFC_ScrollWrapper, .DTFC_LeftBodyLiner, .DTFC_RightBodyLiner,
+.dataTables_scrollHeadInner, .dataTables_scrollFootInner,
+.DTFC_LeftHeadWrapper, .DTFC_RightHeadWrapper,
+.DTFC_LeftFootWrapper, .DTFC_RightFootWrapper,
+.DTFC_LeftBodyWrapper, .DTFC_RightBodyWrapper {
+    display: none !important;
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+
+/* Estilo para filas nuevas añadidas manualmente */
+tr.new-row {
+    background-color: rgba(28, 200, 138, 0.05) !important;
+}

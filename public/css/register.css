@@ -401,3 +401,118 @@
         padding: 1.5rem;
     }
 }
+
+/* === Improved Styles for Register Tutor Form (Space Optimization) === */
+
+/* 1. Compact File Input */
+/* Targeting the .input-with-icon container when it holds a file input for better control */
+.input-with-icon input.file-input {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    padding-left: 2.5rem; /* Keep space for icon */
+    padding-right: 0.5rem;
+    font-size: 0.9rem; 
+    line-height: 1.3; /* Adjust line height for compactness */
+}
+
+.input-with-icon input.file-input::-webkit-file-upload-button {
+    padding: 0.3rem 0.7rem; /* Smaller button padding */
+    font-size: 0.85rem; 
+    margin-right: 0.6rem;
+}
+
+/* 2. Convocatorias and Areas Sections */
+
+/* Helper text styling (e.g., "Seleccione las convocatorias...") */
+.form-group .help-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary, var(--label-text));
+    margin-bottom: 0.4rem; 
+    margin-top: -0.4rem; /* Pull closer to the label */
+    line-height: 1.2;
+}
+
+/* Main container for options list (convocatorias and areas) */
+.areas-container {
+    padding: 0.6rem; /* Reduced padding */
+    max-height: 220px; /* Slightly reduced max-height */
+    margin-bottom: 0.4rem; /* Reduced bottom margin */
+}
+
+/* Styling for each option (convocatoria or area) */
+.convocatoria-option,
+.area-option {
+    padding: 0.3rem 0.4rem; /* Reduced padding */
+    margin-bottom: 0.25rem; /* Reduced margin */
+}
+
+.convocatoria-option label,
+.area-option label {
+    font-size: 0.88rem; /* Slightly reduced font size */
+}
+
+.convocatoria-option input[type="checkbox"],
+.area-option input[type="checkbox"] {
+    width: 0.95rem; /* Slightly smaller checkbox */
+    height: 0.95rem;
+    margin-right: 0.5rem; /* Adjust spacing */
+}
+
+/* Badge for "PUBLICADA" status in Convocatorias */
+.convocatoria-option .badge.publicada {
+    font-size: 0.65rem; /* Smaller font */
+    font-weight: 600;
+    padding: 0.2em 0.5em; /* Relative padding */
+    border-radius: 8px; /* Smaller radius */
+    background-color: #28a745; /* Green - consider making this a CSS var */
+    color: white;
+    margin-left: auto; 
+    align-self: center;
+    white-space: nowrap;
+    line-height: 1.1; 
+}
+
+/* Actions below the list (Select All, Count) */
+.areas-actions {
+    margin-top: 0.4rem; /* Reduced margin */
+    padding: 0 0.1rem; /* Minimal horizontal padding */
+}
+
+.select-all-option label {
+    font-size: 0.8rem; /* Reduced font size */
+}
+
+.select-all-option input[type="checkbox"] {
+    width: 0.85rem; 
+    height: 0.85rem;
+}
+
+.selected-count {
+    font-size: 0.75rem; /* Reduced font size */
+    padding: 0.15rem 0.5rem; /* Adjusted padding */
+}
+
+/* Title for "Áreas para: [Convocatoria Name]" */
+.areas-for-convocatoria h4 {
+    font-size: 1rem; /* Reduced */
+    font-weight: 600;
+    margin-top: 0.3rem; 
+    margin-bottom: 0.5rem; /* Space before the areas list */
+    color: var(--label-text);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .areas-container {
+        max-height: 180px; /* Further reduce height on mobile */
+    }
+    .convocatoria-option label,
+    .area-option label {
+        font-size: 0.85rem; 
+    }
+    .areas-for-convocatoria h4 {
+        font-size: 0.95rem;
+    }
+}
+
+/* === End of Improved Styles === */
