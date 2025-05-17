@@ -41,7 +41,7 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <!-- Botón de Descargar PDF siempre visible -->
-                <a href="{{ route('convocatorias.exportarPdf', $convocatoria->idConvocatoria) }}" class="btn-action btn-pdf">
+                <a href="{{ route('convocatorias.exportarPdf.UnaConvocatoria', $convocatoria->idConvocatoria) }}" class="btn-action btn-pdf">
                     <i class="fas fa-file-pdf"></i> Descargar PDF
                 </a>
             </div>
