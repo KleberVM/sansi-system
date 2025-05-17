@@ -5,18 +5,33 @@ namespace App\Http\Controllers\Inscripcion;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ConvocatoriaAreaCategoria;
+use Illuminate\Support\Facades\Log;
 
 class ObtenerAreasConvocatoria extends Controller
 {
-    public function obtenerAreasPorConvocatoria($idConvocatoria)
+    /**
+ * Obtiene las áreas asociadas a una convocatoria específica
+ *
+ * @param int $idConvocatoria ID de la convocatoria
+ * @return \Illuminate\Support\Collection
+ */
+public function obtenerAreasPorConvocatoria($idConvocatoria)
 {
-    $areas = ConvocatoriaAreaCategoria::with('area')
-                ->where('idConvocatoria', $idConvocatoria)
-                ->get()
-                ->pluck('area')
-                ->unique('idArea')   // Opcional: para evitar duplicados
-                ->values();          // Reindexar el array
+    try {
+        $areas = ConvocatoriaAreaCategoria::with('area')
+                    ->where('idConvocatoria', $idConvocatoria)
+                    ->get()
+                    ->pluck('area')    // Pluck the Area models (or nulls if relation fails for an entry)
+                    ->filter()         // Remove any null items from the collection
+                    ->unique('idArea')   // Ensure uniqueness among valid Area models
+                    ->values();          // Reindex the array
 
-    return $areas;
+        return $areas;
+    } catch (\Exception $e) {
+        // Log the error for server-side debugging
+        Log::error("Error fetching areas for convocatoria {$idConvocatoria}: " . $e->getMessage());
+        // Return empty collection instead of a JSON response
+        return collect([]);
+    }
 }
 }

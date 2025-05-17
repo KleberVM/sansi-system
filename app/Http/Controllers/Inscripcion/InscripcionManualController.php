@@ -20,43 +20,171 @@ use App\Models\Rol;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
+use App\Notifications\WelcomeEmailNotification;
 
 class InscripcionManualController extends Controller
 {
     public function index()
     {
         try {
-            // Get active convocatoria with estado='Publicada'
-            $convocatoria = Convocatoria::where('estado', 'Publicada')->first();
-            
-            // Get authenticated tutor and their delegation
-            $tutor = auth()->user()->tutor;
-            $delegacion = null;
-            $nombreColegio = null;
-            
-            if ($tutor) {
-                // Get the first delegation associated with this tutor
-                $idDelegacion = $tutor->primerIdDelegacion();
-                if ($idDelegacion) {
-                    $delegacion = Delegacion::find($idDelegacion);
-                    if ($delegacion) {
-                        $nombreColegio = $delegacion->nombre;
-                    }
-                }
-            }
-
-            // Debug logging
-            Log::info('Convocatoria:', ['convocatoria' => $convocatoria ? $convocatoria->toArray() : 'No hay convocatoria publicada']);
-            Log::info('Delegacion:', ['delegacion' => $delegacion ? $delegacion->toArray() : 'No hay delegación asignada']);
-            Log::info('Colegio:', ['nombreColegio' => $nombreColegio ?? 'No hay colegio asignado']);
-
-            $areas = Area::all();
-            
-            return view('inscripciones.formInscripcionEst', compact('areas', 'convocatoria', 'delegacion', 'nombreColegio'));
+            // Simplified index method: dynamic data will be loaded by JavaScript
+            return view('inscripciones.formInscripcionEst');
             
         } catch (\Exception $e) {
             Log::error('Error in InscripcionManualController@index: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Error al cargar el formulario');
+        }
+    }
+
+    public function obtenerConvocatoriasYDelegacionTutor()
+    {
+        try {
+            $tutor = auth()->user()->tutor;
+            if (!$tutor) {
+                return response()->json(['success' => false, 'message' => 'Tutor no autenticado.'], 403);
+            }
+
+            $delegacion = $tutor->delegaciones()->first(); // Assuming a tutor has one primary delegation or adjust as needed
+            $idDelegacion = $delegacion ? $delegacion->idDelegacion : null;
+
+            if (!$idDelegacion) {
+                 // If tutor has no delegation, they can\'t be associated with convocatorias through tutorAreaDelegacion
+                return response()->json(['success' => true, 'convocatorias' => [], 'delegacion' => null]);
+            }
+            
+            $convocatoriasPublicadas = Convocatoria::where('estado', 'Publicada')->get();
+            
+            $convocatoriasDelTutor = $convocatoriasPublicadas->filter(function ($convocatoria) use ($tutor, $idDelegacion) {
+                return DB::table('tutorAreaDelegacion')
+                    ->where('id', $tutor->id)
+                    ->where('idDelegacion', $idDelegacion)
+                    ->where(function ($query) use ($convocatoria) {
+                        $query->where('idConvocatoria', $convocatoria->idConvocatoria)
+                              ->orWhereNull('idConvocatoria'); // General assignment
+                    })
+                    ->exists();
+            });
+
+            return response()->json([
+                'success' => true,
+                'convocatorias' => $convocatoriasDelTutor->values(), // Reset keys for JSON array
+                'delegacion' => $delegacion
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error en obtenerConvocatoriasYDelegacionTutor: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error al obtener datos del tutor.'], 500);
+        }
+    }
+
+    public function obtenerAreasPorConvocatoriaTutor(Request $request)
+    {
+        try {
+            $request->validate(['idConvocatoria' => 'required|integer']);
+            $idConvocatoria = $request->idConvocatoria;
+
+            $tutor = auth()->user()->tutor;
+            if (!$tutor) {
+                return response()->json(['success' => false, 'message' => 'Tutor no autenticado.'], 403);
+            }
+            
+            $delegacion = $tutor->delegaciones()->first();
+            $idDelegacion = $delegacion ? $delegacion->idDelegacion : null;
+
+            if (!$idDelegacion) {
+                return response()->json(['success' => true, 'areas' => []]);
+            }
+
+            // Get IDs of areas the tutor is assigned to for the given convocatoria and delegation
+            $areaIds = DB::table('tutorAreaDelegacion')
+                ->where('id', $tutor->id)
+                ->where('idDelegacion', $idDelegacion)
+                ->where(function ($query) use ($idConvocatoria) {
+                    $query->where('idConvocatoria', $idConvocatoria)
+                          ->orWhereNull('idConvocatoria');
+                })
+                ->pluck('idArea')->unique();
+
+            if ($areaIds->isEmpty()) {
+                return response()->json(['success' => true, 'areas' => []]);
+            }
+            
+            // Fetch Area models for these IDs
+            $areas = Area::whereIn('idArea', $areaIds)->get();
+
+            return response()->json(['success' => true, 'areas' => $areas]);
+
+        } catch (\Exception $e) {
+            Log::error('Error en obtenerAreasPorConvocatoriaTutor: ' . $e->getMessage() . ' Stack: ' . $e->getTraceAsString());
+            return response()->json(['success' => false, 'message' => 'Error al obtener áreas.'], 500);
+        }
+    }
+    
+    public function obtenerCategoriasPorAreaConvocatoria(Request $request)
+    {
+        try {
+            $request->validate([
+                'idArea' => 'required|integer',
+                'idConvocatoria' => 'required|integer'
+            ]);
+            $idArea = $request->idArea;
+            $idConvocatoria = $request->idConvocatoria;
+
+            $categorias = Categoria::whereHas('convocatoriaAreaCategorias', function($query) use ($idArea, $idConvocatoria) {
+                $query->where('idArea', $idArea)
+                      ->where('idConvocatoria', $idConvocatoria);
+            })->get();
+
+            return response()->json([
+                'success' => true,
+                'categorias' => $categorias
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error en obtenerCategoriasPorAreaConvocatoria: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener categorías',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verificarModalidadDisponible(Request $request)
+    {
+        try {
+            $request->validate([
+                'idConvocatoria' => 'required|integer',
+                'idCategoria' => 'required|integer',
+                'modalidad' => 'required|string'
+            ]);
+
+            $idConvocatoria = $request->idConvocatoria;
+            $idCategoria = $request->idCategoria;
+            $modalidad = $request->modalidad;
+            
+            $precio = DB::table('precios')
+                ->join('convocatoriaareascategorias', 'precios.idConvocatoriaAreasCat', '=', 'convocatoriaareascategorias.idConvocatoriaAreasCat') // Corrected table name
+                ->where('convocatoriaareascategorias.idConvocatoria', $idConvocatoria)
+                ->where('convocatoriaareascategorias.idCategoria', $idCategoria)
+                ->where('precios.modalidad', $modalidad)
+                ->value('precios.precio');
+            
+            $disponible = $precio !== null;
+            
+            return response()->json([
+                'success' => true,
+                'disponible' => $disponible,
+                'precio' => $precio
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error al verificar disponibilidad de modalidad: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al verificar disponibilidad',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -69,7 +197,7 @@ class InscripcionManualController extends Controller
                 ->whereHas('roles', function($query) {
                     $query->where('nombre', 'estudiante');
                 })
-                ->with('estudiante')
+                ->with('estudiante') // Assuming 'estudiante' is a relationship on User model for Estudiante specific data
                 ->first();
 
             if (!$estudiante) {
@@ -79,20 +207,28 @@ class InscripcionManualController extends Controller
                 ], 404);
             }
 
+            // Prepare student data. Adjust fields as necessary.
+            $estudianteData = [
+                'nombres' => $estudiante->name,
+                'apellidoPaterno' => $estudiante->apellidoPaterno,
+                'apellidoMaterno' => $estudiante->apellidoMaterno,
+                'ci' => $estudiante->ci,
+                'fechaNacimiento' => $estudiante->fechaNacimiento,
+                'genero' => $estudiante->genero,
+                'email' => $estudiante->email,
+            ];
+            // If Estudiante model has more fields, merge them.
+            if ($estudiante->estudiante) {
+                 $estudianteData = array_merge($estudianteData, $estudiante->estudiante->toArray());
+            }
+
             return response()->json([
                 'success' => true,
-                'estudiante' => [
-                    'nombres' => $estudiante->name,
-                    'apellidoPaterno' => $estudiante->apellidoPaterno,
-                    'apellidoMaterno' => $estudiante->apellidoMaterno,
-                    'ci' => $estudiante->ci,
-                    'fechaNacimiento' => $estudiante->fechaNacimiento,
-                    'genero' => $estudiante->genero,
-                    'email' => $estudiante->email,
-                ]
+                'estudiante' => $estudianteData
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Error al buscar estudiante: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al buscar estudiante',
@@ -100,53 +236,7 @@ class InscripcionManualController extends Controller
             ], 500);
         }
     }
-
-    public function obtenerCategorias(Request $request, $idArea)
-    {
-        try {
-            $selectedCategoriaId = $request->selectedCategoria;
-
-            // Get active convocatoria
-            $convocatoria = Convocatoria::where('estado', 'Publicada')->first();
-            if (!$convocatoria) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No hay convocatoria activa'
-                ], 404);
-            }
-
-            $query = Categoria::whereHas('convocatoriaAreaCategorias', function($query) use ($idArea, $convocatoria) {
-                $query->where('idArea', $idArea)
-                      ->where('idConvocatoria', $convocatoria->idConvocatoria);
-            });
-
-            // If there's a selected categoria from another area, filter by common grades
-            if ($selectedCategoriaId) {
-                $query->whereHas('grados', function($gradosQuery) use ($selectedCategoriaId) {
-                    $gradosQuery->whereIn('grado.idGrado', function($subQuery) use ($selectedCategoriaId) {
-                        $subQuery->select('gradocategoria.idGrado')
-                                ->from('gradocategoria')
-                                ->where('gradocategoria.idCategoria', $selectedCategoriaId);
-                    });
-                });
-            }
-
-            $categorias = $query->get();
-
-            return response()->json([
-                'success' => true,
-                'categorias' => $categorias,
-                'convocatoriaId' => $convocatoria->idConvocatoria
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al obtener categorías',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
+    
     public function obtenerGrados(Request $request)
     {
         try {
@@ -407,9 +497,8 @@ class InscripcionManualController extends Controller
                 ], 422);
             }
 
-            DB::beginTransaction();
-
-            // 1. Create new User with student role
+            DB::beginTransaction();            // 1. Create new User with student role
+            $plainPassword = substr($request->ci, 0, 6); // Guardar contraseña para el correo
             $newUser = User::create([
                 'name' => $request->nombres,
                 'apellidoPaterno' => $request->apellidoPaterno,
@@ -418,8 +507,15 @@ class InscripcionManualController extends Controller
                 'fechaNacimiento' => $request->fechaNacimiento,
                 'genero' => $request->genero,
                 'email' => $request->email,
-                'password' => Hash::make(substr($request->ci, 0, 6)), // Default password is first 6 digits of CI
+                'password' => Hash::make($plainPassword), // Default password is first 6 digits of CI
             ]);
+            
+            // Enviar correo de bienvenida y verificación
+            $isNewUser = true;
+            if ($isNewUser) {
+                $newUser->notify(new \App\Notifications\WelcomeEmailNotification($plainPassword));
+                event(new \Illuminate\Auth\Events\Registered($newUser));
+            }
 
             // 2. Assign student role to the new user
             $rolEstudiante = Rol::where('nombre', 'estudiante')->first();
@@ -495,87 +591,4 @@ class InscripcionManualController extends Controller
             ], 500);
         }
     }
-
-    public function obtenerConvocatoriaActiva()
-        {
-            try {
-                Log::info('Buscando convocatoria activa...');
-                
-                $convocatoria = Convocatoria::where('estado', 'Publicada')
-                    ->orderBy('fechaInicio', 'desc')
-                    ->first();
-                
-                Log::info('Resultado búsqueda convocatoria:', [
-                    'encontrada' => $convocatoria ? 'sí' : 'no',
-                    'datos' => $convocatoria ? $convocatoria->toArray() : null
-                ]);
-    
-                if (!$convocatoria) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'No hay convocatoria activa disponible'
-                    ], 404);
-                }
-    
-                return response()->json([
-                    'success' => true,
-                    'convocatoria' => [
-                        'id' => $convocatoria->idConvocatoria,
-                        'nombre' => $convocatoria->nombre,
-                        'estado' => $convocatoria->estado
-                    ]
-                ]);
-            } catch (\Exception $e) {
-                Log::error('Error al obtener convocatoria: ' . $e->getMessage());
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al obtener la convocatoria',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-        }
-
-    public function obtenerColegio()
-        {
-            try {
-                $tutor = auth()->user()->tutor;
-                
-                if (!$tutor) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Usuario no es un tutor'
-                    ], 403);
-                }
-                
-                $idDelegacion = $tutor->primerIdDelegacion();
-                if (!$idDelegacion) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Tutor no tiene delegación asignada'
-                    ], 404);
-                }
-    
-                $delegacion = Delegacion::find($idDelegacion);
-                if (!$delegacion) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Delegación no encontrada'
-                    ], 404);
-                }
-    
-                return response()->json([
-                    'success' => true,
-                    'colegio' => [
-                        'id' => $delegacion->idDelegacion,
-                        'nombre' => $delegacion->nombre
-                    ]
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Error al obtener el colegio',
-                    'error' => $e->getMessage()
-                ], 500);
-            }
-        }
 }

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AreaController extends Controller
 {
@@ -106,6 +108,7 @@ class AreaController extends Controller
             ], 422);
         }
 
+        DB::statement('SET @current_user_id = ' . Auth::id());
         $area = Area::create([
             'nombre' => $request->nombre,
         ]);
@@ -145,7 +148,8 @@ class AreaController extends Controller
      * @return JsonResponse
      */
     public function edit(int $id): JsonResponse
-    {
+    {   
+        DB::statement('SET @current_user_id = ' . Auth::id());
         $area = Area::findOrFail($id);
 
         return response()->json([
@@ -173,7 +177,7 @@ class AreaController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-
+        DB::statement('SET @current_user_id = ' . Auth::id());
         $area = Area::findOrFail($id);
         $area->update([
             'nombre' => $request->nombre,
@@ -198,7 +202,8 @@ class AreaController extends Controller
      * @return JsonResponse|RedirectResponse
      */
     public function destroy(int $id)
-    {
+    {   
+        DB::statement('SET @current_user_id = ' . Auth::id());
         $area = Area::findOrFail($id);
         $area->delete();
 

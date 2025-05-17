@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Delegado;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -10,8 +11,55 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use App\Events\InscripcionAprobadaEstudiante;
 
-class BoletaController extends Controller
+//BORRAR LO DE ABAJO, NO SIRVE CREO//
+use App\Models\Tutor;
+use App\Models\User;
+use App\Models\Delegacion;
+use App\Models\TutorAreaDelegacion;
+use App\Models\Area;
+use App\Models\Rol;
+use Illuminate\Support\Str;
+
+
+
+
+class ComprobantePagoController extends Controller
 {
+    /**
+     * Obtiene el ID de inscripción a partir del ID de estudiante
+     * 
+     * @param int $idEstudiante ID del estudiante
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function obtenerInscripcionPorEstudiante($idEstudiante)
+    {
+        try {
+            $inscripcion = DB::table('tutorestudianteinscripcion')
+                ->where('idEstudiante', $idEstudiante)
+                ->orderBy('created_at', 'desc') // Obtenemos la más reciente
+                ->first(['idInscripcion']);
+
+            if (!$inscripcion) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró inscripción para el estudiante'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'inscripcion_id' => $inscripcion->idInscripcion
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error al obtener inscripción: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener la inscripción'
+            ], 500);
+        }
+    }
+    
     /**
      * Verifica si los números de comprobante OCR y usuario son iguales
      * 
@@ -28,23 +76,29 @@ class BoletaController extends Controller
         return $ocrClean === $userClean;
     }
     
+    /**
+     * Procesa el comprobante de pago para un estudiante
+     * Recibe idEstudiante en lugar de inscripcion_id
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function procesarBoleta(Request $request)
     {
         // Validación personalizada
         $validator = Validator::make($request->all(), [
-            'inscripcion_id' => 'required|integer|exists:verificacioninscripcion,idInscripcion',
+            'idEstudiante' => 'required|integer|exists:tutorestudianteinscripcion,idEstudiante',
             'ocr_number' => 'required|numeric|digits:7',
             'user_number' => [
                 'required',
                 'numeric',
                 'digits:7',
-                Rule::unique('verificacioninscripcion', 'CodigoComprobante')
-                    ->whereNotNull('CodigoComprobante')
             ],
             'comprobantePago' => 'required|file|mimes:jpg,jpeg,png|max:5120',
             'estado_ocr' => 'required|in:1,2'
         ], [
-            'user_number.unique' => 'El comprobante ya ha sido registrado. Contacte con soporte técnico si es un error.',
+            'idEstudiante.exists' => 'El estudiante no existe o no tiene una inscripción.',
+            'user_number.digits' => 'El número de comprobante debe tener 7 dígitos.',
             'comprobantePago.mimes' => 'Solo se permiten imágenes JPG, JPEG o PNG.',
             'comprobantePago.max' => 'El tamaño máximo permitido es 5MB.',
             'estado_ocr.in' => 'El comprobante no es válido.',
@@ -66,11 +120,45 @@ class BoletaController extends Controller
         }
 
         try {
+            // Obtener la inscripción para este estudiante
+            $inscripcionResponse = $this->obtenerInscripcionPorEstudiante($request->idEstudiante);
+            
+            if (!$inscripcionResponse->original['success']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró inscripción para el estudiante'
+                ], 404);
+            }
+            
+            $inscripcionId = $inscripcionResponse->original['inscripcion_id'];
+            
+            // Obtener el idBoleta asociado a esta inscripción
+            $boletaInfo = DB::table('verificacioninscripcion')
+                ->where('idInscripcion', $inscripcionId)
+                ->select('idBoleta')
+                ->first();
+            
+            $idBoleta = $boletaInfo ? $boletaInfo->idBoleta : null;
+
+            // Verificar si este comprobante ya está registrado para otra inscripción con DIFERENTE idBoleta
+            $comprobanteExistente = DB::table('verificacioninscripcion')
+                ->where('CodigoComprobante', $request->user_number)
+                ->when($idBoleta, function($query) use ($idBoleta) {
+                    return $query->where('idBoleta', '!=', $idBoleta);
+                })
+                ->exists();
+                
+            if ($comprobanteExistente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'El comprobante ya ha sido registrado. Contacte con soporte técnico si es un error.'
+                ], 422);
+            }
+
             DB::beginTransaction();
 
             // 1. Manejo de archivo
             $file = $request->file('comprobantePago');
-            $inscripcionId = $request->inscripcion_id;
             $directory = "public/inscripcionID/{$inscripcionId}";
             $filename = $file->getClientOriginalName();
 
@@ -101,12 +189,19 @@ class BoletaController extends Controller
                 ]);
 
             if ($affected === 0) {
-                throw new \Exception("No se encontró la inscripción especificada");
+                // Si no existe el registro, lo creamos
+                DB::table('verificacioninscripcion')->insert([
+                    'idInscripcion' => $inscripcionId,
+                    'CodigoComprobante' => $numeroAGuardar,
+                    'RutaComprobante' => "storage/inscripcionID/{$inscripcionId}/{$filename}",
+                    'Comprobante_valido' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
             }
 
             // 3. Actualización del campo status en la tabla inscripcion
             // Solo actualizar el status a "aprobado" si los números coinciden
-            // Si no coinciden, dejar el status como está (pendiente)
             if ($numerosIguales) {
                 $statusUpdated = DB::table('inscripcion')
                     ->where('idInscripcion', $inscripcionId)
@@ -125,25 +220,16 @@ class BoletaController extends Controller
                 ->where('detalle_inscripcion.idInscripcion', $inscripcionId)
                 ->select('area.nombre as nombreArea')
                 ->first();
-
-            // Obtener el ID del estudiante
-            $estudiante = DB::table('tutorestudianteinscripcion')
-                ->where('idInscripcion', $inscripcionId)
-                ->select('idEstudiante')
-                ->first();
                 
             // Disparar evento de inscripción aprobada solo si los números coinciden
-            if ($numerosIguales && isset($estudiante)) {
-                // Aquí puedes disparar el evento si existe en tu aplicación
-                // Disparar el evento 
-                // GUSTAVO REVISA SI ESTO ESTA BIEN XD
-                
-                // event(new InscripcionAprobadaEstudiante(
-                //     $estudiante->idEstudiante,
-                //     'Tu inscripción ha sido aprobada exitosamente',
-                //     'aprobacion',
-                //     $inscripcion->nombreArea
-                // ));
+            if ($numerosIguales) {
+                // Aquí se dispara el evento
+                event(new InscripcionAprobadaEstudiante(
+                    $request->idEstudiante,
+                    'Tu inscripción ha sido aprobada exitosamente',
+                    'aprobacion',
+                    $inscripcion ? $inscripcion->nombreArea : 'No definida'
+                ));
             }
 
             DB::commit();
@@ -158,7 +244,9 @@ class BoletaController extends Controller
                 'message' => $mensaje,
                 'data' => [
                     'codigo' => $numeroAGuardar,
-                    'ruta' => Storage::url($path)
+                    'ruta' => Storage::url($path),
+                    'estudiante_id' => $request->idEstudiante,
+                    'inscripcion_id' => $inscripcionId
                 ]
             ]);
         } catch (\Exception $e) {
@@ -177,5 +265,4 @@ class BoletaController extends Controller
         }
     }
 }
-                
-
+        

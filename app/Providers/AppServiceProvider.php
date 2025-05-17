@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         // Forzar HTTPS en todos los entornos
-        URL::forceScheme('https');
+        //URL::forceScheme('https');
         /*if ($this->app->environment('local')) {
             URL::forceScheme('https');
         }*/

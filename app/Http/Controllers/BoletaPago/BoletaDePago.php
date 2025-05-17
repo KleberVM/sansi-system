@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\BoletaPagoInscripcion;
 use Illuminate\Support\Facades\DB;
+use App\Models\VerificacionInscripcion;
 
 
 class BoletaDePago extends Controller
@@ -200,6 +201,11 @@ class BoletaDePago extends Controller
             // Crear las asociaciones solo para las inscripciones que no tienen boleta
             foreach ($inscripcionesIds as $idInscripcion) {
                 BoletaPagoInscripcion::firstOrCreate([
+                    'idInscripcion' => $idInscripcion,
+                    'idBoleta' => $boleta->idBoleta
+                ]);
+                // Crear registro en verificacioninscripcion si no existe
+                VerificacionInscripcion::firstOrCreate([
                     'idInscripcion' => $idInscripcion,
                     'idBoleta' => $boleta->idBoleta
                 ]);

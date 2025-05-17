@@ -12,6 +12,9 @@ use App\Events\InscripcionArea;
 use App\Listeners\CrearNotificacionInscripcionArea;
 use App\Events\InscripcionAprobadaEstudiante;
 use App\Listeners\NotificarInscripcionAprobada;
+use App\Events\InscripcionEstTokenDelegado;
+use App\Listeners\NotificarTutorInscEst;
+
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -32,6 +35,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         InscripcionAprobadaEstudiante::class => [
             NotificarInscripcionAprobada::class,
+
+        ],InscripcionEstTokenDelegado::class =>[
+            NotificarTutorInscEst::class
         ],
     ];
 

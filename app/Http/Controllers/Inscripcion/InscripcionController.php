@@ -24,30 +24,36 @@ use App\Models\TutorEstudianteInscripcion;
 class InscripcionController extends Controller
 {
     public $conv;
-    public function index()
+    
+    public function listarConvocatorias()
     {
-        // // IGNOREN ESTO, NO AFECTA EN NADA SOLO ESTABA PROBANDO UNAS COSITAS
-        // $user = Auth::user();
-        // if ($user && $user->estudiante) {
-        //     $estaInscrito = TutorEstudianteInscripcion::where('idEstudiante', $user->id)->exists();
-        //     if ($estaInscrito) {
-        //         return redirect()->route('inscripcion.estudiante.informacion');
-        //     }
-        // }
+        // Obtener todas las convocatorias en estado "Publicada"
+        $convocatorias = \App\Models\Convocatoria::where('estado', 'Publicada')
+            ->orderBy('fechaInicio', 'desc')
+            ->get();
+        
+        return view('inscripciones.listaConvocatorias', [
+            'convocatorias' => $convocatorias
+        ]);
+    }
 
-        // Obtener el ID de la convocatoria activa
-        $convocatoria = new VerificarExistenciaConvocatoria();
-        $idConvocatoriaResult = $convocatoria->verificarConvocatoriaActiva();
-
-        // Verificar si hay una convocatoria activa
-        if ($idConvocatoriaResult instanceof \Illuminate\Http\JsonResponse) {
-            // No hay convocatoria activa
-            return view('inscripciones.inscripcionEstudiante', [
-                'convocatoriaActiva' => false
-            ]);
+    public function index($idConvocatoria = null)
+    {
+        // Si no se proporciona un ID de convocatoria, redirigir al listado
+        if (!$idConvocatoria) {
+            return redirect()->route('inscripcion.convocatorias');
         }
 
-        $idConvocatoria = $idConvocatoriaResult;
+        // Verificar si la convocatoria existe y está en estado "Publicada"
+        $convocatoriaInfo = \App\Models\Convocatoria::where('idConvocatoria', $idConvocatoria)
+            ->where('estado', 'Publicada')
+            ->first();
+
+        // Si no se encuentra la convocatoria o no está publicada
+        if (!$convocatoriaInfo) {
+            return redirect()->route('inscripcion.convocatorias')
+                ->with('error', 'La convocatoria solicitada no está disponible');
+        }
         $this->conv = $idConvocatoria;
 
         // Obtener la información de la convocatoria
@@ -56,19 +62,55 @@ class InscripcionController extends Controller
         // Obtener las delegaciones (colegios)
         $colegios = \App\Models\Delegacion::select('idDelegacion as id', 'nombre')
             ->orderBy('nombre')
-            ->get();
-
-        // Obtener las areas por el id de la convocatoria
-        $obtenerAreas = new ObtenerAreasConvocatoria();
-        $areas = $obtenerAreas->obtenerAreasPorConvocatoria($idConvocatoria);
-
+            ->get();        // Obtener las areas directamente del modelo en lugar de usar la clase auxiliar
+        try {
+            $areas = \App\Models\ConvocatoriaAreaCategoria::with('area')
+                ->where('idConvocatoria', $idConvocatoria)
+                ->get()
+                ->pluck('area')
+                ->filter()
+                ->unique('idArea')
+                ->values();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error obteniendo áreas: " . $e->getMessage());
+            $areas = collect([]);
+        }
+        
         // Obtener las categorias por el id de la convocatoria
         $obtenerCategorias = new ObtenerCategoriasArea();
-        $categorias = $obtenerCategorias->categoriasAreas($idConvocatoria);
+        $categoriasResponse = $obtenerCategorias->categoriasAreas($idConvocatoria);
+        
+        // Convertir respuesta JSON a colección si es necesario
+        if ($categoriasResponse instanceof \Illuminate\Http\Response || $categoriasResponse instanceof \Illuminate\Http\JsonResponse) {
+            try {
+                $responseContent = $categoriasResponse->getContent();
+                $decodedContent = json_decode($responseContent);
+                $categorias = collect($decodedContent);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Error decodificando categorías: " . $e->getMessage());
+                $categorias = collect([]);
+            }
+        } else {
+            $categorias = $categoriasResponse;
+        }
 
         // Obtener los grados por las categorias
         $obtenerGrados = new ObtenerGradosArea();
-        $grados = $obtenerGrados->obtenerGradosPorArea($categorias);
+        $gradosResponse = $obtenerGrados->obtenerGradosPorArea($categorias);
+        
+        // Convertir respuesta JSON a colección si es necesario
+        if ($gradosResponse instanceof \Illuminate\Http\Response || $gradosResponse instanceof \Illuminate\Http\JsonResponse) {
+            try {
+                $responseContent = $gradosResponse->getContent();
+                $decodedContent = json_decode($responseContent);
+                $grados = collect($decodedContent);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error("Error decodificando grados: " . $e->getMessage());
+                $grados = collect([]);
+            }
+        } else {
+            $grados = $gradosResponse;
+        }
 
         return view('inscripciones.inscripcionEstudiante', [
             'convocatoriaActiva' => true,
@@ -139,13 +181,12 @@ class InscripcionController extends Controller
             Log::error('Error en inscripción:', ['error' => $e->getMessage()]);
             return back()->with('error', 'Hubo un error al procesar la inscripción. Por favor, intente nuevamente.');
         }
-    }
-
-    public function showTutorProfile()
+    }    public function showTutorProfile()
     {
         $user = Auth::user();
         $token = null;
         $areas = collect();
+        $convocatorias_tutor = collect();
 
         // revisamos si el usuario es un tutor
         if ($user->tutor && $user->tutor->tutorAreaDelegacion) {
@@ -155,6 +196,14 @@ class InscripcionController extends Controller
                         ->select('area.*')
                         ->get();
             $token = $user->tutor->tutorAreaDelegacion->tokenTutor;
+            
+            // Obtenemos las convocatorias a las que está inscrito el tutor
+            $convocatorias_tutor = \App\Models\Convocatoria::join('tutorAreaDelegacion', 'convocatoria.idConvocatoria', '=', 'tutorAreaDelegacion.idConvocatoria')
+                                ->where('tutorAreaDelegacion.id', $user->tutor->id)
+                                ->where('convocatoria.estado', 'Publicada')
+                                ->select('convocatoria.*')
+                                ->distinct()
+                                ->get();
         } else {
             // mostramos las area en la convocatoria activa
             $convocatoria = \App\Models\Convocatoria::where('estado', 'Publicada')->first();
@@ -173,7 +222,7 @@ class InscripcionController extends Controller
         
         $idConvocatoriaResult = $convocatoria ? $convocatoria->idConvocatoria : null;
         
-        return view('inscripciones.inscripcionTutor', compact('areas', 'token', 'idConvocatoriaResult'));
+        return view('inscripciones.inscripcionTutor', compact('areas', 'token', 'idConvocatoriaResult', 'convocatorias_tutor'));
     }
 /*
 

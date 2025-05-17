@@ -10,7 +10,8 @@ class ConvocatoriaAreaCategoria extends Model
     use HasFactory;
 
     protected $table = 'convocatoriaareacategoria';
-    public $timestamps = false;
+    protected $primaryKey = null;
+    public $incrementing = false;
 
     protected $fillable = [
         'idConvocatoria',
@@ -21,14 +22,14 @@ class ConvocatoriaAreaCategoria extends Model
         'precioEquipo',
     ];
 
-    public function area()
-    {
-        return $this->belongsTo(Area::class, 'idArea', 'idArea');
-    }
-
     public function convocatoria()
     {
         return $this->belongsTo(Convocatoria::class, 'idConvocatoria', 'idConvocatoria');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'idArea', 'idArea');
     }
 
     public function categoria()

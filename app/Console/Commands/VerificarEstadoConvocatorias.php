@@ -37,37 +37,59 @@ class VerificarEstadoConvocatorias extends Command
      * Execute the console command.
      *
      * @return int
-     */
-    public function handle()
+     */    public function handle()
     {
         $this->info('Verificando estado de convocatorias...');
         
         try {
             $hoy = Carbon::now();
+            $fechaHoy = $hoy->format('Y-m-d');
+            $countPublicadas = 0;
+            $countFinalizadas = 0;
             
-            // Buscar convocatorias publicadas con fecha fin pasada
-            $convocatoriasVencidas = DB::table('convocatoria')
-                ->where('estado', 'Publicada')
-                ->where('fechaFin', '<', $hoy->format('Y-m-d'))
+            // 1. Buscar convocatorias en Borrador que hayan alcanzado su fecha de inicio
+            // Solo las convocatorias en Borrador pasan a Publicada
+            $convocatoriasIniciadas = DB::table('convocatoria')
+                ->where('estado', 'Borrador')
+                ->where('fechaInicio', '<=', $fechaHoy)
                 ->get();
             
-            $count = 0;
+            // Actualizar el estado de las convocatorias iniciadas a 'Publicada'
+            foreach ($convocatoriasIniciadas as $convocatoria) {
+                DB::table('convocatoria')
+                    ->where('idConvocatoria', $convocatoria->idConvocatoria)
+                    ->update([
+                        'estado' => 'Publicada',
+                        'updated_at' => now()
+                    ]);
+                
+                $this->info("Convocatoria {$convocatoria->idConvocatoria} cambió a estado Publicada por fecha de inicio");
+                Log::info("Convocatoria {$convocatoria->idConvocatoria} cambió automáticamente a estado Publicada por fecha de inicio");
+                $countPublicadas++;
+            }
             
-            // Actualizar el estado de las convocatorias vencidas a 'Borrador'
+            // 2. Buscar convocatorias SOLO en estado Publicada con fecha fin pasada
+            // Solo las convocatorias Publicadas pueden pasar a Finalizado
+            $convocatoriasVencidas = DB::table('convocatoria')
+                ->where('estado', 'Publicada')
+                ->where('fechaFin', '<', $fechaHoy)
+                ->get();
+            
+            // Actualizar el estado de las convocatorias vencidas a 'Finalizado'
             foreach ($convocatoriasVencidas as $convocatoria) {
                 DB::table('convocatoria')
                     ->where('idConvocatoria', $convocatoria->idConvocatoria)
                     ->update([
-                        'estado' => 'Borrador',
+                        'estado' => 'Finalizado',
                         'updated_at' => now()
                     ]);
                 
-                $this->info("Convocatoria {$convocatoria->idConvocatoria} cambió a estado Borrador por fecha vencida");
-                Log::info("Convocatoria {$convocatoria->idConvocatoria} cambió automáticamente a estado Borrador por fecha vencida");
-                $count++;
+                $this->info("Convocatoria {$convocatoria->idConvocatoria} cambió a estado Finalizado por fecha vencida");
+                Log::info("Convocatoria {$convocatoria->idConvocatoria} cambió automáticamente a estado Finalizado por fecha vencida");
+                $countFinalizadas++;
             }
             
-            $this->info("Proceso completado. {$count} convocatorias actualizadas.");
+            $this->info("Proceso completado. {$countPublicadas} convocatorias publicadas y {$countFinalizadas} convocatorias finalizadas.");
             return 0;
         } catch (\Exception $e) {
             $this->error('Error al verificar estado de convocatorias: ' . $e->getMessage());

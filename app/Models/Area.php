@@ -19,4 +19,9 @@ class Area extends Model
     {
         return $this->belongsToMany(Tutor::class, 'tutorAreaDelegacion', 'idArea', 'id');
     }
+
+    public function convocatoriaAreaCategorias()
+    {
+        return $this->hasMany(ConvocatoriaAreaCategoria::class, 'idArea', 'idArea');
+    }
 }

@@ -291,36 +291,70 @@ class EstudianteController extends Controller
 
     /**
      * Actualiza la información de un estudiante
-     */
-    public function update(Request $request, $id)
+     */    public function update(Request $request, $id)
     {
         try {
-            $request->validate([
-                'area_id' => 'required|exists:areas,id',
-                'categoria_id' => 'required|exists:categorias,id',
+            $validationRules = [
+                'area_id' => 'required|exists:area,idArea',
+                'categoria_id' => 'required|exists:categoria,idCategoria',
                 'modalidad' => 'required|in:individual,duo,equipo'
-            ]);
-
-            $estudiante = Estudiante::findOrFail($id);
+            ];
             
-            // Verificar si el estudiante ya tiene un grupo asignado
-            if ($estudiante->grupo_id) {
+            // Si la modalidad es duo o equipo y hay un grupo, validarlo
+            if (in_array($request->modalidad, ['duo', 'equipo']) && $request->has('idGrupoInscripcion')) {
+                $validationRules['idGrupoInscripcion'] = 'required|exists:grupoInscripcion,id';
+            }
+            
+            $request->validate($validationRules);            $estudiante = Estudiante::with('inscripciones.detalles')->findOrFail($id);
+            
+            // Obtener la inscripción activa del estudiante
+            $inscripcion = $estudiante->inscripciones->first();
+            if (!$inscripcion) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No se puede modificar un estudiante que ya pertenece a un grupo'
-                ], 400);
+                    'message' => 'El estudiante no tiene una inscripción asociada'
+                ], 404);
             }
-
-            $estudiante->update([
-                'area_id' => $request->area_id,
-                'categoria_id' => $request->categoria_id,
-                'modalidad' => $request->modalidad
-            ]);
-
+            
+            // Buscar el detalle de inscripción o crear uno nuevo
+            $detalleInscripcion = \App\Models\DetalleInscripcion::where('idInscripcion', $inscripcion->idInscripcion)
+                ->first();
+                
+            if (!$detalleInscripcion) {
+                // Si no existe un detalle, crear uno nuevo
+                $detalleInscripcion = \App\Models\DetalleInscripcion::create([
+                    'idInscripcion' => $inscripcion->idInscripcion,
+                    'idArea' => $request->area_id,
+                    'idCategoria' => $request->categoria_id,
+                    'modalidadInscripcion' => $request->modalidad
+                ]);
+            } else {
+                // Si ya existe, actualizarlo
+                $detalleInscripcion->update([
+                    'idArea' => $request->area_id,
+                    'idCategoria' => $request->categoria_id,
+                    'modalidadInscripcion' => $request->modalidad
+                ]);
+            }
+            
+            // Si la modalidad es duo o equipo y seleccionaron un grupo, asignarlo
+            if (in_array($request->modalidad, ['duo', 'equipo']) && $request->has('idGrupoInscripcion') && $request->idGrupoInscripcion) {
+                $detalleInscripcion->update([
+                    'idGrupoInscripcion' => $request->idGrupoInscripcion
+                ]);
+            } else if ($request->modalidad == 'individual') {
+                // Si es modalidad individual, asegúrese de que no tenga grupo asociado
+                $detalleInscripcion->update([
+                    'idGrupoInscripcion' => null
+                ]);
+            }            // Recargar el estudiante con las relaciones actualizadas
+            $estudianteActualizado = Estudiante::with(['inscripciones.detalles.area', 'inscripciones.detalles.categoria', 'inscripciones.detalles.grupoInscripcion', 'user'])
+                ->findOrFail($id);
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Estudiante actualizado correctamente',
-                'estudiante' => $estudiante
+                'estudiante' => $estudianteActualizado
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -442,6 +476,42 @@ class EstudianteController extends Controller
             return redirect()->back()
                 ->with('error', 'Error al completar la inscripción: ' . $e->getMessage())
                 ->withInput();
+        }
+    }    /**
+     * Obtiene los grupos disponibles por delegación y modalidad
+     */
+    public function obtenerGrupos($idDelegacion, $modalidad)
+    {
+        try {
+            // Verificar que la modalidad sea válida
+            if (!in_array($modalidad, ['duo', 'equipo'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Modalidad no válida'
+                ], 400);
+            }
+            
+            // Obtener los grupos que pertenecen a la delegación y modalidad especificadas
+            $grupos = \App\Models\GrupoInscripcion::where('idDelegacion', $idDelegacion)
+                ->where('modalidad', $modalidad)
+                ->where('estado', '!=', 'cancelado')
+                ->get()                ->map(function($grupo) {
+                    // Simplemente devolver el modelo como array
+                    return $grupo->toArray();
+                });
+            
+            return response()->json([
+                'success' => true,
+                'grupos' => $grupos
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('Error al obtener grupos: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al obtener los grupos disponibles',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
