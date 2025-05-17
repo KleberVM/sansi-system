@@ -21,7 +21,7 @@ class Convocatoria extends Migration
             $table->string('contacto');
             $table->string('requisitos',300);
             $table->string('metodoPago');
-            $table->enum('estado', ['Borrador', 'Publicada', 'Cancelada'])->default('Borrador');
+            $table->enum('estado', ['Borrador', 'Publicada', 'Cancelada','Finalizado'])->default('Borrador');
             $table->timestamps();
         });
         

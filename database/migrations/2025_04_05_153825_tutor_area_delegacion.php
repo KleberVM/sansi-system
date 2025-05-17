@@ -12,17 +12,19 @@ class TutorAreaDelegacion extends Migration
      * @return void
      */
     public function up()
-    {
-        Schema::create('tutorAreaDelegacion', function (Blueprint $table) {
+    {        Schema::create('tutorAreaDelegacion', function (Blueprint $table) {
             $table->unsignedBigInteger('id');
             $table->unsignedBigInteger('idArea');
             $table->unsignedBigInteger('idDelegacion');
+            $table->unsignedBigInteger('idConvocatoria')->nullable();
             $table->string('tokenTutor');
             $table->timestamps();
 
             $table->foreign('id')->references('id')->on('tutor')->onDelete('cascade');
             $table->foreign('idArea')->references('idArea')->on('area')->onDelete('cascade');
             $table->foreign('idDelegacion')->references('idDelegacion')->on('delegacion')->onDelete('cascade');
+            $table->foreign('idConvocatoria')->references('idConvocatoria')->on('convocatoria')->onDelete('cascade');
+            // Modificamos la clave primaria para no incluir idConvocatoria, ya que puede ser nulo
             $table->primary(['id', 'idArea', 'idDelegacion']);
 
         });
