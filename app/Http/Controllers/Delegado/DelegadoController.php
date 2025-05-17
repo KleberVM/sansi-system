@@ -56,7 +56,7 @@ class DelegadoController extends Controller
             case 'colegio':
                 // Ordenar por el nombre del colegio requiere un enfoque diferente
                 // debido a la relación muchos a muchos
-                $query->join('tutorAreaDelegacion as tad', 'tutor.id', '=', 'tad.id')
+                $query->join('tutorareadelegacion as tad', 'tutor.id', '=', 'tad.id')
                       ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
                       ->orderBy('d.nombre', $direction);
                 break;
@@ -81,7 +81,7 @@ class DelegadoController extends Controller
     public function solicitudes(Request $request)
     {
         // Consulta base para obtener tutores pendientes con sus relaciones
-        $query = Tutor::with(['user', 'delegaciones', 'areas', 'tutorAreaDelegacion'])
+        $query = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
             ->join('users', 'tutor.id', '=', 'users.id')
             ->select('tutor.*')
             ->where('tutor.estado', 'pendiente'); // Solo mostrar tutores pendientes
@@ -126,7 +126,7 @@ class DelegadoController extends Controller
                       ->orderBy('u.email', $direction);
                 break;
             case 'colegio':
-                $query->join('tutorAreaDelegacion as tad', 'tutor.id', '=', 'tad.id')
+                $query->join('tutorareadelegacion as tad', 'tutor.id', '=', 'tad.id')
                       ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
                       ->orderBy('d.nombre', $direction);
                 break;
@@ -240,7 +240,7 @@ class DelegadoController extends Controller
     {
         try {
             // Obtener el tutor con sus relaciones
-            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorAreaDelegacion'])
+            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
                 ->where('estado', 'aprobado')
                 ->findOrFail($id);
                 
@@ -258,7 +258,7 @@ class DelegadoController extends Controller
     {
         try {
             // Obtener el tutor con sus relaciones
-            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorAreaDelegacion'])
+            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
                 ->where('estado', 'aprobado')
                 ->findOrFail($id);
             

@@ -30,7 +30,7 @@ class Convocatoria extends Model
      */
     public function tutores()
     {
-        return $this->belongsToMany(Tutor::class, 'tutorAreaDelegacion', 'idConvocatoria', 'id')
+        return $this->belongsToMany(Tutor::class, 'tutorareadelegacion', 'idConvocatoria', 'id')
                     ->withPivot('idArea', 'idDelegacion', 'tokenTutor')
                     ->withTimestamps();
     }
@@ -42,7 +42,7 @@ class Convocatoria extends Model
     {
         return $this->hasManyThrough(
             Area::class,
-            TutorAreaDelegacion::class,
+            tutorareadelegacion::class,
             'idConvocatoria', // Clave externa en tutorAreaDelegacion
             'idArea',         // Clave externa en area
             'idConvocatoria', // Clave local en convocatoria

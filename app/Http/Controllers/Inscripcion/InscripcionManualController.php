@@ -56,7 +56,7 @@ class InscripcionManualController extends Controller
             $convocatoriasPublicadas = Convocatoria::where('estado', 'Publicada')->get();
             
             $convocatoriasDelTutor = $convocatoriasPublicadas->filter(function ($convocatoria) use ($tutor, $idDelegacion) {
-                return DB::table('tutorAreaDelegacion')
+                return DB::table('tutorareadelegacion')
                     ->where('id', $tutor->id)
                     ->where('idDelegacion', $idDelegacion)
                     ->where(function ($query) use ($convocatoria) {
@@ -97,7 +97,7 @@ class InscripcionManualController extends Controller
             }
 
             // Get IDs of areas the tutor is assigned to for the given convocatoria and delegation
-            $areaIds = DB::table('tutorAreaDelegacion')
+            $areaIds = DB::table('tutorareadelegacion')
                 ->where('id', $tutor->id)
                 ->where('idDelegacion', $idDelegacion)
                 ->where(function ($query) use ($idConvocatoria) {
