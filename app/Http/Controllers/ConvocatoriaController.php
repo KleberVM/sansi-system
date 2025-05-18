@@ -65,9 +65,9 @@ class ConvocatoriaController extends Controller
 
         // Get grades by category
         $gradosPorCategoria = [];
-        $gradosCategorias = DB::table('gradoCategoria')
-            ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-            ->select('gradoCategoria.idCategoria', 'grado.idGrado', 'grado.grado')
+        $gradosCategorias = DB::table('gradocategoria')
+            ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+            ->select('gradocategoria.idCategoria', 'grado.idGrado', 'grado.grado')
             ->get();
 
         foreach ($gradosCategorias as $gc) {
@@ -164,7 +164,7 @@ class ConvocatoriaController extends Controller
                     }
 
                     // Guardar la relación convocatoria-área-categoría
-                    DB::table('convocatoriaAreaCategoria')->insert([
+                    DB::table('convocatoriaareacategoria')->insert([
                         'idConvocatoria' => $idConvocatoria,
                         'idArea' => $idArea,
                         'idCategoria' => $idCategoria,
@@ -257,7 +257,7 @@ class ConvocatoriaController extends Controller
             $areasConCategorias = [];
 
             // Obtener las relaciones de convocatoria-área-categoría
-            $convocatoriaAreasCategorias = DB::table('convocatoriaAreaCategoria')
+            $convocatoriaAreasCategorias = DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->get();
 
@@ -297,9 +297,9 @@ class ConvocatoriaController extends Controller
                             ];
 
                             // Obtener grados para esta categoría
-                            $grados = DB::table('gradoCategoria')
-                                ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-                                ->where('gradoCategoria.idCategoria', $categoriaId)
+                            $grados = DB::table('gradocategoria')
+                                ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+                                ->where('gradocategoria.idCategoria', $categoriaId)
                                 ->select('grado.idGrado', 'grado.grado as nombre')
                                 ->get();
 
@@ -349,7 +349,7 @@ class ConvocatoriaController extends Controller
             $areasConCategorias = [];
 
             // Obtener las relaciones de convocatoria-área-categoría
-            $convocatoriaAreasCategorias = DB::table('convocatoriaAreaCategoria')
+            $convocatoriaAreasCategorias = DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->get();
 
@@ -389,9 +389,9 @@ class ConvocatoriaController extends Controller
                             ];
 
                             // Obtener grados para esta categoría
-                            $grados = DB::table('gradoCategoria')
-                                ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-                                ->where('gradoCategoria.idCategoria', $categoriaId)
+                            $grados = DB::table('gradocategoria')
+                                ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+                                ->where('gradocategoria.idCategoria', $categoriaId)
                                 ->select('grado.idGrado', 'grado.grado as nombre')
                                 ->get();
 
@@ -448,7 +448,7 @@ class ConvocatoriaController extends Controller
             $areasConCategorias = [];
 
             // Obtener las relaciones de convocatoria-área-categoría
-            $convocatoriaAreasCategorias = DB::table('convocatoriaAreaCategoria')
+            $convocatoriaAreasCategorias = DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->get();
 
@@ -488,9 +488,9 @@ class ConvocatoriaController extends Controller
                             ];
 
                             // Obtener grados para esta categoría
-                            $grados = DB::table('gradoCategoria')
-                                ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-                                ->where('gradoCategoria.idCategoria', $categoriaId)
+                            $grados = DB::table('gradocategoria')
+                                ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+                                ->where('gradocategoria.idCategoria', $categoriaId)
                                 ->select('grado.idGrado', 'grado.grado as nombre')
                                 ->get();
 
@@ -505,9 +505,9 @@ class ConvocatoriaController extends Controller
 
             // Get grades by category
             $gradosPorCategoria = [];
-            $gradosCategorias = DB::table('gradoCategoria')
-                ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-                ->select('gradoCategoria.idCategoria', 'grado.idGrado', 'grado.grado')
+            $gradosCategorias = DB::table('gradocategoria')
+                ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+                ->select('gradocategoria.idCategoria', 'grado.idGrado', 'grado.grado')
                 ->get();
 
             foreach ($gradosCategorias as $gc) {
@@ -612,7 +612,7 @@ class ConvocatoriaController extends Controller
             if ($convocatoria->estado == 'Borrador' && $request->has('areas')) {
                 // Eliminar las relaciones existentes
                 DB::statement('SET @current_user_id = ' . Auth::id());
-                DB::table('convocatoriaAreaCategoria')
+                DB::table('convocatoriaareacategoria')
                     ->where('idConvocatoria', $id)
                     ->delete();
 
@@ -631,7 +631,7 @@ class ConvocatoriaController extends Controller
 
                             // Guardar la relación convocatoria-área-categoría
                             DB::statement('SET @current_user_id = ' . Auth::id());
-                            DB::table('convocatoriaAreaCategoria')->insert([
+                            DB::table('convocatoriaareacategoria')->insert([
                                 'idConvocatoria' => $id,
                                 'idArea' => $idArea,
                                 'idCategoria' => $idCategoria,
@@ -689,7 +689,7 @@ class ConvocatoriaController extends Controller
             }
 
             // Eliminar las relaciones de áreas y categorías
-            DB::table('convocatoriaAreaCategoria')
+            DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->delete();
 
@@ -970,12 +970,12 @@ class ConvocatoriaController extends Controller
             ]);
 
             // Copiar las relaciones de áreas y categorías
-            $convocatoriaAreasCategorias = DB::table('convocatoriaAreaCategoria')
+            $convocatoriaAreasCategorias = DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->get();
 
             foreach ($convocatoriaAreasCategorias as $relacion) {
-                DB::table('convocatoriaAreaCategoria')->insert([
+                DB::table('convocatoriaareacategoria')->insert([
                     'idConvocatoria' => $nuevaConvocatoriaId,
                     'idArea' => $relacion->idArea,
                     'idCategoria' => $relacion->idCategoria,
@@ -1130,7 +1130,7 @@ class ConvocatoriaController extends Controller
             $areasConCategorias = [];
 
             // Obtener las relaciones de convocatoria-área-categoría
-            $convocatoriaAreasCategorias = DB::table('convocatoriaAreaCategoria')
+            $convocatoriaAreasCategorias = DB::table('convocatoriaareacategoria')
                 ->where('idConvocatoria', $id)
                 ->get();
 
@@ -1170,9 +1170,9 @@ class ConvocatoriaController extends Controller
                             ];
 
                             // Obtener grados para esta categoría
-                            $grados = DB::table('gradoCategoria')
-                                ->join('grado', 'gradoCategoria.idGrado', '=', 'grado.idGrado')
-                                ->where('gradoCategoria.idCategoria', $categoriaId)
+                            $grados = DB::table('gradocategoria')
+                                ->join('grado', 'gradocategoria.idGrado', '=', 'grado.idGrado')
+                                ->where('gradocategoria.idCategoria', $categoriaId)
                                 ->select('grado.idGrado', 'grado.grado as nombre')
                                 ->get();
 

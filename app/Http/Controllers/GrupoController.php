@@ -246,6 +246,9 @@ class GrupoController extends Controller
             }
             
             $idDelegacion = $tutorAreaDelegacion->idDelegacion;
+            if (!$idDelegacion) {
+                return response()->json([], 200);
+            }
             
             // Registrar para depuración
             Log::info('Buscando grupos para delegación', [
@@ -258,6 +261,8 @@ class GrupoController extends Controller
             // Modificado para incluir grupos independientemente de su estado
             $grupos = GrupoInscripcion::where('modalidad', $modalidad)
                 ->where('idDelegacion', $idDelegacion)
+                //LA FILA DE ABAJO ME DA ERRRO, DEBERIA DAR ERROR SEGUN DEEPSEEK, KLEBEEEER.
+                //Verifica que el campo se llame exactamente idGrupoInscripcion en la tabla grupo_inscripcion. Si en la BD está en minúsculas (idgrupoinscripcion), podría fallar en algunos entornos sensibles a mayúsculas/minúsculas.
                 ->select('idGrupoInscripcion as id', 'nombreGrupo', 'codigoInvitacion', 'estado')
                 ->get();
             

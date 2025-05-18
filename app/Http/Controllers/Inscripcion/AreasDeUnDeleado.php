@@ -14,6 +14,9 @@ class AreasDeUnDeleado extends Controller
     {
         $idDelegado = Auth::user()->id;
         $tutor = Tutor::find($idDelegado);
+        if (!$tutor) {
+            return response()->json(['error' => 'Tutor no encontrado'], 404);
+        }
         $areas = $tutor->areasSimple; // o $tutor->areasSimple()
 
         return $areas;

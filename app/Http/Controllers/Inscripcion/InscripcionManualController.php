@@ -164,9 +164,9 @@ class InscripcionManualController extends Controller
             $modalidad = $request->modalidad;
             
             $precio = DB::table('precios')
-                ->join('convocatoriaareascategorias', 'precios.idConvocatoriaAreasCat', '=', 'convocatoriaareascategorias.idConvocatoriaAreasCat') // Corrected table name
-                ->where('convocatoriaareascategorias.idConvocatoria', $idConvocatoria)
-                ->where('convocatoriaareascategorias.idCategoria', $idCategoria)
+                ->join('convocatoriaareascategoria', 'precios.idConvocatoriaAreasCat', '=', 'convocatoriaareascategoria.idConvocatoriaAreasCat') // Corrected table name
+                ->where('convocatoriaareascategoria.idConvocatoria', $idConvocatoria)
+                ->where('convocatoriaareascategoria.idCategoria', $idCategoria)
                 ->where('precios.modalidad', $modalidad)
                 ->value('precios.precio');
             

@@ -8,7 +8,7 @@ class UserRol extends Migration
 {
     public function up()
     {
-        Schema::create('userRol', function (Blueprint $table) {
+        Schema::create('userrol', function (Blueprint $table) {
 
             $table->unsignedBigInteger('id');
             $table->unsignedBigInteger('idRol');
@@ -24,6 +24,6 @@ class UserRol extends Migration
 
     public function down()
     {
-        Schema::drop('userRol');
+        Schema::drop('userrol');
     }
 }

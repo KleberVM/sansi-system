@@ -30,7 +30,7 @@ class EstudianteController extends Controller
             }
             
             // Check if user has student role (id 3)
-            $hasStudentRole = DB::table('userRol')
+            $hasStudentRole = DB::table('userrol')
                 ->where('id', $user->id)
                 ->where('idRol', 3) // Student role ID
                 ->exists();

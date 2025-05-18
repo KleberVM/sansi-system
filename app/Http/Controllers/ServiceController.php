@@ -21,9 +21,9 @@ class ServiceController extends Controller
         $funcionesDelRol = [];
         
         if ($primerRol) {
-            $funcionesDelRol = DB::table('rolFuncion')
-                ->join('funcion', 'rolFuncion.idFuncion', '=', 'funcion.idFuncion')
-                ->where('rolFuncion.idRol', $primerRol->idRol)
+            $funcionesDelRol = DB::table('rolfuncion')
+                ->join('funcion', 'rolfuncion.idFuncion', '=', 'funcion.idFuncion')
+                ->where('rolfuncion.idRol', $primerRol->idRol)
                 ->select('funcion.*')
                 ->get();
         }
@@ -33,9 +33,9 @@ class ServiceController extends Controller
     
     public function obtenerFuncionesRol($idRol)
     {
-        $funcionesDelRol = DB::table('rolFuncion')
-            ->join('funcion', 'rolFuncion.idFuncion', '=', 'funcion.idFuncion')
-            ->where('rolFuncion.idRol', $idRol)
+        $funcionesDelRol = DB::table('rolfuncion')
+            ->join('funcion', 'rolfuncion.idFuncion', '=', 'funcion.idFuncion')
+            ->where('rolfuncion.idRol', $idRol)
             ->select('funcion.*')
             ->get();
             
@@ -48,7 +48,7 @@ class ServiceController extends Controller
         $todasLasFunciones = Funcion::all();
         
         // Obtener las funciones ya asignadas al rol
-        $funcionesAsignadas = DB::table('rolFuncion')
+        $funcionesAsignadas = DB::table('rolfuncion')
             ->where('idRol', $idRol)
             ->pluck('idFuncion')
             ->toArray();
@@ -111,14 +111,14 @@ class ServiceController extends Controller
         }
         
         // Verificar si hay usuarios con este rol
-        $usuariosConRol = DB::table('userRol')->where('idRol', $request->idRol)->exists();
+        $usuariosConRol = DB::table('userrol')->where('idRol', $request->idRol)->exists();
         
         if ($usuariosConRol) {
             return redirect()->route('servicios')->with('error', 'No se puede eliminar el rol porque hay usuarios asignados a él. Debe reasignar o eliminar estos usuarios primero.');
         }
         
-        // Eliminar las relaciones en la tabla rolFuncion
-        DB::table('rolFuncion')->where('idRol', $request->idRol)->delete();
+        // Eliminar las relaciones en la tabla rolfuncion
+        DB::table('rolfuncion')->where('idRol', $request->idRol)->delete();
         
         // Eliminar el rol
         Rol::destroy($request->idRol);
@@ -145,13 +145,13 @@ class ServiceController extends Controller
         
         foreach ($permisos as $idFuncion) {
             // Verificar si la relación ya existe
-            $existe = DB::table('rolFuncion')
+            $existe = DB::table('rolfuncion')
                 ->where('idRol', $idRol)
                 ->where('idFuncion', $idFuncion)
                 ->exists();
                 
             if (!$existe) {
-                DB::table('rolFuncion')->insert([
+                DB::table('rolfuncion')->insert([
                     'idRol' => $idRol,
                     'idFuncion' => $idFuncion,
                 ]);
@@ -173,7 +173,7 @@ class ServiceController extends Controller
         }
         
         // Eliminar la relación
-        $eliminado = DB::table('rolFuncion')
+        $eliminado = DB::table('rolfuncion')
             ->where('idRol', $request->idRol)
             ->where('idFuncion', $request->idFuncion)
             ->delete();

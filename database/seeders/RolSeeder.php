@@ -78,7 +78,7 @@ class RolSeeder extends Seeder
                     'updated_at' => now(),
                 ]);
 
-                // Preparar datos para la tabla userRol
+                // Preparar datos para la tabla userrol
                 $datosUserRol = [
                     'id' => $userId,
                     'idRol' => $usuario['rol'],
@@ -88,11 +88,11 @@ class RolSeeder extends Seeder
 
                 // Si es tutor, agregar campo habilitado
                 if ($usuario['rol'] == $rolTutor->idRol) {
-                    $esPrimerTutor = DB::table('userRol')->where('idRol', $rolTutor->idRol)->count() == 0;
+                    $esPrimerTutor = DB::table('userrol')->where('idRol', $rolTutor->idRol)->count() == 0;
                     $datosUserRol['habilitado'] = $esPrimerTutor;
                 }
 
-                DB::table('userRol')->insert($datosUserRol);
+                DB::table('userrol')->insert($datosUserRol);
             }
         }
     }

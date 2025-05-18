@@ -102,7 +102,7 @@ class UsuarioController extends Controller
         // Asignar roles al usuario
         $esEstudiante = false;
         foreach ($request->roles as $rolId) {
-            DB::table('userRol')->insert([
+            DB::table('userrol')->insert([
                 'id' => $usuario->id,
                 'idRol' => $rolId,
                 'habilitado' => true,
@@ -235,11 +235,11 @@ class UsuarioController extends Controller
         $usuario->save();
 
         // Actualizar roles
-        DB::table('userRol')->where('id', $usuario->id)->delete();
+        DB::table('userrol')->where('id', $usuario->id)->delete();
         
         $esEstudiante = false;
         foreach ($request->roles as $rolId) {
-            DB::table('userRol')->insert([
+            DB::table('userrol')->insert([
                 'id' => $usuario->id,
                 'idRol' => $rolId,
                 'habilitado' => true,
@@ -287,7 +287,7 @@ class UsuarioController extends Controller
         }
         
         // Eliminar relaciones de roles
-        DB::table('userRol')->where('id', $id)->delete();
+        DB::table('userrol')->where('id', $id)->delete();
         
         // Eliminar registro de estudiante si existe
         $estudiante = Estudiante::find($id);

@@ -32,7 +32,7 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     public function roles(){
-        return $this->belongsToMany(Rol::class, 'userRol', 'id', 'idRol')->withPivot('habilitado');;
+        return $this->belongsToMany(Rol::class, 'userrol', 'id', 'idRol')->withPivot('habilitado');;
     }
 
 

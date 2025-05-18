@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class GrupoInscripcion extends Model
 {
     use HasFactory;
-
+    //protected $table = 'grupo_inscripcions'; //ESTA FILA DEBERIA EXISTIR, PERO NO SE ENCUENTRA EN EL CÓDIGO ORIGINAL
     protected $fillable = [
         'codigoInvitacion',
         'nombreGrupo',

@@ -178,7 +178,7 @@ class ResgistrarListaEstController extends Controller
                 Log::info('Usuario existente encontrado', ['id' => $user->id]);
                 
                 // Verificar si tiene rol de estudiante
-                $esEstudiante = DB::table('userRol')
+                $esEstudiante = DB::table('userrol')
                     ->where('id', $user->id)
                     ->where('idRol', 3)
                     ->where('habilitado', true)
@@ -187,7 +187,7 @@ class ResgistrarListaEstController extends Controller
                 // Si no tiene rol de estudiante, asignárselo
                 if (!$esEstudiante) {
                     Log::info('Asignando rol de estudiante al usuario', ['id' => $user->id]);
-                    DB::table('userRol')->insert([
+                    DB::table('userrol')->insert([
                         'id' => $user->id,
                         'idRol' => 3,
                         'created_at' => now(),
@@ -303,7 +303,7 @@ class ResgistrarListaEstController extends Controller
                 }
                 
                 // Asignar rol de estudiante (ID = 3)
-                DB::table('userRol')->insert([
+                DB::table('userrol')->insert([
                     'id' => $user->id,
                     'idRol' => 3,
                     'created_at' => now(),
@@ -550,7 +550,7 @@ class ResgistrarListaEstController extends Controller
                 ]);
 
                 // Asignar rol de estudiante (ID = 3)
-                DB::table('userRol')->insert([
+                DB::table('userrol')->insert([
                     'id' => $usuario->id,
                     'idRol' => 3,
                     'created_at' => now(),
@@ -567,7 +567,7 @@ class ResgistrarListaEstController extends Controller
                 Log::info('Nuevo usuario y estudiante creado', ['idUsuario' => $usuario->id]);
             } else {
                 // Usuario existe, verificar si es estudiante
-                $esEstudiante = DB::table('userRol')
+                $esEstudiante = DB::table('userrol')
                     ->where('id', $usuario->id)
                     ->where('idRol', 3)
                     ->where('habilitado', true)
@@ -587,7 +587,7 @@ class ResgistrarListaEstController extends Controller
 
                     // Asociar rol estudiante si no lo tiene
                     if (!$esEstudiante) {
-                        DB::table('userRol')->insert([
+                        DB::table('userrol')->insert([
                             'id' => $usuario->id,
                             'idRol' => 3,
                             'created_at' => now(),

@@ -18,7 +18,7 @@ class Rol extends Model
 
     public function usuarios()
     {
-        return $this->belongsToMany(User::class, 'userRol', 'idRol', 'id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'userrol', 'idRol', 'id')->withTimestamps();
     }
     public function funciones()
     {
