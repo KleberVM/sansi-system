@@ -32,7 +32,7 @@ class Tutor extends Model
 
     public function tutorAreaDelegacion()
     {
-        return $this->hasOne(tutorareadelegacion::class, 'id');
+        return $this->hasOne(TutorAreaDelegacion::class, 'id'); //UpperCamelCase.
     }
     public function areas()
     {

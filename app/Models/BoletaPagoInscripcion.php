@@ -23,6 +23,6 @@ class BoletaPagoInscripcion extends Model
 
     public function boletaPago()
     {
-        return $this->belongsTo(boletaPago::class, 'idBoleta', 'idBoleta');
+        return $this->belongsTo(BoletaPago::class, 'idBoleta', 'idBoleta'); // UpperCamelCase para el modelo
     }
 }
