@@ -24,14 +24,14 @@ class Estudiante extends Model
 
     public function tutores()
     {
-        return $this->belongsToMany(Tutor::class, 'tutorEstudianteInscripcion', 'idEstudiante', 'idTutor')
+        return $this->belongsToMany(Tutor::class, 'tutorestudianteinscripcion', 'idEstudiante', 'idTutor')
             ->withPivot('idInscripcion') // para tener acceso a ese dato
             ->withTimestamps();
     }
     
     public function inscripciones()
     {
-        return $this->belongsToMany(Inscripcion::class, 'tutorEstudianteInscripcion', 'idEstudiante', 'idInscripcion')
+        return $this->belongsToMany(Inscripcion::class, 'tutorestudianteinscripcion', 'idEstudiante', 'idInscripcion')
             ->withPivot('idTutor')
             ->withTimestamps();
     }

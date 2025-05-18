@@ -17,11 +17,11 @@ class Funcion extends Model
 
     public function roles()
     {
-        return $this->belongsToMany(Rol::class, 'rolFuncion', 'idFuncion', 'idRol')->withTimestamps();
+        return $this->belongsToMany(Rol::class, 'rolfuncion', 'idFuncion', 'idRol')->withTimestamps();
 
     }
 
     public function ius(){
-        return $this->belongsToMany(Iu::class, 'funcionIu', 'idFuncion', 'idIu')->withTimestamps();
+        return $this->belongsToMany(Iu::class, 'funcioniu', 'idFuncion', 'idIu')->withTimestamps();
     }
 }

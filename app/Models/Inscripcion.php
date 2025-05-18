@@ -43,14 +43,14 @@ class Inscripcion extends Model
 
     public function tutores()
     {
-        return $this->belongsToMany(Tutor::class, 'tutorEstudianteInscripcion', 'idInscripcion', 'idTutor')
+        return $this->belongsToMany(Tutor::class, 'tutorestudianteinscripcion', 'idInscripcion', 'idTutor')
             ->withPivot('idEstudiante')
             ->withTimestamps();
     }
 
     public function estudiantes()
     {
-        return $this->belongsToMany(Estudiante::class, 'tutorEstudianteInscripcion', 'idInscripcion', 'idEstudiante')
+        return $this->belongsToMany(Estudiante::class, 'tutorestudianteinscripcion', 'idInscripcion', 'idEstudiante')
             ->withPivot('idTutor')
             ->withTimestamps();
     }
