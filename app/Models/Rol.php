@@ -22,6 +22,6 @@ class Rol extends Model
     }
     public function funciones()
     {
-        return $this->belongsToMany(Funcion::class, 'rolfuncion', 'idRol', 'idFuncion');
+        return $this->belongsToMany(Funcion::class, 'rolFuncion', 'idRol', 'idFuncion');
     }
 }

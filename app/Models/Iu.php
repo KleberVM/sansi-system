@@ -16,7 +16,7 @@ class Iu extends Model
 
     public function funciones()
     {
-        return $this->belongsToMany(Funcion::class, 'funcioniu', 'idIu', 'idFuncion')->withTimestamps();
+        return $this->belongsToMany(Funcion::class, 'funcionIu', 'idIu', 'idFuncion')->withTimestamps();
     }
 
 }
