@@ -261,9 +261,8 @@ class GrupoController extends Controller
             // Modificado para incluir grupos independientemente de su estado
             $grupos = GrupoInscripcion::where('modalidad', $modalidad)
                 ->where('idDelegacion', $idDelegacion)
-                //LA FILA DE ABAJO ME DA ERRRO, DEBERIA DAR ERROR SEGUN DEEPSEEK, KLEBEEEER.
-                //Verifica que el campo se llame exactamente idGrupoInscripcion en la tabla grupo_inscripcion. Si en la BD está en minúsculas (idgrupoinscripcion), podría fallar en algunos entornos sensibles a mayúsculas/minúsculas.
-                ->select('idGrupoInscripcion as id', 'nombreGrupo', 'codigoInvitacion', 'estado')
+                ->where('estado', 'incompleto') // Added this line to filter by estado
+                ->select('id', 'nombreGrupo', 'codigoInvitacion', 'estado') // Corrected id selection
                 ->get();
             
             // Registrar los datos que se devuelven

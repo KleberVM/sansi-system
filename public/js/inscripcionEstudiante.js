@@ -81,7 +81,8 @@ document.addEventListener('DOMContentLoaded', function() {
             addTutorBtn.style.display = 'none';
         } else if (tutorCount < 2) {
             // Mostrar el botón solo si hay menos de 2 tutores
-            addTutorBtn.style.display = 'block';
+            if (addTutorBtn) addTutorBtn.style.display = 'none';
+
         }
     }
 
@@ -143,7 +144,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Mostrar el botón de agregar tutor si hay menos de 2 tutores
         if (tutorCount < 2) {
-            addTutorBtn.style.display = 'block';
+            if (addTutorBtn) addTutorBtn.style.display = 'none';
+
         }
     }
     
@@ -236,7 +238,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Asegurarse de que el botón de agregar tutor se muestre correctamente
         if (tutorCount < 2) {
-            addTutorBtn.style.display = 'block';
+            if (addTutorBtn) addTutorBtn.style.display = 'none';
+
         } else {
             addTutorBtn.style.display = 'none';
         }
@@ -268,7 +271,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Obtener el índice del tutor
-        const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').textContent.replace('Tutor ', ''));
+        const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').dataset.index);
+
         
         // Inicializar el contador si no existe
         if (!areaCount[tutorIndex]) {
@@ -431,7 +435,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // Obtener el índice del tutor para actualizar los nombres de los campos
-        const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').textContent.replace('Tutor ', ''));
+        const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').dataset.index);
+
         
         // Actualizar los nombres de los campos de área y categoría para seguir el patrón consistente
         const areaBlocks = tutorBlock.querySelectorAll('.area-block');
@@ -474,7 +479,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 displayTutorInfo(tutorBlock, data);
                 
                 // Obtener el índice del tutor para actualizar los nombres de los campos
-                const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').textContent.replace('Tutor ', ''));
+                const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').dataset.index);
+
                 
                 // Store the token in a data attribute for later reference
                 tutorBlock.dataset.usedToken = token;

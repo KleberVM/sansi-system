@@ -1,0 +1,90 @@
+/* 
+ * Estilos para mejorar la visualización de grados compartidos
+ * Estos estilos ayudan a visualizar cuándo un grado es compartido entre múltiples categorías
+ */
+
+/* Estilo para opciones de grado compartido */
+#grado option.grado-compartido {
+    background-color: #e3f2fd !important; /* Fondo azul claro */
+    font-weight: bold !important;
+}
+
+/* Estilo para opciones de grado no disponible (no compartido) */
+#grado option.grado-no-disponible {
+    color: #999 !important;
+    background-color: #f5f5f5 !important;
+    font-style: italic !important;
+}
+
+/* Estilo para el select cuando hay grados compartidos */
+#grado.tiene-grados-compartidos {
+    border-color: #4CAF50 !important;
+    background-image: linear-gradient(to bottom, rgba(76, 175, 80, 0.05), rgba(76, 175, 80, 0.05)) !important;
+}
+
+/* Estilo para el select cuando no hay grados compartidos */
+#grado.sin-grados-compartidos {
+    border-color: #f44336 !important;
+    background-image: linear-gradient(to bottom, rgba(244, 67, 54, 0.05), rgba(244, 67, 54, 0.05)) !important;
+}
+
+/* Añadir indicador visual para grados compartidos */
+.grado-info {
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-size: 0.8em !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+}
+
+.grado-info.compartido {
+    background-color: #e3f2fd !important;
+    color: #0d47a1 !important;
+    border: 1px solid #bbdefb !important;
+}
+
+.grado-info.no-compartido {
+    background-color: #ffebee !important;
+    color: #b71c1c !important;
+    border: 1px solid #ffcdd2 !important;
+}
+
+/* Tooltip para información adicional */
+.grado-tooltip {
+    position: relative !important;
+    display: inline-block !important;
+    cursor: help !important;
+}
+
+.grado-tooltip .tooltiptext {
+    visibility: hidden !important;
+    width: 200px !important;
+    background-color: #333 !important;
+    color: #fff !important;
+    text-align: center !important;
+    border-radius: 6px !important;
+    padding: 5px !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    bottom: 125% !important;
+    left: 50% !important;
+    margin-left: -100px !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s !important;
+}
+
+.grado-tooltip .tooltiptext::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 50% !important;
+    margin-left: -5px !important;
+    border-width: 5px !important;
+    border-style: solid !important;
+    border-color: #333 transparent transparent transparent !important;
+}
+
+.grado-tooltip:hover .tooltiptext {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

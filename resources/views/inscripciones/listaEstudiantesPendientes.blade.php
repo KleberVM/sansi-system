@@ -110,6 +110,9 @@
             <th>Nombre</th>
             <th>Apellidos</th>
             <th>Estado</th>
+            <th>Área</th>
+            <th>Categoría</th>
+            <th>Convocatoria</th>
             <th>Fecha de Registro</th>
             <th>Acciones</th>
         </tr>
@@ -117,21 +120,22 @@
     <tbody>
         @forelse($estudiantes as $estudiante)
         <tr>
-            <td>{{ $estudiante->user->ci }}</td>
-            <td>{{ $estudiante->user->name }}</td>
-            <td>{{ $estudiante->user->apellidoPaterno }} {{ $estudiante->user->apellidoMaterno }}</td>
+            <td>{{ $estudiante->ci }}</td>
+            <td>{{ $estudiante->nombre }}</td>
+            <td>{{ $estudiante->apellidoPaterno }} {{ $estudiante->apellidoMaterno }}</td>
             <td>
-                <span class="status-badge pending">Pendiente</span>
+                <span class="status-badge pending">{{ ucfirst($estudiante->estado_inscripcion) }}</span>
             </td>
-            <td>{{ $estudiante->user->created_at->format('d/m/Y') }}</td>
+            <td>{{ $estudiante->area }}</td>
+            <td>{{ $estudiante->categoria }}</td>
+            <td>{{ $estudiante->convocatoria }}</td>
+            <td>{{ \Carbon\Carbon::parse($estudiante->fechaInscripcion)->format('d/m/Y') }}</td>
             <td class="actions">
                 <div class="action-buttons">
-                    <!-- Change this line 
-                <a href="javascript:void(0)" onclick="verEstudiante({{ $estudiante->id }})" class="action-button view" title="Visualizar">
-                -->
-                    <!-- To this --> <a href="#" onclick="verEstudiante('{{ $estudiante->id }}'); return false;" class="action-button view" title="Visualizar">
+                    <a href="#" onclick="verEstudiante('{{ $estudiante->ci }}'); return false;" class="action-button view" title="Visualizar">
                         <i class="fas fa-eye"></i>
-                    </a> <a href="#" onclick="editarEstudiante('{{ $estudiante->id }}'); return false;" class="action-button edit" title="Editar">
+                    </a>
+                    <a href="#" onclick="editarEstudiante('{{ $estudiante->ci }}'); return false;" class="action-button edit" title="Editar">
                         <i class="fas fa-edit"></i>
                     </a>
                     <a href="#" onclick="return false;" class="action-button delete-button" title="Eliminar">
@@ -142,11 +146,12 @@
         </tr>
         @empty
         <tr>
-            <td colspan="6" class="text-center">No hay estudiantes pendientes de inscripción</td>
+            <td colspan="9" class="text-center">No hay estudiantes pendientes de inscripción</td>
         </tr>
         @endforelse
     </tbody>
 </table>
+
 
 <!-- Modal de Visualización -->
 @include('inscripciones.modalPendienteVer')

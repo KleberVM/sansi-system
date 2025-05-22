@@ -28,7 +28,7 @@ Route::get('/notificaciones/nuevas', function (Request $request) {
 
     // Agregar notificaciones si hay convocatorias publicadas que inician en 2 días
     $hoy = Carbon::now()->startOfDay();
-    $dosDiasDespues = $hoy->copy()->addDays(1);
+    $dosDiasDespues = $hoy->copy()->addDays(2);
 
     $convocatorias = Convocatoria::whereDate('fechaInicio', $dosDiasDespues)
         ->where('estado', 'Publicada')
@@ -42,9 +42,8 @@ Route::get('/notificaciones/nuevas', function (Request $request) {
             'tiempo' => $hoy->diffForHumans()
         ];
     }
-    $hoy2=$hoy->copy()->subDays(1);
-
-      $convocatoriasFin = Convocatoria::whereDate('fechaFin', $hoy2)
+    
+      $convocatoriasFin = Convocatoria::whereDate('fechaFin', $hoy)
         ->where('estado', 'Publicada')
         ->get();
 

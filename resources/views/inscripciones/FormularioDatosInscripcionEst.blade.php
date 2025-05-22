@@ -29,7 +29,7 @@
     <!-- Actions Container -->
     <div class="actions-container mb-1">
         <div class="button-group">
-            <a href="#" class="add-button py-1 px-2"><!-- Cambiar el enlace a la ruta correcta {{ route('inscripcion.estudiante') }}-->
+            <a href="#" class="add-button py-1 px-2"><!-- Cambiar el enlace a la ruta correcta -->
                 <i class="fas fa-info-circle"></i> Importante: Una vez subido el comprobante, la información ya no se podra modificar
             </a>
         </div>
@@ -42,7 +42,12 @@
                 <i class="fas fa-file-pdf"></i> Subir comprobante de pago
             </button>
         </div>
+        
     </div>
+    <span>
+        <a href="{{ route('inscripcion.estudiante') }}">
+            <i class="fas fa-arrow-left"></i> Volver a inscripciones</a>
+    </span>
 
         <!-- IDs ocultos para uso en JS -->
         <div id="data-ids" 
@@ -116,6 +121,29 @@
                         </div>
                         <div class="seccion-body">
                             <div class="input-grupo">
+                                <label for="NombreContacto">Nombre completo del delegado</label>
+                                <div class="input-with-icon">
+                                    <input type="text" id="NombreContacto" name="NombreContacto" required
+                                        value="{{ $inscripcion['nombre_apellidos_tutor'] ?? '' }}"
+                                        placeholder="Ej: Elian Vazques Ramirez">
+                                </div>
+                                @error('NombreContacto')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="input-grupo">
+                                <label for="EmailContacto">Correo Electronico del delegado</label>
+                                <div class="input-with-icon">
+                                    <input type="email" id="EmailContacto" name="EmailContacto" required
+                                        value="{{ $inscripcion['correo_tutor'] ?? '' }}"
+                                        placeholder="Ej: Elian2018@gmail.com">
+                                </div>
+                                @error('EmailContacto')
+                                <span class="error-message">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div class="input-grupo">
                                 <label for="numeroContacto">Número de Contacto</label>
                                 <div class="input-with-icon">
                                     <input type="tel" id="numeroContacto" name="numeroContacto" required
@@ -133,26 +161,26 @@
                 <div class="formulario-seccion" id="tutor-info">
                     <div class="seccion-card">
                         <div class="seccion-header">
-                            <h2><i class="fas fa-chalkboard-teacher"></i> Información de Tutores y las áreas y categorías a las que te inscribiste con ese Tutor</h2>
-                            <p class="section-subtitle">Puede agregar hasta 2 tutores</p>
+                            <h2><i class="fas fa-chalkboard-teacher"></i> Información de Delegados y las áreas y categorías a las que te inscribiste con ese Delegado</h2>
+                            <p class="section-subtitle">Puede agregar hasta 2 delegados</p>
                         </div>
                         <div class="seccion-body">
                             <div id="tutorContainer">
                                 @foreach ($tutores as $index => $tutor)
                                 <div class="tutor-block">
                                     <div class="tutor-header">
-                                        <h3>Tutor {{ $index + 1 }}</h3>
+                                        <h3>Delegado {{ $index + 1 }}</h3>
                                     </div>
                                     <div class="input-grupo">
-                                        <label>Token del Tutor</label>
+                                        <label>Token del Delegado</label>
                                         <div class="input-with-icon token-verification-container">
                                             <input 
                                                 type="text" 
                                                 class="tutor-token" 
                                                 name="tutor_tokens[]"
                                                 value="{{ $tutor['token'] }}" 
-                                                placeholder="Token del tutor" 
-                                                readonly <!-- Si el token no debe editarse -->
+                                                placeholder="Token del Delegado" 
+                                                
                                             >
                                             <button type="button" class="btn-verificar-token" style="display: none;">
                                                 <i class="fas fa-check-circle"></i> Verificar
@@ -233,7 +261,7 @@
                             <!-- Botón para agregar otro tutor (solo si hay menos de 2) -->
                             @if(count($tutores) < 2)
                             <button type="button" id="addTutorBtn" class="btn-add-tutor">
-                                <i class="fas fa-plus"></i> Agregar otro tutor
+                                <i class="fas fa-plus"></i> Agregar otro Delegado
                             </button>
                             @endif
                         </div>

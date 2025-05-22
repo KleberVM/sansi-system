@@ -1,0 +1,104 @@
+/* Estilos para el selector de solo lectura */
+.readonly-select {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+    opacity: 0.8;
+    pointer-events: none; /* Esto previene clics pero no bloquea el elemento */
+}
+
+/* Estilos adicionales para el selector de grados restaurado */
+.grado-restaurado {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Mejorar visibilidad de la etiqueta informativa */
+.grado-info {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+}
+
+.grado-info.compartido {
+    color: #28a745;
+    border-color: #28a745;
+    background-color: #e7f5eb;
+}
+
+.grado-info.no-compartido {
+    color: #dc3545;
+    border-color: #dc3545;
+    background-color: #f8d7da;
+}
+
+.grado-info.restaurado {
+    color: #17a2b8;
+    border-color: #17a2b8;
+    background-color: #d1ecf1;
+    animation: pulse 1s;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Estilos para los tooltips */
+.grado-tooltip {
+    display: inline-block;
+    position: relative;
+    margin-left: 5px;
+}
+
+.tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -125px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.grado-tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Estilos para el botón de emergencia */
+#btn-restablecer-grados {
+    transition: all 0.3s ease;
+}
+
+#btn-restablecer-grados:hover {
+    transform: scale(1.02);
+}
+
+/* Estilos para opciones de grados según disponibilidad */
+.grado-disponible {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.grado-compartido {
+    color: #17a2b8;
+    font-weight: 500;
+}
+
+.grado-no-compatible {
+    color: #6c757d;
+    font-style: italic;
+}

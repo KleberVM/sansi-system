@@ -1,0 +1,87 @@
+/* 
+ * Estilos específicos para el botón de agregar áreas 
+ * Estos estilos tienen mayor especificidad para sobrescribir otros estilos
+ */
+
+/* Selector muy específico para aumentar la prioridad */
+.info-section button#agregar-area-btn.btn-add-area,
+button#agregar-area-btn.btn-add-area,
+.text-end button#agregar-area-btn.btn-add-area,
+#agregar-area-btn {
+    /* Reset completo de estilos */
+    all: unset;
+    
+    /* Estilos básicos del botón */
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    
+    /* Apariencia visual */
+    background-color: #3182ce !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    
+    /* Espaciado */
+    margin: 20px 0 10px 0 !important;
+    
+    /* Efectos y transiciones */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    z-index: 10 !important; /* Asegurar que esté por encima de otros elementos */
+}
+
+/* Hover state */
+.info-section button#agregar-area-btn.btn-add-area:hover,
+button#agregar-area-btn.btn-add-area:hover,
+.text-end button#agregar-area-btn.btn-add-area:hover,
+#agregar-area-btn:hover {
+    background-color: #2c5282 !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Active state */
+.info-section button#agregar-area-btn.btn-add-area:active,
+button#agregar-area-btn.btn-add-area:active,
+.text-end button#agregar-area-btn.btn-add-area:active,
+#agregar-area-btn:active {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Iconos dentro del botón */
+#agregar-area-btn i,
+.btn-add-area i {
+    margin-right: 8px !important;
+    font-size: 18px !important;
+    vertical-align: middle !important;
+}
+
+/* Asegurar visibilidad del contenedor */
+.text-end {
+    text-align: right !important;
+    display: block !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    margin: 20px 0 !important;
+}
+
+/* Para áreas en modo responsive */
+@media (max-width: 768px) {
+    .info-section button#agregar-area-btn.btn-add-area,
+    button#agregar-area-btn.btn-add-area,
+    .text-end button#agregar-area-btn.btn-add-area,
+    #agregar-area-btn {
+        padding: 10px 15px !important;
+        font-size: 14px !important;
+    }
+}

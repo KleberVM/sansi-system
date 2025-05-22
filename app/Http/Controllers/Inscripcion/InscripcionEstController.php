@@ -64,184 +64,151 @@ class InscripcionEstController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        try {
-            // Validar campos básicos
-            $validatedData = $request->validate([
-                'numeroContacto' => 'required|string|size:8',
-                'idConvocatoria' => 'required|integer',
-                'idGrado' => 'required|integer',
-            ]);
+public function store(Request $request)
+{
+    try {
+        // Validar datos básicos
+        $validatedData = $request->validate([
+            'numeroContacto' => 'required|string|size:8',
+            'idConvocatoria' => 'required|integer',
+            'idGrado' => 'required|integer',
+            'NombreContacto' => 'required|string',
+            'EmailContacto' => 'required|email'
+        ]);
 
-            Log::info('Datos recibidos:', $request->all());
+        $userId = auth()->id();
+        $idConvocatoria = $request->idConvocatoria;
+        $idGrado = $request->idGrado;
+        $numeroContacto = $request->numeroContacto;
 
-            // Obtener tokens de tutores
-            $tutorTokens = $request->input('tutor_tokens', []);
-            if (empty($tutorTokens)) {
-                return back()->withErrors(['error' => 'No se proporcionaron tokens de tutores'])->withInput();
+        // Obtener token y delegación del único tutor
+        $token = $request->input('tutor_tokens.0');
+        $idDelegacion = $request->input('tutor_delegaciones.0');
+
+        if (!$token || !$idDelegacion) {
+            return back()->withErrors(['error' => 'Faltan datos del tutor'])->withInput();
+        }
+
+        $tutor = \App\Models\TutorAreaDelegacion::where('tokenTutor', $token)->first();
+        if (!$tutor) {
+            return back()->withErrors(['error' => 'Token de tutor inválido'])->withInput();
+        }
+
+        // Recopilar todas las áreas y categorías dinámicas
+        $tutorAreas = [];
+        $tutorCategorias = [];
+
+        foreach ($request->all() as $key => $value) {
+            if (preg_match('/^tutor_areas_\d+_\d+$/', $key)) {
+                $tutorAreas[] = $value;
             }
-
-            // Obtener delegaciones de tutores
-            $tutorDelegaciones = $request->input('tutor_delegaciones', []);
-
-            // Recopilar todas las áreas y categorías del formulario
-            $tutorAreas = [];
-            $tutorCategorias = [];
-
-            // Recorrer todos los inputs para encontrar áreas y categorías
-            foreach ($request->all() as $key => $value) {
-                // Capturar todos los campos de áreas (tutor_areas, tutor_areas_1_1, tutor_areas_1_2, etc.)
-                if ((strpos($key, 'tutor_areas') === 0 || preg_match('/^tutor_areas_\d+_\d+$/', $key)) && !empty($value)) {
-                    $tutorAreas[] = $value;
-                }
-
-                // Capturar todos los campos de categorías (tutor_categorias, tutor_categorias_1_1, etc.)
-                if ((strpos($key, 'tutor_categorias') === 0 || preg_match('/^tutor_categorias_\d+_\d+$/', $key)) && !empty($value)) {
-                    $tutorCategorias[] = $value;
-                }
+            if (preg_match('/^tutor_categorias_\d+_\d+$/', $key)) {
+                $tutorCategorias[] = $value;
             }
+        }
 
-            // Registrar en el log los campos encontrados para depuración
-            Log::info('Campos de áreas encontrados:', array_filter(array_keys($request->all()), function ($key) {
-                return strpos($key, 'tutor_areas') === 0 || preg_match('/^tutor_areas_\d+_\d+$/', $key);
-            }));
-            Log::info('Campos de categorías encontrados:', array_filter(array_keys($request->all()), function ($key) {
-                return strpos($key, 'tutor_categorias') === 0 || preg_match('/^tutor_categorias_\d+_\d+$/', $key);
-            }));
+        if (count($tutorAreas) !== count($tutorCategorias) || count($tutorAreas) === 0) {
+            return back()->withErrors(['error' => 'Debe registrar al menos una combinación válida de área y categoría'])->withInput();
+        }
 
-            // Verificar que tenemos la misma cantidad de áreas y categorías
-            if (count($tutorAreas) != count($tutorCategorias) || empty($tutorAreas)) {
-                Log::error('Error en la estructura de datos:', [
-                    'tokens' => count($tutorTokens),
-                    'delegaciones' => count($tutorDelegaciones),
-                    'areas' => count($tutorAreas),
-                    'categorias' => count($tutorCategorias)
-                ]);
-                return back()->withErrors(['error' => 'Estructura de datos inválida: debe proporcionar al menos un área y una categoría por cada área'])->withInput();
-            }
+        // Buscar inscripción existente para este estudiante y convocatoria
+        $inscripcion = \App\Models\Inscripcion::where('idConvocatoria', $idConvocatoria)
+            ->whereHas('tutoresEstudiantes', function ($query) use ($userId) {
+                $query->where('idEstudiante', $userId);
+            })->first();
 
-            Log::info('Áreas y categorías procesadas:', [
-                'areas' => $tutorAreas,
-                'categorias' => $tutorCategorias
-            ]);
-
-            // Verificar los tokens de tutor y obtener sus IDs
-            $tutoresValidos = [];
-            $idDelegacionPrincipal = null;
-
-            for ($i = 0; $i < count($tutorTokens); $i++) {
-                if (empty($tutorTokens[$i])) continue;
-
-                $token = $tutorTokens[$i];
-                $idDelegacion = $tutorDelegaciones[$i] ?? null;
-
-                if (!$idDelegacion) {
-                    Log::error('Delegación no proporcionada para el token: ' . $token);
-                    continue;
-                }
-
-                $tutorAreaDelegacion = TutorAreaDelegacion::where('tokenTutor', $token)->first();
-
-                if (!$tutorAreaDelegacion) {
-                    return back()->withErrors(['error' => 'Token de tutor inválido: ' . $token])->withInput();
-                }
-
-                // Guardar el ID del tutor
-                $tutoresValidos[] = [
-                    'token' => $token,
-                    'idTutor' => $tutorAreaDelegacion->id,
-                    'idDelegacion' => $idDelegacion
-                ];
-
-                // Usar la primera delegación para la inscripción principal
-                if ($idDelegacionPrincipal === null) {
-                    $idDelegacionPrincipal = $idDelegacion;
-                }
-            }
-
-            if (empty($tutoresValidos)) {
-                return back()->withErrors(['error' => 'No se encontraron tutores válidos'])->withInput();
-            }
-
-            // Crear una única inscripción principal
-            $inscripcion = Inscripcion::create([
+        if (!$inscripcion) {
+            // Crear nueva inscripción
+            $inscripcion = \App\Models\Inscripcion::create([
                 'fechaInscripcion' => now(),
-                'numeroContacto' => $request->numeroContacto,
-                'idConvocatoria' => $request->idConvocatoria,
-                'idDelegacion' => $idDelegacionPrincipal,
-                'idGrado' => $request->idGrado
+                'numeroContacto' => $numeroContacto,
+                'idConvocatoria' => $idConvocatoria,
+                'idDelegacion' => $idDelegacion,
+                'idGrado' => $idGrado,
+                'nombreApellidosTutor' => $request->NombreContacto,
+                'correoTutor' => $request->EmailContacto
             ]);
+        } else {
+            // Verifica y actualiza solo si falta algún dato
+            if (!$inscripcion->nombreApellidosTutor) {
+                $inscripcion->nombreApellidosTutor = $request->NombreContacto;
+                $inscripcion->correoTutor = $request->EmailContacto;
+                $inscripcion->save();
+            }
+        }
 
-            Log::info('Inscripción creada:', ['id' => $inscripcion->idInscripcion]);
+        // Verificar cuántos detalles ya existen
+        $detallesExistentes = \App\Models\DetalleInscripcion::where('idInscripcion', $inscripcion->idInscripcion)->count();
+        $espaciosDisponibles = 2 - $detallesExistentes;
 
-            // Crear detalles para cada combinación de área y categoría
-            for ($i = 0; $i < count($tutorAreas); $i++) {
-                if (empty($tutorAreas[$i]) || empty($tutorCategorias[$i])) continue;
+        if ($espaciosDisponibles <= 0) {
+            return back()->withErrors(['error' => 'Ya estás inscrito en 2 áreas para esta convocatoria'])->withInput();
+        }
 
-                $idArea = $tutorAreas[$i];
-                $idCategoria = $tutorCategorias[$i];
+        // Agregar nuevos detalles si no existen aún y hay espacio
+        $detallesAgregados = 0;
+        for ($i = 0; $i < count($tutorAreas); $i++) {
+            $idArea = $tutorAreas[$i];
+            $idCategoria = $tutorCategorias[$i];
 
-                // Verificar si ya existe un detalle con esta combinación para evitar duplicados
-                $detalleExistente = \App\Models\DetalleInscripcion::where([
+            $yaExiste = \App\Models\DetalleInscripcion::where([
+                'idInscripcion' => $inscripcion->idInscripcion,
+                'idArea' => $idArea,
+                'idCategoria' => $idCategoria
+            ])->exists();
+
+            if (!$yaExiste && $detallesAgregados < $espaciosDisponibles) {
+                \App\Models\DetalleInscripcion::create([
                     'idInscripcion' => $inscripcion->idInscripcion,
                     'idArea' => $idArea,
                     'idCategoria' => $idCategoria
-                ])->first();
-
-                // Solo crear si no existe
-                if (!$detalleExistente) {
-                    // Crear el detalle de inscripción para esta área y categoría
-                    \App\Models\DetalleInscripcion::create([
-                        'idInscripcion' => $inscripcion->idInscripcion,
-                        'idArea' => $idArea,
-                        'idCategoria' => $idCategoria
-                    ]);
-
-                    // Obtener el nombre del área
-                    $area = \App\Models\Area::find($idArea);
-                    $nombreArea = $area ? $area->nombre : 'Área desconocida';
-
-                    // Disparar el evento con nombre del área
-                    event(new \App\Events\InscripcionArea(
-                        Auth::id(), // ID del usuario autenticado
-                        ' Felicidades te inscribiste en el área: ' . $nombreArea,
-                        'mensaje'
-                    ));
-
-                    Log::info('Detalle creado y evento disparado:', ['area' => $idArea, 'categoria' => $idCategoria]);
-                } else {
-                    Log::info('Detalle ya existente, no se duplica:', ['area' => $idArea, 'categoria' => $idCategoria]);
-                }
-            }
-
-            // Vincular a cada tutor con el estudiante y la inscripción
-            foreach ($tutoresValidos as $tutor) {
-                \App\Models\TutorEstudianteInscripcion::create([
-                    'idTutor' => $tutor['idTutor'],
-                    'idEstudiante' => Auth::id(),
-                    'idInscripcion' => $inscripcion->idInscripcion
                 ]);
 
-                Log::info('Relación tutor-estudiante creada:', ['tutor' => $tutor['idTutor']]);
-                event(new InscripcionEstTokenDelegado(
-                    $tutor['idTutor'], // ID del usuario (tutor)
-                    ' se inscribió usando su token .', // Mensaje
-                    'mensaje', // Tipo
-                    Auth::user()->name // Nombre del estudiante autenticado
-                ));
-            }
-            // 3. Redirigir a la vista de información
-            return redirect('/inscripcion/estudiante/informacion')->with('success', 'Inscripción realizada correctamente');
-            // return redirect()->route('dashboard')->with('success', 'Inscripción realizada correctamente');
+                // Disparar evento
+                $area = \App\Models\Area::find($idArea);
+                $nombreArea = $area ? $area->nombre : 'Área desconocida';
 
-        } catch (\Exception $e) {
-            Log::error('Error en inscripción:', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-            return back()
-                ->withErrors(['error' => 'Hubo un error al procesar la inscripción: ' . $e->getMessage()])
-                ->withInput();
+                event(new \App\Events\InscripcionArea(
+                    $userId,
+                    'Felicidades te inscribiste en el área: ' . $nombreArea,
+                    'mensaje'
+                ));
+
+                $detallesAgregados++;
+            }
         }
+
+        // Relacionar el tutor con esta inscripción si aún no está
+        $yaRelacionado = \App\Models\TutorEstudianteInscripcion::where([
+            'idEstudiante' => $userId,
+            'idTutor' => $tutor->id,
+            'idInscripcion' => $inscripcion->idInscripcion
+        ])->exists();
+
+        if (!$yaRelacionado) {
+            \App\Models\TutorEstudianteInscripcion::create([
+                'idEstudiante' => $userId,
+                'idTutor' => $tutor->id,
+                'idInscripcion' => $inscripcion->idInscripcion
+            ]);
+
+            event(new \App\Events\InscripcionEstTokenDelegado(
+                $tutor->id,
+                ' se inscribió usando su token.',
+                'mensaje',
+                Auth::user()->name
+            ));
+        }
+
+        return back()->with('success', 'Inscripción actualizada correctamente');
+
+    } catch (\Exception $e) {
+        Log::error('Error en inscripción: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        return back()->withErrors(['error' => 'Hubo un error al procesar la inscripción.'])->withInput();
     }
+}
+
+
 
     public function validateTutorToken($token)
     {

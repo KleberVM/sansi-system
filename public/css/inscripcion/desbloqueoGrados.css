@@ -1,0 +1,58 @@
+/* 
+ * Corrección crítica para el selector de grados
+ * Este archivo asegura que el selector siempre sea interactivo
+ * sin importar qué otros estilos puedan estar afectándolo
+ */
+
+/* Selector directo por ID */
+#grado {
+    pointer-events: auto !important; /* Asegura que se puedan registrar clics */
+    opacity: 1 !important; /* Asegura visibilidad completa */
+    background-color: white !important; /* Fondo normal */
+    cursor: pointer !important; /* Cursor de selección */
+    user-select: auto !important; /* Permite selección */
+    -webkit-appearance: auto !important; /* Restaura apariencia nativa en webkit */
+    -moz-appearance: auto !important; /* Restaura apariencia nativa en firefox */
+}
+
+/* Selector al pasar el mouse */
+#grado:hover {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Selector al recibir foco */
+#grado:focus {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5) !important;
+    outline: none !important;
+}
+
+/* Selector de clases para .insc-select (usado en los selectores) */
+.insc-select {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+}
+
+/* Estilo para indicar visualmente que un select es de solo lectura sin deshabilitarlo */
+.readonly-select {
+    background-color: #e9ecef !important;
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
+}
+
+/* El botón de desbloqueo debe ser invisible pero funcional */
+#btn-desbloqueo-inmediato,
+#btn-desbloqueo-forzado {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Asegurar que los select con disabled=true sean interactivos de todos modos */
+select:disabled {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    background-color: white !important;
+    cursor: pointer !important;
+}

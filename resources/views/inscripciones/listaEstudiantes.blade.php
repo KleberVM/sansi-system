@@ -1,6 +1,6 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('css/inscripcion/listaEstudiantes.css') }}">
-    <link rel="stylesheet" href="/css/inscripcion/listaEstudiantes.css">
+
     <!-- Success Message -->
     @if(session('success'))
     <div class="alert alert-success py-1 px-2 mb-1">
@@ -115,34 +115,37 @@
                 <th>CI</th>
                 <th>Nombre</th>
                 <th>Apellidos</th>
-                <th>Colegio</th>
                 <th>Área</th>
                 <th>Categoría</th>
+                <th>Convocatoria</th>
+                <th>Estado Inscripción</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             @forelse($estudiantes as $estudiante)
             <tr>
-                <td>{{ $estudiante->user->ci }}</td>
-                <td>{{ $estudiante->user->name }}</td>
-                <td>{{ $estudiante->user->apellidoPaterno }} {{ $estudiante->user->apellidoMaterno }}</td>
-                <td>{{ $estudiante->inscripciones->first()->delegacion->nombre ?? 'No asignado' }}</td>
-                <td>{{ $estudiante->inscripciones->first()->area->nombre ?? 'No asignado' }}</td>
-                <td>{{ $estudiante->inscripciones->first()->categoria->nombre ?? 'No asignado' }}</td>
+                <td>{{ $estudiante->ci }}</td>
+                <td>{{ $estudiante->nombre }}</td>
+                <td>{{ $estudiante->apellidoPaterno }} {{ $estudiante->apellidoMaterno }}</td>
+                <td>{{ $estudiante->area }}</td>
+                <td>{{ $estudiante->categoria }}</td>
+                <td>{{ $estudiante->convocatoria }}</td>
+                <td>{{ $estudiante->estado_inscripcion }}</td>
                 <td class="actions">
-                    <div class="flex space-x-1">
-                        <a href="{{ route('estudiantes.ver', $estudiante->id) }}" class="action-button view w-5 h-5">
+                    <div class="action-buttons">
+                        <a href="{{ route('estudiantes.ver', ['id' => $estudiante->id]) }}" class="action-button view w-5 h-5">
                             <i class="fas fa-eye text-xs"></i>
                         </a>
-                        <a href="{{ route('estudiantes.editar', $estudiante->id) }}" class="action-button edit w-5 h-5">
+                        <a href="{{ route('estudiantes.editar', ['id' => $estudiante->id]) }}" class="action-button edit w-5 h-5">
                             <i class="fas fa-edit text-xs"></i>
                         </a>
-                        <a href="#" class="action-button delete-button w-5 h-5" data-id="{{ $estudiante->id }}" data-nombre="{{ $estudiante->user->name }}">
+                        <a href="#" class="action-button delete-button w-5 h-5" data-id="{{ $estudiante->id }}" data-nombre="{{ $estudiante->nombre }}">
                             <i class="fas fa-trash text-xs"></i>
                         </a>
                     </div>
                 </td>
+
             </tr>
             @empty
             <tr>
@@ -151,6 +154,7 @@
             @endforelse
         </tbody>
     </table>
+
 
     <!-- Pagination -->
     <div class="pagination">
@@ -199,7 +203,7 @@
                     e.preventDefault();
                     const id = this.dataset.id;
                     const nombre = this.dataset.nombre;
-                    
+
                     if (confirm(`¿Está seguro que desea eliminar al estudiante ${nombre}?`)) {
                         window.location.href = `{{ url('/estudiantes/eliminar') }}/${id}`;
                     }

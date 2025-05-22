@@ -1,0 +1,128 @@
+/* Mejoras en los estilos de botones para el formulario de inscripción de estudiantes */
+
+/* Botón principal "Inscribir Estudiante" - Más grande y destacado */
+.form-actions .btn-success {
+    padding: 1rem 3rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    background: linear-gradient(to right, #0ca678, #099268);
+}
+
+.form-actions .btn-success:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    background: linear-gradient(to right, #099268, #087f5b);
+}
+
+.form-actions .btn-success:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.form-actions .btn-success i {
+    margin-right: 10px;
+    font-size: 1.4rem;
+}
+
+/* Botón "Agregar otra área de participación" - Más visible */
+.btn-add-area, 
+#agregar-area-btn,
+button[id*="agregar-area"] {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-add-area:hover, 
+#agregar-area-btn:hover,
+button[id*="agregar-area"]:hover {
+    background-color: #3182ce;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.btn-add-area:active, 
+#agregar-area-btn:active,
+button[id*="agregar-area"]:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-add-area i, 
+#agregar-area-btn i,
+button[id*="agregar-area"] i {
+    margin-right: 8px;
+    font-size: 1.2rem;
+}
+
+/* Efecto de pulsación para todos los botones */
+.btn-success,
+.btn-add-area,
+#agregar-area-btn,
+button[id*="agregar-area"] {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-success::after,
+.btn-add-area::after,
+#agregar-area-btn::after,
+button[id*="agregar-area"]::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.3) 10%, transparent 10.01%);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    transform: scale(10, 10);
+    opacity: 0;
+    transition: transform 0.5s, opacity 0.8s;
+}
+
+.btn-success:active::after,
+.btn-add-area:active::after,
+#agregar-area-btn:active::after,
+button[id*="agregar-area"]:active::after {
+    transform: scale(0, 0);
+    opacity: 0.3;
+    transition: 0s;
+}
+
+/* Adaptación para móviles */
+@media (max-width: 768px) {
+    .form-actions .btn-success {
+        padding: 0.9rem 2rem;
+        font-size: 1.2rem;
+        width: 100%;
+    }
+    
+    .btn-add-area, 
+    #agregar-area-btn,
+    button[id*="agregar-area"] {
+        padding: 0.7rem 1.2rem;
+        font-size: 1rem;
+    }
+}

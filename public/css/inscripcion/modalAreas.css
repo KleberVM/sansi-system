@@ -1,0 +1,139 @@
+/* 
+ * Estilos para el modal de límite de áreas
+ * Este archivo contiene los estilos necesarios para el modal de advertencia
+ * que se muestra cuando se alcanza el límite de áreas permitidas.
+ * 
+ * Incluye estilos de respaldo en caso de que Bootstrap no esté disponible
+ */
+
+/* Estilos de respaldo para cuando Bootstrap no está disponible */
+.modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 1040 !important;
+}
+
+.modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    outline: 0 !important;
+    z-index: 1050 !important;
+}
+
+.modal.show {
+    display: block !important;
+}
+
+.modal-dialog {
+    position: relative !important;
+    width: auto !important;
+    margin: 1.75rem auto !important;
+    max-width: 500px !important;
+}
+
+.modal-dialog-centered {
+    display: flex !important;
+    align-items: center !important;
+    min-height: calc(100% - 3.5rem) !important;
+}
+
+.modal-content {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0.3rem !important;
+    outline: 0 !important;
+}
+
+.modal-header {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 1rem !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    border-top-left-radius: 0.25rem !important;
+    border-top-right-radius: 0.25rem !important;
+}
+
+.modal-body {
+    position: relative !important;
+    flex: 1 1 auto !important;
+    padding: 1rem !important;
+}
+
+.modal-footer {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    padding: 0.75rem !important;
+    border-top: 1px solid #dee2e6 !important;
+    border-bottom-right-radius: 0.25rem !important;
+    border-bottom-left-radius: 0.25rem !important;
+}
+
+.btn-close {
+    box-sizing: content-box !important;
+    background: transparent !important;
+    border: 0 !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    color: #000 !important;
+    opacity: .5 !important;
+    padding: 0.5rem 0.5rem !important;
+    margin: -0.5rem -0.5rem -0.5rem auto !important;
+}
+
+/* Cabecera del modal - Estilo de advertencia */
+#areaLimitModal .modal-header {
+    background-color: #f8d7da !important; /* Fondo rojo claro para advertencia */
+    color: #721c24 !important; /* Texto rojo oscuro para advertencia */
+    border-bottom: 1px solid #f5c6cb !important; /* Borde inferior coherente */
+}
+
+/* Título del modal - Resaltado y bien alineado */
+#areaLimitModal .modal-title {
+    font-weight: 600 !important; /* Título en negrita */
+    display: flex !important; /* Flexbox para alinear icono y texto */
+    align-items: center !important; /* Alineación vertical centrada */
+}
+
+/* Cuerpo del modal - Espacio y legibilidad */
+#areaLimitModal .modal-body {
+    padding: 1.5rem !important; /* Mayor espacio interno */
+    font-size: 1.1rem !important; /* Texto ligeramente más grande para mejor legibilidad */
+}
+
+/* Botón de acción - Estilo coherente con la aplicación */
+#areaLimitModal .btn-secondary {
+    background-color: #3182ce !important; /* Azul para el botón principal */
+    border-color: #2b6cb0 !important; /* Borde coherente */
+    color: white !important; /* Texto blanco para contraste */
+    font-weight: 500 !important; /* Texto semi-negrita */
+    padding: 0.5rem 1.5rem !important; /* Padding adecuado */
+}
+
+/* Botón de acción al pasar el cursor - Efecto hover */
+#areaLimitModal .btn-secondary:hover {
+    background-color: #2c5282 !important; /* Azul más oscuro al pasar el cursor */
+    border-color: #2a4365 !important; /* Borde coherente más oscuro */
+}
+
+/* Icono en el modal - Color coherente */
+#areaLimitModal .fas {
+    color: #721c24 !important; /* Icono en color rojo oscuro para advertencia */
+}

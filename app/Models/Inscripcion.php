@@ -83,5 +83,10 @@ class Inscripcion extends Model
             'idCategoria' // Clave foránea en DetalleInscripcion que apunta a Categoria
         );
     }
+
+    public function tutoresEstudiantes()
+    {
+        return $this->hasMany(\App\Models\TutorEstudianteInscripcion::class, 'idInscripcion', 'idInscripcion');
+    }
 }
 

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;   
 use App\Models\TutorAreaDelegacion;
 use App\Models\Inscripcion;
 use App\Http\Controllers\Inscripcion\ObtenerAreasConvocatoria;
@@ -19,7 +21,8 @@ use App\Models\Area; // Add this at the top of your file
 use App\Notifications\WelcomeEmailNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
-use App\Models\TutorEstudianteInscripcion;     
+use App\Models\TutorEstudianteInscripcion;  
+
 
 class InscripcionController extends Controller
 {
@@ -54,6 +57,23 @@ class InscripcionController extends Controller
             return redirect()->route('inscripcion.convocatorias')
                 ->with('error', 'La convocatoria solicitada no está disponible');
         }
+
+        // Verificar si el estudiante ya tiene una inscripción en esta convocatoria usando SQL puro
+        $estudianteId = Auth::id();
+        $detallesInscripcion = \DB::select("
+            SELECT 
+                COUNT(di.idInscripcion) as total_detalles
+            FROM inscripcion i
+            INNER JOIN tutorestudianteinscripcion tei ON i.idInscripcion = tei.idInscripcion
+            INNER JOIN detalle_inscripcion di ON i.idInscripcion = di.idInscripcion
+            WHERE tei.idEstudiante = ? AND i.idConvocatoria = ?
+        ", [$estudianteId, $idConvocatoria]);
+
+        // Solo redirigir si hay más de 1 detalle asociado
+        if (!empty($detallesInscripcion) && $detallesInscripcion[0]->total_detalles > 1) {
+            return redirect()->route('inscripcion.estudiante.informacion');
+        }
+
         $this->conv = $idConvocatoria;
 
         // Obtener la información de la convocatoria

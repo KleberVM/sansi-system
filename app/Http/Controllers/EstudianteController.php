@@ -13,6 +13,7 @@ use App\Models\Delegacion;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class EstudianteController extends Controller
@@ -30,96 +31,103 @@ class EstudianteController extends Controller
     
         // Log para debug
         Log::info('Verificando rol de usuario:', ['esTutor' => $esTutor]);
-    
-        // Inicializar la consulta base
-        $estudiantesQuery = Estudiante::with(['user', 'inscripciones.delegacion', 'inscripciones.area', 'inscripciones.categoria']);
-    
-        if ($esTutor) {
-            // Lógica para tutores
-            $tutor = $user->tutor;
-            $delegacionId = $tutor->primerIdDelegacion();
-    
-            Log::info('Consultando estudiantes para delegación (tutor):', ['delegacionId' => $delegacionId]);
-    
-            $estudiantesQuery->whereHas('tutores')
-                ->whereHas('inscripciones', function ($query) use ($delegacionId) {
-                    $query->where('idDelegacion', $delegacionId)
-                        ->where('status', 'aprobado');
-                })
-                ->orWhere(function ($query) use ($delegacionId) {
-                    $query->whereHas('tutores')
-                        ->whereDoesntHave('inscripciones');
-                });
-        } else {
-            // Lógica para otros usuarios
-            Log::info('Consultando todos los estudiantes');
-    
-            $estudiantesQuery->whereHas('inscripciones', function ($query) {
-                $query->where('status', 'aprobado');
-            });
-    
-            // Filtrar por delegación si se especifica
-            if ($request->filled('delegacion')) {
-                $estudiantesQuery->whereHas('inscripciones', function ($query) use ($request) {
-                    $query->where('idDelegacion', $request->delegacion);
-                });
-            }
-        }
-    
-        // Aplicar filtros de búsqueda
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $estudiantesQuery->whereHas('user', function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('apellidoPaterno', 'like', "%{$search}%")
-                    ->orWhere('apellidoMaterno', 'like', "%{$search}%")
-                    ->orWhere('ci', 'like', "%{$search}%");
-            });
-        }
-    
-        // Aplicar filtros adicionales solo si es tutor
+
+        $sql = "
+        SELECT 
+            u.name AS nombre,
+            u.apellidoPaterno,
+            u.apellidoMaterno,
+            u.ci,
+            i.status AS estado_inscripcion,
+            i.fechaInscripcion,
+            conv.nombre AS convocatoria,
+            a.nombre AS area,
+            c.nombre AS categoria,e.id
+        FROM estudiante e
+        JOIN users u ON u.id = e.id
+        JOIN tutorestudianteinscripcion tei ON tei.idEstudiante = e.id
+        JOIN inscripcion i ON i.idInscripcion = tei.idInscripcion
+        JOIN convocatoria conv ON conv.idConvocatoria = i.idConvocatoria
+        JOIN detalle_inscripcion di ON di.idInscripcion = i.idInscripcion
+        JOIN area a ON a.idArea = di.idArea
+        JOIN categoria c ON c.idCategoria = di.idCategoria
+        WHERE i.status = 'aprobado'
+    ";
+
+        $bindings = [];
+
+        // Filtros si es tutor
         if ($esTutor) {
             $delegacionId = $user->tutor->primerIdDelegacion();
-            
+            $sql .= " AND i.idDelegacion = ?";
+            $bindings[] = $delegacionId;
+
+            // Filtros adicionales por convocatoria, área, categoría
             if ($request->filled('convocatoria')) {
-                $estudiantesQuery->whereHas('inscripciones', function ($query) use ($request, $delegacionId) {
-                    $query->where('idConvocatoria', $request->convocatoria)
-                        ->where('idDelegacion', $delegacionId);
-                });
+                $sql .= " AND i.idConvocatoria = ?";
+                $bindings[] = $request->convocatoria;
             }
-    
             if ($request->filled('area')) {
-                $estudiantesQuery->whereHas('inscripciones', function ($query) use ($request, $delegacionId) {
-                    $query->where('idArea', $request->area)
-                        ->where('idDelegacion', $delegacionId);
-                });
+                $sql .= " AND di.idArea = ?";
+                $bindings[] = $request->area;
             }
-    
             if ($request->filled('categoria')) {
-                $estudiantesQuery->whereHas('inscripciones', function ($query) use ($request, $delegacionId) {
-                    $query->where('idCategoria', $request->categoria)
-                        ->where('idDelegacion', $delegacionId);
-                });
+                $sql .= " AND di.idCategoria = ?";
+                $bindings[] = $request->categoria;
+            }
+        } else {
+            // Si no es tutor y hay filtro por delegación
+            if ($request->filled('delegacion')) {
+                $sql .= " AND i.idDelegacion = ?";
+                $bindings[] = $request->delegacion;
             }
         }
-    
-        // Obtener estudiantes paginados
-        $estudiantes = $estudiantesQuery->paginate(10);
-    
-        // Log del resultado
+
+        // Búsqueda por nombre, apellido o CI
+        if ($request->filled('search')) {
+            $search = '%' . $request->search . '%';
+            $sql .= " AND (
+            u.name LIKE ? OR 
+            u.apellidoPaterno LIKE ? OR 
+            u.apellidoMaterno LIKE ? OR 
+            CAST(u.ci AS CHAR) LIKE ?
+        )";
+            $bindings = array_merge($bindings, [$search, $search, $search, $search]);
+        }
+
+        // Ordenar resultados
+        $sql .= " ORDER BY u.apellidoPaterno, u.apellidoMaterno, u.name";
+
+        // Ejecutar consulta
+        $result = DB::select($sql, $bindings);
+
+        // Paginar resultados
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $items = collect($result);
+
+        $estudiantes = new LengthAwarePaginator(
+            $items->forPage($currentPage, $perPage),
+            $items->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        // Log de información
         Log::info('Estudiantes encontrados:', [
             'total' => $estudiantes->total(),
             'pagina_actual' => $estudiantes->currentPage(),
             'por_pagina' => $estudiantes->perPage(),
             'esTutor' => $esTutor
         ]);
-    
-        // Obtener datos para los filtros
-        $convocatorias = Convocatoria::all();
-        $areas = Area::all();
-        $categorias = Categoria::all();
-        $delegaciones = Delegacion::all();
-    
+
+        // Datos para filtros
+        $convocatorias = DB::table('convocatoria')->get();
+        $areas = DB::table('area')->get();
+        $categorias = DB::table('categoria')->get();
+        $delegaciones = DB::table('delegacion')->get();
+
         return view('inscripciones.listaEstudiantes', compact(
             'estudiantes',
             'convocatorias',
@@ -134,90 +142,98 @@ class EstudianteController extends Controller
      * Muestra la lista de estudiantes con inscripciones pendientes
      */
     public function pendientes(Request $request)
-{
-    // Obtener el usuario actual
-    $user = auth()->user();
-    
-    // Verificar si el usuario es tutor (rol con ID 2)
-    $esTutor = $user->roles->contains('idRol', 2);
+    {
+        $user = auth()->user();
+        $esTutor = $user->roles->contains('idRol', 2);
+        Log::info('Verificando rol de usuario:', ['esTutor' => $esTutor]);
 
-    // Log para debug
-    Log::info('Verificando rol de usuario:', ['esTutor' => $esTutor]);
+        // SQL base
+        $sql = "
+        SELECT 
+            u.name AS nombre,
+            u.apellidoPaterno,
+            u.apellidoMaterno,
+            u.ci,
+            i.status AS estado_inscripcion,
+            i.fechaInscripcion,
+            conv.nombre AS convocatoria,
+            a.nombre AS area,
+            c.nombre AS categoria
+        FROM estudiante e
+        JOIN users u ON u.id = e.id
+        JOIN tutorestudianteinscripcion tei ON tei.idEstudiante = e.id
+        JOIN inscripcion i ON i.idInscripcion = tei.idInscripcion
+        JOIN convocatoria conv ON conv.idConvocatoria = i.idConvocatoria
+        JOIN detalle_inscripcion di ON di.idInscripcion = i.idInscripcion
+        JOIN area a ON a.idArea = di.idArea
+        JOIN categoria c ON c.idCategoria = di.idCategoria
+        WHERE i.status = 'pendiente'
+    ";
 
-    // Inicializar la consulta base
-    $estudiantesQuery = Estudiante::with(['user', 'inscripciones.delegacion', 'inscripciones.area', 'inscripciones.categoria']);
+        $bindings = [];
 
-    if ($esTutor) {
-        // Lógica para tutores
-        $tutor = $user->tutor;
-        $delegacionId = $tutor->primerIdDelegacion();
-
-        Log::info('Consultando estudiantes para delegación (tutor):', ['delegacionId' => $delegacionId]);
-
-        $estudiantesQuery->whereHas('tutores')
-            ->whereHas('inscripciones', function ($query) use ($delegacionId) {
-                $query->where('idDelegacion', $delegacionId)
-                    ->where('status', 'pendiente');
-            })
-            ->orWhere(function ($query) use ($delegacionId) {
-                $query->whereHas('tutores')
-                    ->whereDoesntHave('inscripciones');
-            });
-    } else {
-        // Lógica para otros usuarios
-        Log::info('Consultando todos los estudiantes con inscripciones pendientes');
-
-        $estudiantesQuery->whereHas('inscripciones', function ($query) {
-            $query->where('status', 'pendiente');
-        });
-
-        // Filtrar por delegación si se especifica
-        if ($request->filled('delegacion')) {
-            $estudiantesQuery->whereHas('inscripciones', function ($query) use ($request) {
-                $query->where('idDelegacion', $request->delegacion);
-            });
+        // Filtro por tutor (delegación)
+        if ($esTutor) {
+            $tutor = $user->tutor;
+            $delegacionId = $tutor->primerIdDelegacion();
+            $sql .= " AND i.idDelegacion = ?";
+            $bindings[] = $delegacionId;
+        } else {
+            // Filtro por delegación (si no es tutor)
+            if ($request->filled('delegacion')) {
+                $sql .= " AND i.idDelegacion = ?";
+                $bindings[] = $request->delegacion;
+            }
         }
+
+        // Filtro por búsqueda
+        if ($request->filled('search')) {
+            $search = '%' . $request->search . '%';
+            $sql .= " AND (
+            u.name LIKE ? OR 
+            u.apellidoPaterno LIKE ? OR 
+            u.apellidoMaterno LIKE ? OR 
+            CAST(u.ci AS CHAR) LIKE ?
+        )";
+            $bindings = array_merge($bindings, [$search, $search, $search, $search]);
+        }
+
+        // Orden final
+        $sql .= " ORDER BY u.apellidoPaterno, u.apellidoMaterno, u.name";
+
+        // Ejecutar consulta
+        $result = DB::select($sql, $bindings);
+
+        // Paginar manualmente
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $items = collect($result);
+
+        $estudiantes = new LengthAwarePaginator(
+            $items->forPage($currentPage, $perPage),
+            $items->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        // Cargar datos complementarios
+        $convocatorias = DB::table('convocatoria')->get();
+        $areas = DB::table('area')->get();
+        $categorias = DB::table('categoria')->get();
+        $delegaciones = DB::table('delegacion')->get();
+        $modalidades = ['individual', 'duo', 'equipo'];
+
+        return view('inscripciones.listaEstudiantesPendientes', compact(
+            'estudiantes',
+            'convocatorias',
+            'areas',
+            'categorias',
+            'delegaciones',
+            'esTutor',
+            'modalidades'
+        ));
     }
-
-    // Aplicar filtros de búsqueda
-    if ($request->filled('search')) {
-        $search = $request->search;
-        $estudiantesQuery->whereHas('user', function ($query) use ($search) {
-            $query->where('name', 'like', "%{$search}%")
-                ->orWhere('apellidoPaterno', 'like', "%{$search}%")
-                ->orWhere('apellidoMaterno', 'like', "%{$search}%")
-                ->orWhere('ci', 'like', "%{$search}%");
-        });
-    }
-
-    // Obtener estudiantes paginados
-    $estudiantes = $estudiantesQuery->paginate(10);
-
-    // Log del resultado
-    Log::info('Estudiantes encontrados:', [
-        'total' => $estudiantes->total(),
-        'esTutor' => $esTutor
-    ]);
-
-    // Obtener datos para los filtros
-    $convocatorias = Convocatoria::all();
-    $areas = Area::all();
-    $categorias = Categoria::all();
-    $delegaciones = Delegacion::all();
-    
-    // Definir las modalidades disponibles
-    $modalidades = ['individual', 'duo', 'equipo'];
-
-    return view('inscripciones.listaEstudiantesPendientes', compact(
-        'estudiantes',
-        'convocatorias',
-        'areas',
-        'categorias',
-        'delegaciones',
-        'esTutor',
-        'modalidades'
-    ));
-}
     /**
      * Muestra los detalles de un estudiante específico
      */
@@ -231,7 +247,7 @@ class EstudianteController extends Controller
                 'inscripciones.delegacion',
                 'inscripciones.detalles.grupoInscripcion'
             ])->findOrFail($id);
-            
+
             // Preparar los datos del estudiante
             $datos = [
                 'id' => $estudiante->id,
@@ -257,11 +273,11 @@ class EstudianteController extends Controller
                     'id' => $inscripcion->delegacion->idDelegacion,
                     'nombre' => $inscripcion->delegacion->nombre
                 ] : null;
-                
+
                 if ($inscripcion->detalles->isNotEmpty()) {
                     $detalle = $inscripcion->detalles->first();
                     $datos['modalidad'] = $detalle->modalidadInscripcion;
-                    
+
                     if (in_array($detalle->modalidadInscripcion, ['duo', 'equipo']) && $detalle->grupoInscripcion) {
                         $datos['grupo'] = [
                             'id' => $detalle->grupoInscripcion->id,
@@ -299,14 +315,15 @@ class EstudianteController extends Controller
                 'categoria_id' => 'required|exists:categoria,idCategoria',
                 'modalidad' => 'required|in:individual,duo,equipo'
             ];
-            
+
             // Si la modalidad es duo o equipo y hay un grupo, validarlo
             if (in_array($request->modalidad, ['duo', 'equipo']) && $request->has('idGrupoInscripcion')) {
                 $validationRules['idGrupoInscripcion'] = 'required|exists:grupoInscripcion,id';
             }
-            
-            $request->validate($validationRules);            $estudiante = Estudiante::with('inscripciones.detalles')->findOrFail($id);
-            
+
+            $request->validate($validationRules);
+            $estudiante = Estudiante::with('inscripciones.detalles')->findOrFail($id);
+
             // Obtener la inscripción activa del estudiante
             $inscripcion = $estudiante->inscripciones->first();
             if (!$inscripcion) {
@@ -315,11 +332,11 @@ class EstudianteController extends Controller
                     'message' => 'El estudiante no tiene una inscripción asociada'
                 ], 404);
             }
-            
+
             // Buscar el detalle de inscripción o crear uno nuevo
             $detalleInscripcion = \App\Models\DetalleInscripcion::where('idInscripcion', $inscripcion->idInscripcion)
                 ->first();
-                
+
             if (!$detalleInscripcion) {
                 // Si no existe un detalle, crear uno nuevo
                 $detalleInscripcion = \App\Models\DetalleInscripcion::create([
@@ -336,7 +353,7 @@ class EstudianteController extends Controller
                     'modalidadInscripcion' => $request->modalidad
                 ]);
             }
-            
+
             // Si la modalidad es duo o equipo y seleccionaron un grupo, asignarlo
             if (in_array($request->modalidad, ['duo', 'equipo']) && $request->has('idGrupoInscripcion') && $request->idGrupoInscripcion) {
                 $detalleInscripcion->update([
@@ -350,7 +367,7 @@ class EstudianteController extends Controller
             }            // Recargar el estudiante con las relaciones actualizadas
             $estudianteActualizado = Estudiante::with(['inscripciones.detalles.area', 'inscripciones.detalles.categoria', 'inscripciones.detalles.grupoInscripcion', 'user'])
                 ->findOrFail($id);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Estudiante actualizado correctamente',
@@ -477,7 +494,8 @@ class EstudianteController extends Controller
                 ->with('error', 'Error al completar la inscripción: ' . $e->getMessage())
                 ->withInput();
         }
-    }    /**
+    }
+    /**
      * Obtiene los grupos disponibles por delegación y modalidad
      */
     public function obtenerGrupos($idDelegacion, $modalidad)
@@ -490,21 +508,20 @@ class EstudianteController extends Controller
                     'message' => 'Modalidad no válida'
                 ], 400);
             }
-            
+
             // Obtener los grupos que pertenecen a la delegación y modalidad especificadas
             $grupos = \App\Models\GrupoInscripcion::where('idDelegacion', $idDelegacion)
                 ->where('modalidad', $modalidad)
                 ->where('estado', '!=', 'cancelado')
-                ->get()                ->map(function($grupo) {
+                ->get()->map(function ($grupo) {
                     // Simplemente devolver el modelo como array
                     return $grupo->toArray();
                 });
-            
+
             return response()->json([
                 'success' => true,
                 'grupos' => $grupos
             ]);
-            
         } catch (\Exception $e) {
             Log::error('Error al obtener grupos: ' . $e->getMessage());
             return response()->json([

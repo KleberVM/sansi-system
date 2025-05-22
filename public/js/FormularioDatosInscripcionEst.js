@@ -423,7 +423,7 @@ function removeTutorBlock(tutorBlock) {
     // Actualizar los números de los tutores restantes
     const remainingBlocks = document.querySelectorAll('.tutor-block');
     remainingBlocks.forEach((block, index) => {
-        block.querySelector('.tutor-header h3').textContent = `Tutor ${index + 1}`;
+        block.querySelector('.tutor-header h3').textContent = `Delegado ${index + 1}`;
         
         // Actualizar los nombres de los campos
         const categoriaSelect = block.querySelector('.categoria-select');
@@ -482,7 +482,7 @@ function addTutorBlock() {
     tutorBlock.querySelector('.tutor-info').style.display = 'none';
     
     // Actualizar el título del tutor
-    tutorBlock.querySelector('.tutor-header h3').textContent = `Tutor ${tutorCount}`;
+    tutorBlock.querySelector('.tutor-header h3').textContent = `Delegado ${tutorCount}`;
     
     // Asegurarse de que los nombres de los campos sean únicos para cada tutor
     const categoriaSelect = tutorBlock.querySelector('.categoria-select');
@@ -564,7 +564,7 @@ function addAreaBlock(tutorBlock) {
     });
     
     // Obtener el índice del tutor
-    const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').textContent.replace('Tutor ', ''));
+    const tutorIndex = parseInt(tutorBlock.querySelector('.tutor-header h3').textContent.replace('Delegado ', ''));
     
     // Inicializar el contador si no existe
     if (!areaCount[tutorIndex]) {
