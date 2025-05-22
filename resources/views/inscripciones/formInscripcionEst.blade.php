@@ -6,6 +6,15 @@
 <link rel="stylesheet" href="{{ asset('css/inscripcion/modalAreas.css') }}">
 <link rel="stylesheet" href="{{ asset('css/inscripcion/gradosCompartidos.css') }}">
 <link rel="stylesheet" href="{{ asset('css/inscripcion/inscripcionExistente.css') }}">
+
+<link rel="stylesheet" href="/css/form-validation.css">
+<link rel="stylesheet" href="/css/inscripcion/mejorasBotones.css">
+<link rel="stylesheet" href="/css/inscripcion/arregloBotonAreaUrgente.css">
+<link rel="stylesheet" href="/css/inscripcion/validacionAreas.css">
+<link rel="stylesheet" href="/css/inscripcion/modalAreas.css">
+<link rel="stylesheet" href="/css/inscripcion/gradosCompartidos.css">
+<link rel="stylesheet" href="/css/inscripcion/inscripcionExistente.css">
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="manual-registration-section-header">
     <h3>Inscripción Manual de Estudiante</h3>
@@ -241,6 +250,9 @@
 <!-- Scripts para manejo de formulario -->
 <script src="{{ asset('js/inscripcionTutor/areaParticipacionHandler.js') }}"></script>
 <script src="{{ asset('js/inscripcionTutor/validacionAreasUnicas.js') }}"></script>
+<script src="/js/inscripcionTutor/areaParticipacionHandler.js"></script>
+<script src="/js/inscripcionTutor/validacionAreasUnicas.js"></script>
+
 <script>
     // Script para asegurar que los botones sean visibles
     document.addEventListener('DOMContentLoaded', function() {
@@ -366,9 +378,14 @@
         };
     });
 </script>
+
 <!-- Script para verificar Bootstrap y proveer fallback -->
 <script src="{{ asset('js/inscripcionTutor/bootstrapModalFallback.js') }}"></script>
 <!-- Script para manejar el modal de áreas -->
 <script src="{{ asset('js/inscripcionTutor/modalAreasHandler.js') }}"></script>
 <!-- Script para manejar la validación de grados compartidos entre categorías -->
 <script src="{{ asset('js/inscripcionTutor/gradosCompartidosHandler.js') }}"></script>
+
+<script src="/js/inscripcionTutor/bootstrapModalFallback.js"></script>
+<script src="/js/inscripcionTutor/modalAreasHandler.js"></script>
+<script src="/js/inscripcionTutor/gradosCompartidosHandler.js"></script>

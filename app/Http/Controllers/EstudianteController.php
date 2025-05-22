@@ -159,6 +159,7 @@ class EstudianteController extends Controller
             conv.nombre AS convocatoria,
             a.nombre AS area,
             c.nombre AS categoria
+            e.id
         FROM estudiante e
         JOIN users u ON u.id = e.id
         JOIN tutorestudianteinscripcion tei ON tei.idEstudiante = e.id
