@@ -177,7 +177,7 @@
                                                             data-fecha="{{ $grupo->first()->fecha_actualizacion_verificacion ? \Carbon\Carbon::parse($grupo->first()->fecha_actualizacion_verificacion)->format('d/m/Y') : 'N/A' }}"
                                                             data-estado="{{ strtolower($grupo->first()->status) }}"
                                                             data-nro-comprobante="{{ $grupo->first()->CodigoComprobante }}"
-                                                            data-imagen="{{ Storage::url(str_replace('public/', '', $grupo->first()->RutaComprobante)) }}">
+                                                            data-imagen="{{ $grupo->first()->ruta_publica_para_usar_en_produccion }}">
                                                         <i class="fas fa-eye me-1"></i> Revisar
                                                     </button>
                                                 </td>
@@ -238,20 +238,27 @@
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
-                                <label class="form-label text-muted small">Nro. Comprobante subido:</label>
-                                <p class="fw-medium" id="modal-nro-comprobante">1234567</p>
+                                <label class="form-label text-muted small">Nro. Comprobante subido por el usuario:</label>
+                                <p class="fw-bold fs-4 text-primary" id="modal-nro-comprobante">1234567</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Segunda sección: Imagen del comprobante -->
+                    <!-- Segunda sección: Imagen del comprobante - CON SCROLL -->
                     <div class="row mb-4">
                         <div class="col-12">
                             <label class="form-label text-muted small">Vista previa del comprobante:</label>
-                            <div class="preview-container border rounded p-2 bg-light">
-                                <img id="preview-comprobante" src="https://via.placeholder.com/400x320" alt="Vista previa del comprobante" class="img-fluid mx-auto d-block">
+                            <!-- ✅ ESTAS SON LAS LÍNEAS CLAVE PARA EL SCROLL ✅ -->
+                            <div class="preview-container border rounded p-2 bg-light" style="max-height: 150px; overflow-y: auto;">
+                                <img id="preview-comprobante" 
+                                    src="/api/placeholder/600/800" 
+                                    alt="Vista previa del comprobante" 
+                                    class="img-fluid mx-auto d-block"
+                                    style="max-width: 100%; height: auto;">
                             </div>
-                            <p class="text-muted small mt-2">* Recuerda verificar que el número de comprobante (7 dígitos) sea claramente visible en la esquina superior derecha.</p>
+                            <p class="text-muted small mt-2">
+                                * Recuerda verificar que el número de comprobante (7 dígitos) sea claramente visible.
+                            </p>
                         </div>
                     </div>
 
@@ -317,8 +324,12 @@
         const fecha = button.getAttribute('data-fecha');
         const estado = button.getAttribute('data-estado');
         const nroComprobante = button.getAttribute('data-nro-comprobante');
-        const imagenSrc = button.getAttribute('data-imagen');
-        
+        const imagenSrc = button.getAttribute('data-imagen') || 
+                     "{{ asset('images/placeholder-comprobante.jpg') }}"; // Fallback
+        const imgPreview = modal.querySelector('#preview-comprobante');
+        imgPreview.src = imagenSrc;
+        imgPreview.alt = "Comprobante " + button.getAttribute('data-archivo');
+    
         // Actualizar contenido del modal
         modal.querySelector('#modal-id').textContent = idBoletaActual;
         modal.querySelector('#modal-usuario').textContent = estudiantes;

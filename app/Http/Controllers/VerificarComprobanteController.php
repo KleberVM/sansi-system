@@ -21,6 +21,7 @@ class VerificarComprobanteController extends Controller
                 vi.Comprobante_valido, 
                 vi.CodigoComprobante,           
                 vi.RutaComprobante,
+                CONCAT('" . url('/') . "', '/', vi.RutaComprobante) AS ruta_publica_para_usar_en_produccion,
                 vi.created_at AS fecha_verificacion,  
                 vi.updated_at AS fecha_actualizacion_verificacion  
             FROM 

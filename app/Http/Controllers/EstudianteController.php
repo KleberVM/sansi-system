@@ -158,7 +158,7 @@ class EstudianteController extends Controller
             i.fechaInscripcion,
             conv.nombre AS convocatoria,
             a.nombre AS area,
-            c.nombre AS categoria
+            c.nombre AS categoria,
             e.id
         FROM estudiante e
         JOIN users u ON u.id = e.id
