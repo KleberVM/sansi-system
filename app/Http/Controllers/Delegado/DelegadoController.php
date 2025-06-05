@@ -23,20 +23,16 @@ class DelegadoController extends Controller
     {
         // Consulta base para obtener tutores con sus relaciones
         $query = Tutor::with(['user', 'delegaciones'])
-            ->join('users', 'tutor.id', '=', 'users.id')
-            ->select('tutor.*')
             ->where('tutor.estado', 'aprobado'); // Solo mostrar tutores aprobados
 
         // Aplicar búsqueda si existe
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->whereHas('user', function($userQuery) use ($search) {
-                    $userQuery->where('name', 'like', "%{$search}%")
-                        ->orWhere('apellidoPaterno', 'like', "%{$search}%")
-                        ->orWhere('apellidoMaterno', 'like', "%{$search}%")
-                        ->orWhere('ci', 'like', "%{$search}%");
-                });
+            $query->whereHas('user', function($userQuery) use ($search) {
+                $userQuery->where('name', 'like', "%{$search}%")
+                    ->orWhere('apellidoPaterno', 'like', "%{$search}%")
+                    ->orWhere('apellidoMaterno', 'like', "%{$search}%")
+                    ->orWhere('ci', 'like', "%{$search}%");
             });
         }
 
@@ -46,28 +42,27 @@ class DelegadoController extends Controller
 
         switch ($sort) {
             case 'ci':
-                $query->join('users as u', 'tutor.id', '=', 'u.id')
-                      ->orderBy('u.ci', $direction);
+                $query->orderBy(User::select('ci')
+                    ->whereColumn('users.id', 'tutor.id'), $direction);
                 break;
             case 'name':
-                $query->join('users as u', 'tutor.id', '=', 'u.id')
-                      ->orderBy('u.name', $direction);
+                $query->orderBy(User::select('name')
+                    ->whereColumn('users.id', 'tutor.id'), $direction);
                 break;
             case 'colegio':
-                // Ordenar por el nombre del colegio requiere un enfoque diferente
-                // debido a la relación muchos a muchos
-                $query->join('tutorAreaDelegacion as tad', 'tutor.id', '=', 'tad.id')
-                      ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
-                      ->orderBy('d.nombre', $direction);
+                $query->orderBy(Delegacion::select('nombre')
+                    ->join('tutorAreaDelegacion', 'delegacion.idDelegacion', '=', 'tutorAreaDelegacion.idDelegacion')
+                    ->whereColumn('tutorAreaDelegacion.id', 'tutor.id')
+                    ->limit(1), $direction);
                 break;
             default:
-                $query->join('users as u', 'tutor.id', '=', 'u.id')
-                      ->orderBy('u.name', $direction);
+                $query->orderBy(User::select('name')
+                    ->whereColumn('users.id', 'tutor.id'), $direction);
                 break;
         }
 
         // Obtener resultados paginados
-        $tutores = $query->distinct()->paginate(10);
+        $tutores = $query->paginate(10);
         
         // Obtener la lista de colegios para el filtro
         $colegios = Delegacion::select('idDelegacion as id', 'nombre')->orderBy('nombre')->get();
