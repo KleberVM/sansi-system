@@ -15,7 +15,7 @@ class BackupController extends Controller
             ->select(
                 'audit_logs.*',
                 'users.name as usuario_nombre'  // Traemos el nombre del usuario
-            )
+            )->orderBy('fecha_cambio', 'desc')
             ->get();
 
         return view('backupAdmin.backup', compact('logs'));

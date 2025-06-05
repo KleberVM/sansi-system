@@ -253,6 +253,7 @@
                 <button type="submit" class="btn-subir">
                     <i class="fas fa-check"></i> Confirmar inscripción
                 </button>
+
             </div>
         </form>
     </div>

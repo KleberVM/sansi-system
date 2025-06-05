@@ -56,7 +56,7 @@ class DelegadoController extends Controller
             case 'colegio':
                 // Ordenar por el nombre del colegio requiere un enfoque diferente
                 // debido a la relación muchos a muchos
-                $query->join('tutorareadelegacion as tad', 'tutor.id', '=', 'tad.id')
+                $query->join('tutorAreaDelegacion as tad', 'tutor.id', '=', 'tad.id')
                       ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
                       ->orderBy('d.nombre', $direction);
                 break;
@@ -79,64 +79,64 @@ class DelegadoController extends Controller
      * Muestra la lista de solicitudes de tutores pendientes
      */
     public function solicitudes(Request $request)
-{
-    // Consulta base para obtener tutores pendientes con sus relaciones
-    $query = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
-        ->join('users', 'tutor.id', '=', 'users.id')
-        ->select('tutor.*', 'users.name as user_name', 'users.ci', 'users.email') // Añade las columnas necesarias
-        ->where('tutor.estado', 'pendiente');
+    {
+        // Consulta base para obtener tutores pendientes con sus relaciones
+        $query = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
+            ->join('users', 'tutor.id', '=', 'users.id')
+            ->select('tutor.*', 'users.name as user_name', 'users.ci', 'users.email') // Añade las columnas necesarias
+            ->where('tutor.estado', 'pendiente');
 
-    // Aplicar búsqueda si existe
-    if ($request->has('search') && !empty($request->search)) {
-        $search = $request->search;
-        $query->where(function($q) use ($search) {
-            $q->whereHas('user', function($userQuery) use ($search) {
-                $userQuery->where('name', 'like', "%{$search}%")
-                    ->orWhere('apellidoPaterno', 'like', "%{$search}%")
-                    ->orWhere('apellidoMaterno', 'like', "%{$search}%")
-                    ->orWhere('ci', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+        // Aplicar búsqueda si existe
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('user', function($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('apellidoPaterno', 'like', "%{$search}%")
+                        ->orWhere('apellidoMaterno', 'like', "%{$search}%")
+                        ->orWhere('ci', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
             });
-        });
+        }
+        
+        // Filtrar por colegio si se proporciona
+        if ($request->has('colegio') && !empty($request->colegio)) {
+            $idColegio = $request->colegio;
+            $query->whereHas('delegaciones', function($q) use ($idColegio) {
+                $q->where('idDelegacion', $idColegio);
+            });
+        }
+
+        // Aplicar ordenamiento
+        $sort = $request->sort ?? 'name';
+        $direction = $request->direction ?? 'asc';
+
+        switch ($sort) {
+            case 'ci':
+                $query->orderBy('users.ci', $direction);
+                break;
+            case 'name':
+                $query->orderBy('users.name', $direction);
+                break;
+            case 'email':
+                $query->orderBy('users.email', $direction);
+                break;
+            case 'colegio':
+                $query->join('tutorareadelegacion as tad', 'tutor.id', '=', 'tad.id')
+                    ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
+                    ->orderBy('d.nombre', $direction);
+                break;
+            default:
+                $query->orderBy('users.name', $direction);
+                break;
+        }
+
+        // Obtener resultados paginados
+        $solicitudes = $query->distinct()->paginate(10);
+
+        return view('delegado.solicitud', compact('solicitudes'));
     }
-    
-    // Filtrar por colegio si se proporciona
-    if ($request->has('colegio') && !empty($request->colegio)) {
-        $idColegio = $request->colegio;
-        $query->whereHas('delegaciones', function($q) use ($idColegio) {
-            $q->where('idDelegacion', $idColegio);
-        });
-    }
-
-    // Aplicar ordenamiento
-    $sort = $request->sort ?? 'name';
-    $direction = $request->direction ?? 'asc';
-
-    switch ($sort) {
-        case 'ci':
-            $query->orderBy('users.ci', $direction);
-            break;
-        case 'name':
-            $query->orderBy('users.name', $direction);
-            break;
-        case 'email':
-            $query->orderBy('users.email', $direction);
-            break;
-        case 'colegio':
-            $query->join('tutorareadelegacion as tad', 'tutor.id', '=', 'tad.id')
-                  ->join('delegacion as d', 'tad.idDelegacion', '=', 'd.idDelegacion')
-                  ->orderBy('d.nombre', $direction);
-            break;
-        default:
-            $query->orderBy('users.name', $direction);
-            break;
-    }
-
-    // Obtener resultados paginados
-    $solicitudes = $query->distinct()->paginate(10);
-
-    return view('delegado.solicitud', compact('solicitudes'));
-}
     
     /**
      * Aprobar una solicitud de tutor
@@ -236,7 +236,7 @@ class DelegadoController extends Controller
     {
         try {
             // Obtener el tutor con sus relaciones
-            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
+            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorAreaDelegacion'])
                 ->where('estado', 'aprobado')
                 ->findOrFail($id);
                 
@@ -254,7 +254,7 @@ class DelegadoController extends Controller
     {
         try {
             // Obtener el tutor con sus relaciones
-            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorareadelegacion'])
+            $tutor = Tutor::with(['user', 'delegaciones', 'areas', 'tutorAreaDelegacion'])
                 ->where('estado', 'aprobado')
                 ->findOrFail($id);
             

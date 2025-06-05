@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const imagePreview = document.querySelector('.image-preview');
     const pdfPreview = document.querySelector('.pdf-preview');
     const imgElement = document.querySelector('.img-preview');
+    const pdfCanvas = document.getElementById('pdf-preview-canvas');
     const fileName = document.querySelector('.file-name');
     const removeBtn = document.querySelector('.btn-remove-file');
     const feedbackArea = document.querySelector('.file-feedback');
@@ -43,13 +44,44 @@ document.addEventListener('DOMContentLoaded', function() {
     function mostrarError(mensaje) {
         feedbackArea.textContent = mensaje;
         feedbackArea.style.display = 'block';
+        feedbackArea.className = 'file-feedback text-danger';
     }
 
-    // Función para procesar OCR
-    async function processImageWithOCR(imageUrl) {
-        console.log("Iniciando OCR...");
-        feedbackArea.textContent = "Procesando imagen...";
+    // Función para mostrar mensajes de proceso
+    function mostrarProceso(mensaje) {
+        feedbackArea.textContent = mensaje;
         feedbackArea.style.display = 'block';
+        feedbackArea.className = 'file-feedback text-info';
+    }
+
+    // Función para extraer número de comprobante del texto
+    function extraerNumeroComprobante(texto) {
+        // Buscar en los primeros 150 caracteres (ampliado para PDF)
+        const textoBusqueda = texto.substring(0, 150);
+        
+        // Patrones de búsqueda más amplios
+        const patrones = [
+            /(Nro|No|Numero?|Comprobante)[\s:.-]*([0-9]{7})/i,
+            /([0-9]{7})/g
+        ];
+        
+        for (const patron of patrones) {
+            const matches = textoBusqueda.match(patron);
+            if (matches) {
+                const numero = matches[2] ? matches[2] : matches[1] || matches[0];
+                const numeroLimpio = numero.replace(/\D/g, '');
+                if (numeroLimpio.length === 7) {
+                    return parseInt(numeroLimpio);
+                }
+            }
+        }
+        return null;
+    }
+
+    // Función para procesar OCR en imágenes
+    async function processImageWithOCR(imageUrl) {
+        console.log("Iniciando OCR para imagen...");
+        mostrarProceso("Procesando imagen...");
         
         const btnSubir = document.getElementById('btnSubirComprobante');
         btnSubir.disabled = true;
@@ -57,49 +89,132 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const worker = await Tesseract.createWorker('spa');
             const { data: { text } } = await worker.recognize(imageUrl);
-            console.log("Texto extraído:", text);
+            console.log("Texto extraído de imagen:", text);
             
-            // Buscar el número de comprobante
-            const textoBusqueda = text.substring(0, 95);
-            const regex1 = /(Nro|No|Numero?)[\s:]*([0-9]{7})/i;
-            const regex2 = /[0-9]{7}/;
+            const numeroDetectado = extraerNumeroComprobante(text);
             
-            let match = textoBusqueda.match(regex1) || textoBusqueda.match(regex2);
-            
-            if (match) {
-                const numero = match[2] ? match[2] : match[0];
-                codigoComprobante = parseInt(numero.replace(/\D/g, ''));
+            if (numeroDetectado) {
+                codigoComprobante = numeroDetectado;
                 estadoOCR = 1;
-                console.log("Número detectado:", codigoComprobante);
+                console.log("Número detectado en imagen:", codigoComprobante);
                 feedbackArea.style.display = 'none';
-                
-                // Mostrar confirmación
-                textoConfirmacion.innerHTML = `El número detectado es <strong>${codigoComprobante}</strong>, ¿es correcto?`;
-                confirmacionSection.style.display = 'block';
-                
-                // Resetear estados de confirmación
-                confirmacionAceptada = false;
-                correccionManual = null;
-                inputManual.value = '';
-                document.querySelector('.correccion-manual').style.display = 'none';
-                
+                mostrarConfirmacion();
             } else {
-                estadoOCR = 2;
                 throw new Error("En la imagen no se detectó ningún Nro. Comprobante. Vuelve a subir una imagen con más calidad.");
             }
             
             await worker.terminate();
         } catch (error) {
-            console.error("Error en OCR:", error);
-            estadoOCR = 2;
-            mostrarError(error.message);
-            codigoComprobante = null;
-            confirmacionSection.style.display = 'none';
+            console.error("Error en OCR de imagen:", error);
+            manejarErrorOCR(error.message);
         }
+    }
+
+    // Función para procesar OCR en PDFs
+    async function processPDFWithOCR(file) {
+        console.log("Iniciando OCR para PDF...");
+        mostrarProceso("Procesando PDF...");
+        
+        const btnSubir = document.getElementById('btnSubirComprobante');
+        btnSubir.disabled = true;
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({
+                data: new Uint8Array(arrayBuffer)
+            }).promise;
+
+            // Verificar que sea de una sola página
+            if (pdf.numPages > 1) {
+                throw new Error("El PDF debe tener exactamente 1 página. El archivo seleccionado tiene " + pdf.numPages + " páginas.");
+            }
+
+            // Mostrar previsualización
+            await mostrarPreviewPDF(pdf);
+
+            // Procesar OCR
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 2.0 }); // Mayor escala para mejor OCR
+            const canvas = document.createElement('canvas');
+            
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            await page.render({
+                canvasContext: canvas.getContext('2d'),
+                viewport
+            }).promise;
+
+            // Ejecutar OCR
+            const worker = await Tesseract.createWorker('spa');
+            const { data: { text } } = await worker.recognize(canvas);
+            console.log("Texto extraído de PDF:", text);
+            
+            const numeroDetectado = extraerNumeroComprobante(text);
+            
+            if (numeroDetectado) {
+                codigoComprobante = numeroDetectado;
+                estadoOCR = 1;
+                console.log("Número detectado en PDF:", codigoComprobante);
+                feedbackArea.style.display = 'none';
+                mostrarConfirmacion();
+            } else {
+                throw new Error("En el PDF no se detectó ningún Nro. Comprobante. Asegúrate de que el documento sea legible y contenga el número de comprobante.");
+            }
+            
+            await worker.terminate();
+            
+        } catch (error) {
+            console.error("Error en OCR de PDF:", error);
+            manejarErrorOCR(error.message);
+        }
+    }
+
+    // Función para mostrar previsualización de PDF
+    async function mostrarPreviewPDF(pdf) {
+        try {
+            const page = await pdf.getPage(1);
+            const viewport = page.getViewport({ scale: 0.4 });
+            
+            pdfCanvas.height = viewport.height;
+            pdfCanvas.width = viewport.width;
+            pdfCanvas.style.maxWidth = '100%';
+            pdfCanvas.style.height = 'auto';
+            
+            await page.render({
+                canvasContext: pdfCanvas.getContext('2d'),
+                viewport
+            }).promise;
+            
+        } catch (error) {
+            console.error("Error al mostrar previsualización de PDF:", error);
+            mostrarError("Error al generar previsualización del PDF");
+        }
+    }
+
+    // Función para mostrar confirmación
+    function mostrarConfirmacion() {
+        textoConfirmacion.innerHTML = `El número detectado es <strong>${codigoComprobante}</strong>, ¿es correcto?`;
+        confirmacionSection.style.display = 'block';
+        
+        // Resetear estados de confirmación
+        confirmacionAceptada = false;
+        correccionManual = null;
+        inputManual.value = '';
+        document.querySelector('.correccion-manual').style.display = 'none';
+    }
+
+    // Función para manejar errores de OCR
+    function manejarErrorOCR(mensaje) {
+        estadoOCR = 2;
+        mostrarError(mensaje);
+        codigoComprobante = null;
+        confirmacionSection.style.display = 'none';
     }
 
     // Función para manejar archivos
     async function handleFiles(files) {
+        // Resetear estados
         feedbackArea.style.display = 'none';
         estadoOCR = 0;
         codigoComprobante = null;
@@ -130,15 +245,21 @@ document.addEventListener('DOMContentLoaded', function() {
             filePreview.style.display = 'block';
             
             if (file.type === 'application/pdf') {
+                // Manejar PDF
                 pdfPreview.style.display = 'block';
                 imagePreview.style.display = 'none';
-                mostrarError("Los archivos PDF no son soportados para OCR. Suba una imagen JPG o PNG.");
+                
+                // Procesar PDF con OCR
+                await processPDFWithOCR(file);
+                
             } else if (file.type.startsWith('image/')) {
+                // Manejar imagen
+                imagePreview.style.display = 'block';
+                pdfPreview.style.display = 'none';
+                
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     imgElement.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                    pdfPreview.style.display = 'none';
                     processImageWithOCR(e.target.result);
                 };
                 reader.readAsDataURL(file);
@@ -175,11 +296,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Resto de eventos (file input, drag and drop, remove, etc.)
+    // Event listeners para file input
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
     });
 
+    // Drag and drop events
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, function(e) {
             e.preventDefault();
@@ -203,6 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
         handleFiles(e.dataTransfer.files);
     }, false);
 
+    // Remove file event
     removeBtn.addEventListener('click', function() {
         fileInput.value = '';
         filePreview.style.display = 'none';
@@ -213,6 +336,8 @@ document.addEventListener('DOMContentLoaded', function() {
         codigoComprobante = null;
         estadoOCR = 0;
         confirmacionSection.style.display = 'none';
+        confirmacionAceptada = false;
+        correccionManual = null;
         inputManual.value = '';
         document.getElementById('btnSubirComprobante').disabled = true;
     });
@@ -225,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!fileInput.files.length) {
             mostrarError('Por favor, selecciona un archivo.');
+            btnSubir.disabled = false;
             return;
         }
         

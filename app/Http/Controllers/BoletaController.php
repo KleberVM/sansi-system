@@ -30,7 +30,7 @@ class BoletaController extends Controller
     
     public function procesarBoleta(Request $request)
     {
-        // Validación personalizada
+        // Validación personalizada - AHORA INCLUYE PDF
         $validator = Validator::make($request->all(), [
             'inscripcion_id' => 'required|integer|exists:verificacioninscripcion,idInscripcion',
             'ocr_number' => 'required|numeric|digits:7',
@@ -41,11 +41,13 @@ class BoletaController extends Controller
                 Rule::unique('verificacioninscripcion', 'CodigoComprobante')
                     ->whereNotNull('CodigoComprobante')
             ],
-            'comprobantePago' => 'required|file|mimes:jpg,jpeg,png|max:5120',
+            // CAMBIO PRINCIPAL: Ahora acepta PDF además de imágenes
+            'comprobantePago' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'estado_ocr' => 'required|in:1,2'
         ], [
             'user_number.unique' => 'El comprobante ya ha sido registrado. Contacte con soporte técnico si es un error.',
-            'comprobantePago.mimes' => 'Solo se permiten imágenes JPG, JPEG o PNG.',
+            // MENSAJE ACTUALIZADO para incluir PDF
+            'comprobantePago.mimes' => 'Solo se permiten imágenes JPG, JPEG, PNG o archivos PDF.',
             'comprobantePago.max' => 'El tamaño máximo permitido es 5MB.',
             'estado_ocr.in' => 'El comprobante no es válido.',
         ]);
@@ -54,7 +56,7 @@ class BoletaController extends Controller
         if ($request->estado_ocr == 2) {
             $validator->errors()->add(
                 'ocr_error',
-                'No se detectó el número de comprobante. Suba una imagen nítida.'
+                'No se detectó el número de comprobante. Suba una imagen nítida o un PDF legible.'
             );
         }
 
@@ -72,7 +74,16 @@ class BoletaController extends Controller
             $file = $request->file('comprobantePago');
             $inscripcionId = $request->inscripcion_id;
             $directory = "public/inscripcionID/{$inscripcionId}";
+            
+            // Generar nombre de archivo con extensión correcta
+            $extension = $file->getClientOriginalExtension();
             $filename = $file->getClientOriginalName();
+            
+            // Validación adicional para PDFs (opcional, pero recomendada)
+            if ($extension === 'pdf') {
+                // Aquí podrías agregar validaciones adicionales para PDFs si es necesario
+                // Por ejemplo, verificar que el PDF no esté protegido con contraseña
+            }
 
             // Limpiar directorio existente
             Storage::deleteDirectory($directory);
@@ -158,7 +169,8 @@ class BoletaController extends Controller
                 'message' => $mensaje,
                 'data' => [
                     'codigo' => $numeroAGuardar,
-                    'ruta' => Storage::url($path)
+                    'ruta' => Storage::url($path),
+                    'tipo_archivo' => $extension // Información adicional sobre el tipo de archivo
                 ]
             ]);
         } catch (\Exception $e) {
@@ -177,5 +189,3 @@ class BoletaController extends Controller
         }
     }
 }
-                
-

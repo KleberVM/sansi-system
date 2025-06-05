@@ -3,10 +3,15 @@
     <link rel="stylesheet" href="/css/inscripcion/FormularioDatosInscripcionEst.css">
     @endpush
 @push('scripts')
-    <!-- Carga Tesseract.js de forma tradicional -->
+    <!-- Carga Tesseract.js y PDF.js -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="{{ asset('js/FormularioDatosInscripcionEst.js') }}"></script>
-    <script src="/js/FormularioDatosInscripcionEst.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script>
+        // Configurar PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 
+            "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.js";
+    </script>
 @endpush
 <x-app-layout>
     <!-- Success Message -->
@@ -379,9 +384,9 @@
                                 <img src="" alt="Vista previa" class="img-preview img-fluid mb-2" style="max-height: 200px;">
                             </div>
                             
-                            <!-- Icono para PDF -->
-                            <div class="pdf-preview mb-3" style="display: none;">
-                                <i class="fas fa-file-pdf fa-4x text-danger mb-2"></i>
+                            <!-- Previsualización para PDF -->
+                            <div class="pdf-preview mb-3" style="display: none;  margin: 0; padding: 0;">
+                                <canvas id="pdf-preview-canvas" style="max-width: 100%; margin: 0; padding: 0; height: auto; border: 1px solid #ddd;"></canvas>
                             </div>
                             
                             <!-- Nombre del archivo -->

@@ -1,8 +1,14 @@
 <!-- Carga Tesseract.js de forma tradicional -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script>
+    // Configurar PDF.js worker
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 
+        "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.js";
+</script>
 <x-app-layout>
 <link rel="stylesheet" href="{{ asset('css/inscripcion/listaEstudiantes.css') }}">
-<link rel="stylesheet" href="/css/inscripcion/listaEstudiantes.css">
+
 <!-- Success Message -->
 @if(session('success'))
 <div class="alert alert-success py-1 px-2 mb-1">
@@ -233,12 +239,12 @@
                         <div class="image-preview mb-3" style="display: none;">
                             <img src="" alt="Vista previa" class="img-preview img-fluid mb-2" style="max-height: 200px;">
                         </div>
-
-                        <!-- Icono para PDF -->
-                        <div class="pdf-preview mb-3" style="display: none;">
-                            <i class="fas fa-file-pdf fa-4x text-danger mb-2"></i>
+                        
+                        <!-- Previsualización para PDF -->
+                        <div class="pdf-preview mb-3" style="display: none; margin: 0; padding: 0;">
+                            <canvas id="pdf-preview-canvas" style="max-width: 100%;  margin: 0; padding: 0;height: auto; border: 1px solid #ddd;"></canvas>
                         </div>
-
+                        
                         <!-- Nombre del archivo -->
                         <div class="d-flex align-items-center justify-content-center">
                             <i class="fas fa-paperclip me-2"></i>
@@ -263,13 +269,22 @@
     </div>
 </div>
 
-<script>
-    document.getElementById('generarOrdenPago').addEventListener('click', function() {
-        try {
-            this.disabled = true;
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+    <div id="modalErrorPDF" class="modalPDF" style="display:none;">
+        <div class="modal-contentPDF">
+            <span id="cerrarModalPDF" class="close">&times;</span>
+            <h2>Verifica si tienes estudiantes inscritos</h2>
+            <p id="mensajeErrorTextoPDF"></p>
+        </div>
+    </div>
 
-            // Realizar la solicitud usando fetch
+
+<script>
+
+ document.getElementById('generarOrdenPago').addEventListener('click', function() {
+            const boton = this;
+            boton.disabled = true;
+            boton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+
             fetch('{{ route("boleta") }}', {
                     method: 'GET',
                     headers: {
@@ -277,50 +292,56 @@
                         'Accept': 'application/pdf'
                     }
                 })
-                .then(response => {
+                .then(async response => {
                     if (!response.ok) {
-                        throw new Error('Error en la respuesta del servidor');
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Error desconocido del servidor');
+                        } else {
+                            throw new Error('Error al generar la orden de pago');
+                        }
                     }
                     return response.blob();
                 })
                 .then(blob => {
-                    // Crear un objeto URL para el blob
                     const url = window.URL.createObjectURL(blob);
-                    // Crear un enlace temporal
                     const a = document.createElement('a');
-                    a.style.display = 'none';
                     a.href = url;
                     a.download = 'orden-de-pago.pdf';
-
-                    // Agregar al documento y hacer clic
                     document.body.appendChild(a);
                     a.click();
-
-                    // Limpiar
-                    window.URL.revokeObjectURL(url);
                     document.body.removeChild(a);
-
-                    // Restaurar el botón
-                    this.disabled = false;
-                    this.innerHTML = '<i class="fas fa-file-pdf"></i> Generar orden de pago';
+                    window.URL.revokeObjectURL(url);
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-file-pdf"></i> Generar orden de pago';
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('mensajeError').style.display = 'block';
-                    document.getElementById('mensajeErrorTexto').textContent = 'Error al generar la orden de pago';
-
-                    this.disabled = false;
-                    this.innerHTML = '<i class="fas fa-file-pdf"></i> Generar orden de pago';
+                    mostrarModalError(error.message);
+                    boton.disabled = false;
+                    boton.innerHTML = '<i class="fas fa-file-pdf"></i> Generar orden de pago';
                 });
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('mensajeError').style.display = 'block';
-            document.getElementById('mensajeErrorTexto').textContent = 'Error al generar la orden de pago';
+        });
 
-            this.disabled = false;
-            this.innerHTML = '<i class="fas fa-file-pdf"></i> Generar orden de pago';
+        function mostrarModalError(mensaje) {
+            const modal = document.getElementById('modalErrorPDF');
+            document.getElementById('mensajeErrorTextoPDF').textContent = mensaje;
+            modal.style.display = 'block';
         }
-    });
+
+        document.getElementById('cerrarModalPDF').addEventListener('click', function() {
+            document.getElementById('modalErrorPDF').style.display = 'none';
+        });
+
+        // Cerrar modal si el usuario hace clic fuera del contenido
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalErrorPDF');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+
 
     //EL OCR NO FUNCIONA SI NO ELIMINO ESTE SCRIPT
     document.addEventListener('DOMContentLoaded', function() {
@@ -559,7 +580,7 @@
         };
     });
 
-    //JS del modal de Subir comprobante y todo lo relacionado al OCR, todo lo relacionado a subir imagenes
+    //JS del modal de Subir comprobante y todo lo relacionado al OCR, todo lo relacionado a subir imagenes y PDFs
     document.addEventListener('DOMContentLoaded', function() {
         // Elementos globales del formulario
         const fileInput = document.getElementById('comprobantePagoFile');
@@ -568,6 +589,7 @@
         const imagePreview = document.querySelector('.image-preview');
         const pdfPreview = document.querySelector('.pdf-preview');
         const imgElement = document.querySelector('.img-preview');
+        const pdfCanvas = document.getElementById('pdf-preview-canvas');
         const fileName = document.querySelector('.file-name');
         const removeBtn = document.querySelector('.btn-remove-file');
         const feedbackArea = document.querySelector('.file-feedback');
@@ -590,62 +612,171 @@
         function mostrarError(mensaje) {
             feedbackArea.textContent = mensaje;
             feedbackArea.style.display = 'block';
+            feedbackArea.className = 'file-feedback text-danger';
         }
 
-        // Función para procesar OCR
-        async function processImageWithOCR(imageUrl) {
-            console.log("Iniciando OCR...");
-            feedbackArea.textContent = "Procesando imagen...";
+        // Función para mostrar mensajes de proceso
+        function mostrarProceso(mensaje) {
+            feedbackArea.textContent = mensaje;
             feedbackArea.style.display = 'block';
+            feedbackArea.className = 'file-feedback text-info';
+        }
+
+        // Función para extraer número de comprobante del texto
+        function extraerNumeroComprobante(texto) {
+            // Buscar en los primeros 150 caracteres (ampliado para PDF)
+            const textoBusqueda = texto.substring(0, 150);
+            
+            // Patrones de búsqueda más amplios
+            const patrones = [
+                /(Nro|No|Numero?|Comprobante)[\s:.-]*([0-9]{7})/i,
+                /([0-9]{7})/g
+            ];
+            
+            for (const patron of patrones) {
+                const matches = textoBusqueda.match(patron);
+                if (matches) {
+                    const numero = matches[2] ? matches[2] : matches[1] || matches[0];
+                    const numeroLimpio = numero.replace(/\D/g, '');
+                    if (numeroLimpio.length === 7) {
+                        return parseInt(numeroLimpio);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Función para mostrar confirmación
+        function mostrarConfirmacion() {
+            textoConfirmacion.innerHTML = `El número detectado es <strong>${codigoComprobante}</strong>, ¿es correcto?`;
+            confirmacionSection.style.display = 'block';
+            
+            // Resetear estados de confirmación
+            confirmacionAceptada = false;
+            correccionManual = null;
+            inputManual.value = '';
+            document.querySelector('.correccion-manual').style.display = 'none';
+        }
+
+        // Función para manejar errores de OCR
+        function manejarErrorOCR(mensaje) {
+            estadoOCR = 2;
+            mostrarError(mensaje);
+            codigoComprobante = null;
+            confirmacionSection.style.display = 'none';
+        }
+
+        // Función para procesar OCR en imágenes
+        async function processImageWithOCR(imageUrl) {
+            console.log("Iniciando OCR para imagen...");
+            mostrarProceso("Procesando imagen...");
 
             const btnSubir = document.getElementById('btnSubirComprobante');
             btnSubir.disabled = true;
 
             try {
                 const worker = await Tesseract.createWorker('spa');
-                const {
-                    data: {
-                        text
-                    }
-                } = await worker.recognize(imageUrl);
-                console.log("Texto extraído:", text);
+                const { data: { text } } = await worker.recognize(imageUrl);
+                console.log("Texto extraído de imagen:", text);
 
-                // Buscar el número de comprobante
-                const textoBusqueda = text.substring(0, 95);
-                const regex1 = /(Nro|No|Numero?)[\s:]*([0-9]{7})/i;
-                const regex2 = /[0-9]{7}/;
+                const numeroDetectado = extraerNumeroComprobante(text);
 
-                let match = textoBusqueda.match(regex1) || textoBusqueda.match(regex2);
-
-                if (match) {
-                    const numero = match[2] ? match[2] : match[0];
-                    codigoComprobante = parseInt(numero.replace(/\D/g, ''));
+                if (numeroDetectado) {
+                    codigoComprobante = numeroDetectado;
                     estadoOCR = 1;
-                    console.log("Número detectado:", codigoComprobante);
+                    console.log("Número detectado en imagen:", codigoComprobante);
                     feedbackArea.style.display = 'none';
-
-                    // Mostrar confirmación
-                    textoConfirmacion.innerHTML = `El número detectado es <strong>${codigoComprobante}</strong>, ¿es correcto?`;
-                    confirmacionSection.style.display = 'block';
-
-                    // Resetear estados de confirmación
-                    confirmacionAceptada = false;
-                    correccionManual = null;
-                    inputManual.value = '';
-                    document.querySelector('.correccion-manual').style.display = 'none';
-
+                    mostrarConfirmacion();
                 } else {
-                    estadoOCR = 2;
                     throw new Error("En la imagen no se detectó ningún Nro. Comprobante. Vuelve a subir una imagen con más calidad.");
                 }
 
                 await worker.terminate();
             } catch (error) {
-                console.error("Error en OCR:", error);
-                estadoOCR = 2;
-                mostrarError(error.message);
-                codigoComprobante = null;
-                confirmacionSection.style.display = 'none';
+                console.error("Error en OCR de imagen:", error);
+                manejarErrorOCR(error.message);
+            }
+        }
+
+        // Función para procesar OCR en PDFs
+        async function processPDFWithOCR(file) {
+            console.log("Iniciando OCR para PDF...");
+            mostrarProceso("Procesando PDF...");
+            
+            const btnSubir = document.getElementById('btnSubirComprobante');
+            btnSubir.disabled = true;
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({
+                    data: new Uint8Array(arrayBuffer)
+                }).promise;
+
+                // Verificar que sea de una sola página
+                if (pdf.numPages > 1) {
+                    throw new Error("El PDF debe tener exactamente 1 página. El archivo seleccionado tiene " + pdf.numPages + " páginas.");
+                }
+
+                // Mostrar previsualización
+                await mostrarPreviewPDF(pdf);
+
+                // Procesar OCR
+                const page = await pdf.getPage(1);
+                const viewport = page.getViewport({ scale: 2.0 }); // Mayor escala para mejor OCR
+                const canvas = document.createElement('canvas');
+                
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                await page.render({
+                    canvasContext: canvas.getContext('2d'),
+                    viewport
+                }).promise;
+
+                // Ejecutar OCR
+                const worker = await Tesseract.createWorker('spa');
+                const { data: { text } } = await worker.recognize(canvas);
+                console.log("Texto extraído de PDF:", text);
+                
+                const numeroDetectado = extraerNumeroComprobante(text);
+                
+                if (numeroDetectado) {
+                    codigoComprobante = numeroDetectado;
+                    estadoOCR = 1;
+                    console.log("Número detectado en PDF:", codigoComprobante);
+                    feedbackArea.style.display = 'none';
+                    mostrarConfirmacion();
+                } else {
+                    throw new Error("En el PDF no se detectó ningún Nro. Comprobante. Asegúrate de que el documento sea legible y contenga el número de comprobante.");
+                }
+                
+                await worker.terminate();
+                
+            } catch (error) {
+                console.error("Error en OCR de PDF:", error);
+                manejarErrorOCR(error.message);
+            }
+        }
+
+        // Función para mostrar previsualización de PDF
+        async function mostrarPreviewPDF(pdf) {
+            try {
+                const page = await pdf.getPage(1);
+                const viewport = page.getViewport({ scale: 0.4 });
+                
+                pdfCanvas.height = viewport.height;
+                pdfCanvas.width = viewport.width;
+                pdfCanvas.style.maxWidth = '100%';
+                pdfCanvas.style.height = 'auto';
+                
+                await page.render({
+                    canvasContext: pdfCanvas.getContext('2d'),
+                    viewport
+                }).promise;
+                
+            } catch (error) {
+                console.error("Error al mostrar previsualización de PDF:", error);
+                mostrarError("Error al generar previsualización del PDF");
             }
         }
 
@@ -681,15 +812,21 @@
                 filePreview.style.display = 'block';
 
                 if (file.type === 'application/pdf') {
+                    // Manejar PDF
                     pdfPreview.style.display = 'block';
                     imagePreview.style.display = 'none';
-                    mostrarError("Los archivos PDF no son soportados para OCR. Suba una imagen JPG o PNG.");
+                    
+                    // Procesar PDF con OCR
+                    await processPDFWithOCR(file);
+                    
                 } else if (file.type.startsWith('image/')) {
+                    // Manejar imagen
+                    imagePreview.style.display = 'block';
+                    pdfPreview.style.display = 'none';
+                    
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         imgElement.src = e.target.result;
-                        imagePreview.style.display = 'block';
-                        pdfPreview.style.display = 'none';
                         processImageWithOCR(e.target.result);
                     };
                     reader.readAsDataURL(file);
@@ -714,8 +851,6 @@
             return idsUnicos;
         }
 
-
-        
         // Función para cargar los estudiantes a procesar
         function cargarEstudiantesAProcesar() {
             estudiantesAProcesar = obtenerIdsEstudiantes();
@@ -789,6 +924,8 @@
             codigoComprobante = null;
             estadoOCR = 0;
             confirmacionSection.style.display = 'none';
+            confirmacionAceptada = false;
+            correccionManual = null;
             inputManual.value = '';
             document.getElementById('btnSubirComprobante').disabled = true;
         });

@@ -59,7 +59,7 @@ class Inscripcion extends Model
     {
         return $this->hasMany(DetalleInscripcion::class, 'idInscripcion', 'idInscripcion');
     }
-    
+
     public function area()
     {
         return $this->hasOneThrough(
@@ -71,7 +71,7 @@ class Inscripcion extends Model
             'idArea' // Clave foránea en DetalleInscripcion que apunta a Area
         );
     }
-    
+
     public function categoria()
     {
         return $this->hasOneThrough(

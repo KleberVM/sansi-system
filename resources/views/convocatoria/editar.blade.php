@@ -145,7 +145,7 @@
                                     </div>
                                       <div class="precio-container">
                                         @php
-                                            $precios = DB::table('convocatoriaAreaCategoria')
+                                            $precios = DB::table('convocatoriaareacategoria')
                                                 ->where('idConvocatoria', $convocatoria->idConvocatoria)
                                                 ->where('idArea', $area->idArea)
                                                 ->where('idCategoria', $categoria->idCategoria)
