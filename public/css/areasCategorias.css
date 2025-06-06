@@ -245,7 +245,7 @@
 }
 
 .area-table td {
-    padding: 1rem;
+    padding: 0.3rem 1rem; /* ← Esto controla el espacio interno de las celdas */
     border-bottom: 1px solid var(--border-color);
     color: var(--text-color);
 }
