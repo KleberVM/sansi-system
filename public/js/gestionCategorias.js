@@ -110,17 +110,20 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Cerrar modal
+                // Cerrar modal ANTES de recargar
                 const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaCategoriaModal'));
                 modal.hide();
-                window.location.reload();
                 
-                // Aquí puedes hacer lo que necesites después de crear la categoría
+                // Pequeño delay para asegurar que el modal se cierre antes de recargar
+                setTimeout(() => {
+                    window.location.reload();
+                }, 300);
             } else {
-                alert('Hubo un error al crear la categoría');
+                alert('Hubo un error al crear la categoría: ' + (data.message || ''));
             }
         })
         .catch(error => {
+            console.error('Error:', error);
             alert('Error en la conexión');
         });
     }

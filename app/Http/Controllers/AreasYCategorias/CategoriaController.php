@@ -73,11 +73,15 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        // Validación de entrada
+            // Validación de entrada ACTUALIZADA
         $request->validate([
-            'nombreCategoria' => 'required|string|min:5|max:20|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'nombreCategoria' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/',
             'grados' => 'required|array|min:1',
             'grados.*' => 'required|exists:grado,idGrado',
+        ], [
+            'nombreCategoria.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'nombreCategoria.max' => 'El nombre no puede tener más de 20 caracteres.',
+            'nombreCategoria.regex' => 'El nombre solo puede contener letras, números y espacios.',
         ]);
 
         // Normalización del nombre para evitar duplicados con variaciones de mayúsculas/minúsculas
@@ -128,12 +132,16 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validación
+        // Validación ACTUALIZADA
         DB::statement('SET @current_user_id = ' . Auth::id());
         $request->validate([
-            'nombreCategoria' => 'required|string|min:5|max:20|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'nombreCategoria' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/',
             'grados' => 'required|array|min:1',
             'grados.*' => 'required|exists:grado,idGrado',
+        ], [
+            'nombreCategoria.min' => 'El nombre debe tener al menos 3 caracteres.',
+            'nombreCategoria.max' => 'El nombre no puede tener más de 20 caracteres.',
+            'nombreCategoria.regex' => 'El nombre solo puede contener letras, números y espacios.',
         ]);
 
         $categoria = Categoria::findOrFail($id);

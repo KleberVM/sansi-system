@@ -126,9 +126,9 @@
                     <form class="needs-validation" novalidate id="formNuevaCategoria" action="{{ route('categorias.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nombreCategoria" class="required-label">Nombre del Nivel/Categoria</label>
-                            <input type="text" class="form-control" id="nombreCategoria" name="nombreCategoria" required minlength="5" maxlength="20">
-                            <div class="form-text">Mínimo 5 caracteres, máximo 20, sin numeros ni simbolos especiales</div>
+                            <label for="nombreCategoria" class="required-label">Nombre del Nivel/Categoría</label>
+                            <input type="text" class="form-control" id="nombreCategoria" name="nombreCategoria" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras, números y espacios">
+                            <div class="form-text">Mínimo 3 caracteres, máximo 20, solo letras, números y espacios</div>
                         </div>
 
                         <div class="mb-3">
@@ -206,9 +206,9 @@
                     <form class="needs-validation" novalidate id="formEditarCategoria" action="{{ route('categorias.update', 0) }}" method="POST">
                         @csrf
                         <div class="mb-3">
-                            <label for="nombreCategoria" class="required-label">Nombre del Nivel/Categoria</label>
-                            <input type="text" class="form-control" id="nombreCategoria" name="nombreCategoria" required minlength="5" maxlength="20">
-                            <div class="form-text">Mínimo 5 caracteres, máximo 20, sin numeros ni simbolos especiales</div>
+                            <label for="nombreCategoria" class="required-label">Nombre del Nivel/Categoría</label>
+                            <input type="text" class="form-control" id="nombreCategoria" name="nombreCategoria" required minlength="3" maxlength="20" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+"title="Solo se permiten letras, números y espacios">
+                            <div class="form-text">Mínimo 3 caracteres, máximo 20, solo letras, números y espacios</div>
                         </div>
 
                         <div class="mb-3">
