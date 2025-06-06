@@ -70,8 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .filter(select => select.value.trim() !== '');
             
             if (gradosValidos.length === 0) {
-                alert('Por favor selecciona al menos un grado');
-                return;
+                return; // Solo no enviar, sin alert
             }
             
             const formData = new FormData(FORMULARIO_PRINCIPAL);
@@ -85,27 +84,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('nuevaCategoriaModal'));
                     modal.hide();
-                    
                     setTimeout(() => {
                         window.location.reload();
                     }, 300);
-                } else {
-                    alert('Error: ' + (data.message || 'Error desconocido'));
                 }
+                // Si hay error, simplemente no hacer nada
             })
             .catch(error => {
-                console.error('Error completo:', error);
-                alert('Error en la conexión: ' + error.message);
+                // Silenciar errores, solo console.log para debugging si es necesario
+                console.log('Error:', error);
             });
         }
         
@@ -143,24 +135,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         if (data.success) {
                             const modalInstance = bootstrap.Modal.getInstance(confirmDeleteModal);
                             modalInstance.hide();
                             document.querySelector(`tr[data-categoria-id="${categoriaIdEliminar}"]`).remove();
-                        } else {
-                            alert('Error: ' + (data.message || 'Error al eliminar'));
                         }
+                        // Si hay error, simplemente no hacer nada
                     })
                     .catch(error => {
-                        console.error('Error completo:', error);
-                        alert('Error en la conexión: ' + error.message);
+                        // Silenciar errores
+                        console.log('Error:', error);
                     });
                 }
             });
@@ -259,24 +245,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
                 })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         const modal = bootstrap.Modal.getInstance(editarModal);
                         modal.hide();
                         location.reload();
-                    } else {
-                        alert('Error: ' + (data.message || 'Error al actualizar'));
                     }
+                    // Si hay error, simplemente no hacer nada
                 })
                 .catch(error => {
-                    console.error('Error completo:', error);
-                    alert('Error en la conexión: ' + error.message);
+                    // Silenciar errores
+                    console.log('Error:', error);
                 });
             };
             
