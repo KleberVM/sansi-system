@@ -73,44 +73,54 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-            // Validación de entrada ACTUALIZADA
-        $request->validate([
-            'nombreCategoria' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/',
-            'grados' => 'required|array|min:1',
-            'grados.*' => 'required|exists:grado,idGrado',
-        ], [
-            'nombreCategoria.min' => 'El nombre debe tener al menos 3 caracteres.',
-            'nombreCategoria.max' => 'El nombre no puede tener más de 20 caracteres.',
-            'nombreCategoria.regex' => 'El nombre solo puede contener letras, números y espacios.',
-        ]);
+        try {
+            // Validación de entrada
+            $request->validate([
+                'nombreCategoria' => 'required|string|min:3|max:20|regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]+$/',
+                'grados' => 'required|array|min:1',
+                'grados.*' => 'required|exists:grado,idGrado',
+            ]);
 
-        // Normalización del nombre para evitar duplicados con variaciones de mayúsculas/minúsculas
-        $nombreNormalizado = strtolower(trim($request->nombreCategoria));
+            // Normalización del nombre
+            $nombreNormalizado = strtolower(trim($request->nombreCategoria));
 
-        // Verificación de existencia previa en la base de datos
-        $categoriaExistente = Categoria::whereRaw('LOWER(nombre) = ?', [$nombreNormalizado])->exists();
+            // Verificación de existencia previa
+            $categoriaExistente = Categoria::whereRaw('LOWER(nombre) = ?', [$nombreNormalizado])->exists();
 
-        if ($categoriaExistente) {
+            if ($categoriaExistente) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ya existe una categoría con este nombre o uno muy similar.',
+                ], 422);
+            }
+
+            // Crear la nueva categoría
+            DB::statement('SET @current_user_id = ' . Auth::id());
+            $categoria = Categoria::create([
+                'nombre' => $request->nombreCategoria
+            ]);
+
+            // Asociar los grados seleccionados
+            $categoria->grados()->attach($request->grados);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Categoría creada exitosamente',
+                'categoria' => $categoria->load('grados')
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ya existe una categoría con este nombre o uno muy similar.',
+                'message' => 'Error de validación: ' . implode(', ', $e->validator->errors()->all()),
             ], 422);
+        } catch (\Exception $e) {
+            \Log::error('Error al crear categoría: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor',
+            ], 500);
         }
-
-        // Crear la nueva categoría
-        DB::statement('SET @current_user_id = ' . Auth::id());
-        $categoria = Categoria::create([
-            'nombre' => $request->nombreCategoria
-        ]);
-
-        // Asociar los grados seleccionados
-        $categoria->grados()->attach($request->grados);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Categoría creada exitosamente',
-            'categoria' => $categoria->load('grados')
-        ]);
     }
 
     /**
