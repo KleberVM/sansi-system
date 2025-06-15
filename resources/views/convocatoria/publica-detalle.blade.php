@@ -107,7 +107,7 @@
                                         <h5>Precios:</h5>
                                         <ul class="precios-list">
                                             @php
-                                                $relacion = DB::table('convocatoriaAreaCategoria')
+                                                $relacion = DB::table('convocatoriaareacategoria')
                                                     ->where('idConvocatoria', $convocatoria->idConvocatoria)
                                                     ->where('idArea', $area->idArea)
                                                     ->where('idCategoria', $categoria->idCategoria)
